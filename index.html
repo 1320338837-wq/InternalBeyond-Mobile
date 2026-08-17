@@ -1701,24 +1701,6 @@ html.sp-dark #ib-splash,body.theme-infernal #ib-splash{
 #ib-splash .sp-veil{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--scrim);
   transform:translateZ(0);backface-visibility:hidden}
 
-/* 花瓣保持轻量，不抢中央 UI。 */
-#ib-splash .sp-petals{position:absolute;inset:0;pointer-events:none}
-.sp-petal{position:absolute;top:-6vh;left:var(--px,50%);
-  width:calc(12px*var(--ps,1));height:calc(16px*var(--ps,1));
-  background:linear-gradient(135deg,rgba(162,200,244,.48),rgba(118,168,224,.24));
-  border-radius:100% 4% 100% 100%;opacity:0;will-change:transform,opacity;
-  animation:spFall var(--pd,11s) linear var(--pw,0s) infinite}
-body.theme-infernal .sp-petal,html.sp-dark .sp-petal{
-  background:linear-gradient(135deg,rgba(72,105,166,.46),rgba(35,58,108,.23))}
-.sp-petal.once{animation-iteration-count:1;animation-fill-mode:forwards}
-@keyframes spFall{
-  0%{transform:translate(0,0) rotate(var(--pr,-20deg));opacity:0}
-  6%{opacity:.72}
-  30%{transform:translate(calc(16px*var(--pk,1)),32vh) rotate(calc(var(--pr,-20deg) + 70deg))}
-  60%{transform:translate(calc(-12px*var(--pk,1)),66vh) rotate(calc(var(--pr,-20deg) + 150deg))}
-  92%{opacity:.66}
-  100%{transform:translate(calc(9px*var(--pk,1)),108vh) rotate(calc(var(--pr,-20deg) + 230deg));opacity:0}}
-
 /* 中央信息：所有主体共用同一宽度、同一 50vw 中轴。 */
 #ib-splash .sp-center{position:absolute;left:50%;top:47%;width:100%;transform:translate(-50%,-50%);
   display:flex;flex-direction:column;align-items:center;gap:var(--sp-gap);padding:0 26px;
@@ -1781,7 +1763,6 @@ html.sp-dark .sp-welcome,body.theme-infernal .sp-welcome{
 #ib-splash.suspended .sp-prog::before,#ib-splash.suspended .sp-fill::before{animation-play-state:paused!important}
 #ib-splash.done{opacity:0;transition:opacity .72s ease}
 @media (prefers-reduced-motion:reduce){
-  #ib-splash .sp-petals{display:none}
   #ib-splash .sp-center{animation-duration:.2s;animation-delay:0s}
   .sp-fill::before{animation:none;opacity:.2}
   .sp-prog::before{animation:none;opacity:.14}}
@@ -1796,14 +1777,6 @@ try{if(localStorage.getItem('ib_m_theme')==='infernal')document.body.classList.a
 <div id="ib-splash" aria-hidden="true">
   <div class="sp-bg"></div>
   <div class="sp-veil"></div>
-  <div class="sp-petals" id="sp-petals">
-    <i class="sp-petal" style="--px:12%;--ps:0.85;--pd:11.5s;--pw:-4.2s;--pk:1;--pr:-24deg"></i>
-    <i class="sp-petal" style="--px:30%;--ps:1.1;--pd:13s;--pw:-9s;--pk:-1;--pr:12deg"></i>
-    <i class="sp-petal" style="--px:52%;--ps:0.7;--pd:10s;--pw:-2.5s;--pk:1;--pr:-8deg"></i>
-    <i class="sp-petal" style="--px:71%;--ps:1;--pd:12.2s;--pw:-6.6s;--pk:-1;--pr:20deg"></i>
-    <i class="sp-petal" style="--px:88%;--ps:0.8;--pd:11s;--pw:-11s;--pk:1;--pr:-16deg"></i>
-    <i class="sp-petal" style="--px:42%;--ps:0.95;--pd:12.8s;--pw:-1.2s;--pk:-1;--pr:6deg"></i>
-  </div>
   <div class="sp-center">
     <div class="sp-loading"><span class="sp-loading-word">Now Loading<span class="sp-dots" id="sp-dots"></span></span></div>
     <div class="sp-prog"><div class="sp-track"><div class="sp-fill" id="sp-fill"></div></div><span class="sp-pct" id="sp-pct">0%</span></div>
@@ -1816,8 +1789,7 @@ try{if(localStorage.getItem('ib_m_theme')==='infernal')document.body.classList.a
 (function(){try{
 var sp=document.getElementById('ib-splash');if(!sp)return;
 var fill=document.getElementById('sp-fill'),pct=document.getElementById('sp-pct'),
-    dotsEl=document.getElementById('sp-dots'),wEl=document.getElementById('sp-welcome'),
-    pets=document.getElementById('sp-petals');
+    dotsEl=document.getElementById('sp-dots'),wEl=document.getElementById('sp-welcome');
 var dark=false;try{dark=localStorage.getItem('ib_m_theme')==='infernal'}catch(e){}
 var RM=false;try{RM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
 var timers=[],ivs=[],raf=0,dead=false;
@@ -1833,15 +1805,6 @@ sp.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false})
 var dn=0,dotHold=false;I(function(){if(document.hidden)return;if(dotHold){dotsEl.textContent='';dn=0;dotHold=false;return}dn++;dotsEl.textContent='...'.slice(0,dn);if(dn>=3)dotHold=true},RM?220:320);
 var msg='Welcome to '+(dark?'Infernal':'Internal')+' Beyond.';
 T(function(){var wi=0,wiv=null;wEl.textContent='';wiv=I(function(){if(document.hidden)return;if(wi<msg.length){wEl.textContent=msg.slice(0,++wi)}else if(wiv){clearInterval(wiv)}},RM?18:48)},RM?180:920);
-if(!RM){I(function(){if(document.hidden||dead)return;if(pets.children.length>9)return;
-  var p=document.createElement('i');p.className='sp-petal once';
-  p.style.setProperty('--px',(4+Math.random()*92).toFixed(1)+'%');
-  p.style.setProperty('--ps',(0.65+Math.random()*0.55).toFixed(2));
-  p.style.setProperty('--pd',(9.5+Math.random()*4).toFixed(1)+'s');
-  p.style.setProperty('--pk',Math.random()<0.5?'1':'-1');
-  p.style.setProperty('--pr',(Math.random()*48-24).toFixed(0)+'deg');
-  p.addEventListener('animationend',function(){p.remove()});
-  pets.appendChild(p)},1700)}
 var loaded=document.readyState==='complete',t0=performance.now(),hiddenAt=0;
 addEventListener('load',function(){loaded=true},{once:true});
 function ready(now){if(now-t0>9000)return true;if(!loaded)return false;
@@ -8531,7 +8494,7 @@ $('aset-ava-menu').addEventListener('click',e=>{
 });
 document.addEventListener('click',()=>{const m=$('aset-ava-menu');if(m&&!m.hidden)m.hidden=true});
 $('aset-temp').addEventListener('input',e=>{$('aset-temp-val').textContent=Number(e.target.value).toFixed(1);rangeFill(e.target)});
-['aset-stream','aset-think','aset-vision','aset-web','aset-cache','aset-cache1h'].forEach(id=>{
+['aset-stream','aset-think','aset-vision','aset-web','aset-cache','aset-cache1h','aset-memw','aset-am','aset-am-mute','aset-ib','aset-ib-post','aset-ib-cmt','aset-ib-img'].forEach(id=>{
   $(id).addEventListener('click',()=>{
     const on=!$(id).classList.contains('on');sw2($(id),on);
     if(id==='aset-cache'&&!on)sw2($('aset-cache1h'),false);
@@ -15569,6 +15532,7 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
 })();
 
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 </body>
 </html>
