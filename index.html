@@ -2,12 +2,10 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- InternalBeyond Mobile v104-m -->
+<!-- InternalBeyond Mobile v113-m -->
 <!-- PWA compatibility patch: static manifest.webmanifest + 192/512 icons; runtime blob manifest disabled for Android/Chromium install reliability. -->
 <!-- v104-m 修订单（GitHub PWA 公开发布轮）：①修复「外部工具连续调用轮数」保存错库——out-tools 误写 dbPut('settings')（库内无此 store，空 catch 吞错，改值刷新即丢），改为 dbPut('apiSettings') 并补失败日志；②_ibNotify 升级——安卓 Chrome 页面态 new Notification 抛 Illegal constructor 导致通知静默失效，有 SW 注册时改走 registration.showNotification，无 SW 环境回落原实现；③GUIDE 第五分区「作者」改「版权信息」：底栏图标换 ©，原作者信息与签名全部保留，其下新增完整版权条款（代码 PolyForm Noncommercial 1.0.0 / 素材 CC BY-NC-SA 4.0）；④欢迎语「——See you in the next world.」去破折号；Infernal 主题下欢迎块新增第四段签名 ——Yours, Salome.（Internal 下隐藏）；⑤修复作者邮箱 Cloudflare 混淆残留（[email protected] 无解码脚本、CSP 亦禁其加载，永远显示不出），还原明文 mailto；⑥版本口径统一：文件头 / IB_VER 同步 v104-m；⑦语音输入错误提示区分场景——file:/content: 等非 HTTPS 打开时浏览器本就禁用麦克风，原「未获得麦克风权限」误导排查，现明示需 HTTPS/PWA。 -->
-<!-- v103-m：① Calendar 相遇纪念卡修正：移除 MEET · ANNIVERSARY 顶部标识；移除纪念卡中的“全部日程”标签；保留原版左右切换箭头。② 修复日期副信息在紧凑布局中被纵向裁切的问题，增加安全行高与内边距。③ 保留 Lock 默认开启逻辑：新用户/未迁移用户首次启动默认进入上滑解锁锁屏，已明确关闭者继续保持关闭。 -->
-<!-- v100-m 修订单：①全站字体恢复（Google Fonts 引入回归，CSP 放行字体域名，昵称与各处文本回到原观感）；②PWA 主屏图标重画——按电脑版 IB 字标绘制 iOS 液态玻璃方形图标（512×512 矢量渲染，缩放不糊）；③Desk 桌面图标顺序还原为用户截图基准（音乐位于 Circle 与日历之间）；④锁屏默认壁纸模糊 4px→8px（适度档），亮壁纸自适应下欢迎语/解锁提示随时刻转墨色（修白字被冲淡的文本显示问题）；⑤GUIDE 文案整修：PWA 部署教程逐步分段重写（安卓/iOS 各自成节、编号步骤独立成段），隐私说明与字体现状对齐，Data 页 IndexedDB 版本号 v14→v15 订正。 -->
-<!-- v99-m 任务1（部署到 PWA 后的隐私）：托管到 HTTPS 之后，页面向 AI 服务商 / 中转站以及任何远程图片发起请求时，浏览器默认会带上你的站点地址（Referer）。no-referrer 把这一项彻底关掉。file:// 本地打开时本来就没有 Referer，此项只在部署后生效。 -->
+<!-- v113-m Splash 稳定性热修：开屏固定为 100lvh 合成层，背景不再随移动浏览器地址栏伸缩重算；进度条由 width+rAF+transition 改为 transform scaleX；移除 Splash 轨道 backdrop-filter；前后台切换冻结时间轴，BFCache 恢复直接清理旧 Splash；首帧主题底色提前，抑制 PWA/浏览器启动交接闪白。 -->
 <meta name="referrer" content="no-referrer">
 <!-- v99-m 任务1（部署到 PWA 后的隐私）：CSP——禁止加载任何外部脚本与样式，从浏览器层面根治「在线渠道自动注入统计信标」（文件顶部的净化哨兵此前只能在信标节点插进 DOM 之后再删掉，属于事后补救）。connect-src 保持放开，否则 AI 接口会被一并挡下。v100-m：按用户要求恢复全站原字体，故在 style-src / font-src 单独放行 Google Fonts 两个域名——这是白名单里仅有的第三方来源，且只允许样式表与字体文件，脚本仍然一律禁止。 -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src * data: blob:; media-src * data: blob:; connect-src * data: blob:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
@@ -15,6 +13,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" id="meta-theme-color" content="#dfe9f6">
+<script id="ib-splash-precheck">
+/* Splash stability hotfix：主题与首帧底色提前到 head 前段，避免浏览器/PWA 原生启动页交接时露出默认白底。 */
+try{if(localStorage.getItem('ib_m_theme')==='infernal'){document.documentElement.classList.add('sp-dark');var _spmc=document.getElementById('meta-theme-color');if(_spmc)_spmc.setAttribute('content','#141a2e')}}catch(e){}
+</script>
+<style id="ib-splash-firstpaint">html{background:#dfe9f6}html.sp-dark{background:#141a2e}</style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1655,10 +1658,218 @@ body.theme-infernal .sb-hero .tp-time{background:none!important;-webkit-backgrou
 .cmc-art{width:44px;height:44px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--soft);border:1px solid var(--glass-line);color:var(--tx3)}.cmc-art img{width:100%;height:100%;display:block;object-fit:cover}.cmc-art svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
 .cmc-mid{min-width:0}.cmc-status{font-size:.56rem;line-height:1.2;letter-spacing:.07em;color:var(--tx3);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmc-title{font-size:.78rem;line-height:1.34;font-weight:500;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmc-artist{font-size:.62rem;line-height:1.3;color:var(--tx3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmc-line{display:flex;align-items:center;gap:6px;margin-top:5px}.cmc-bar{height:3px;flex:1;min-width:36px;border-radius:999px;background:rgba(120,155,205,.14);overflow:hidden}.cmc-bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--acc);transition:width .16s linear}.cmc-time{font-size:.54rem;line-height:1;color:var(--tx3);white-space:nowrap;font-variant-numeric:tabular-nums}
 .cmc-play{width:30px;height:30px;border-radius:50%;border:1px solid var(--glass-line);background:var(--soft);color:var(--tx2);padding:0;display:flex;align-items:center;justify-content:center}.cmc-play:active{transform:scale(.96)}.cmc-play.playing{color:var(--acc);border-color:rgba(114,168,216,.45);background:rgba(114,168,216,.1)}.cmc-play svg{width:14px;height:14px;fill:currentColor;stroke:none}
+/* v111-m：原生音乐文件 input 保持可被移动端 picker 唤起，但不参与布局；避免 hidden/display:none 在部分 PWA/WebView 中失效。 */
+.pw-file-native{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;min-width:1px!important;min-height:1px!important;opacity:.001!important;overflow:hidden!important;pointer-events:none!important;z-index:-1!important}
 
+</style>
+<style id="ib-splash-style">
+/* ═══ v112-m：Splash · Ice Blue Liquid Glass ═══
+   目标：薄、透、克制；无滑头；亮/暗主题独立配色；避免旧式“塑料高光条”观感。 */
+#ib-splash{
+  position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:6000;overflow:hidden;background:#dfe9f6;
+  isolation:isolate;contain:layout paint;transform:translateZ(0);backface-visibility:hidden;will-change:opacity;
+  --sp-line-w:min(300px,72vw);
+  --sp-gap:14px;
+  --sp-title:rgba(31,53,82,.92);
+  --sp-sub:rgba(43,66,96,.76);
+  --sp-track-top:rgba(247,251,255,.52);
+  --sp-track-bottom:rgba(201,220,242,.23);
+  --sp-track-line:rgba(241,247,255,.78);
+  --sp-track-inner:rgba(62,98,143,.13);
+  --sp-fill-a:rgba(105,153,202,.74);
+  --sp-fill-b:rgba(139,182,222,.80);
+  --sp-fill-c:rgba(190,217,243,.85);
+  --sp-fill-glow:rgba(101,154,207,.22);
+  --sp-breath:rgba(111,163,217,.27)
+}
+html.sp-dark #ib-splash,body.theme-infernal #ib-splash{
+  background:#141a2e;
+  --sp-title:rgba(255,255,255,.96);
+  --sp-sub:rgba(232,238,247,.84);
+  --sp-track-top:rgba(214,226,243,.13);
+  --sp-track-bottom:rgba(70,86,111,.09);
+  --sp-track-line:rgba(202,216,236,.23);
+  --sp-track-inner:rgba(0,0,0,.26);
+  --sp-fill-a:rgba(109,129,153,.62);
+  --sp-fill-b:rgba(139,157,179,.68);
+  --sp-fill-c:rgba(180,194,210,.72);
+  --sp-fill-glow:rgba(105,129,157,.12);
+  --sp-breath:rgba(149,167,190,.18)
+}
+#ib-splash .sp-bg{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--bgimg) center/cover no-repeat;
+  transform:translateZ(0);backface-visibility:hidden}
+#ib-splash .sp-veil{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--scrim);
+  transform:translateZ(0);backface-visibility:hidden}
+
+/* 花瓣保持轻量，不抢中央 UI。 */
+#ib-splash .sp-petals{position:absolute;inset:0;pointer-events:none}
+.sp-petal{position:absolute;top:-6vh;left:var(--px,50%);
+  width:calc(12px*var(--ps,1));height:calc(16px*var(--ps,1));
+  background:linear-gradient(135deg,rgba(162,200,244,.48),rgba(118,168,224,.24));
+  border-radius:100% 4% 100% 100%;opacity:0;will-change:transform,opacity;
+  animation:spFall var(--pd,11s) linear var(--pw,0s) infinite}
+body.theme-infernal .sp-petal,html.sp-dark .sp-petal{
+  background:linear-gradient(135deg,rgba(72,105,166,.46),rgba(35,58,108,.23))}
+.sp-petal.once{animation-iteration-count:1;animation-fill-mode:forwards}
+@keyframes spFall{
+  0%{transform:translate(0,0) rotate(var(--pr,-20deg));opacity:0}
+  6%{opacity:.72}
+  30%{transform:translate(calc(16px*var(--pk,1)),32vh) rotate(calc(var(--pr,-20deg) + 70deg))}
+  60%{transform:translate(calc(-12px*var(--pk,1)),66vh) rotate(calc(var(--pr,-20deg) + 150deg))}
+  92%{opacity:.66}
+  100%{transform:translate(calc(9px*var(--pk,1)),108vh) rotate(calc(var(--pr,-20deg) + 230deg));opacity:0}}
+
+/* 中央信息：所有主体共用同一宽度、同一 50vw 中轴。 */
+#ib-splash .sp-center{position:absolute;left:50%;top:47%;width:100%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-gap);padding:0 26px;
+  opacity:0;animation:spIn .72s cubic-bezier(.2,.75,.25,1) .42s forwards}
+@keyframes spIn{from{opacity:0;transform:translate(-50%,-50%)}to{opacity:1;transform:translate(-50%,-50%)}}
+
+/* Now Loading：与 Welcome 使用同一套系统字体 / 字重 / 字号，仅保留 italic；主文字本身严格居中，dots 不参与宽度。 */
+.sp-loading{position:relative;width:var(--sp-line-w);margin:0;text-align:center;
+  font-family:var(--sys);font-style:italic;font-weight:600;font-synthesis:style;
+  font-size:clamp(.88rem,3.55vw,.98rem);line-height:1.08;letter-spacing:.01em;
+  color:var(--sp-title);text-shadow:0 1px 4px rgba(255,255,255,.40);white-space:nowrap}
+html.sp-dark .sp-loading,body.theme-infernal .sp-loading{
+  text-shadow:0 1px 3px rgba(8,16,34,.24),0 3px 12px rgba(8,16,34,.18)}
+.sp-loading-word{position:relative;display:inline-block}
+.sp-dots{position:absolute;left:calc(100% + .08em);top:0;display:block;width:1.15em;
+  text-align:left;letter-spacing:.02em;white-space:nowrap}
+
+/* 进度条：轨道本体就是 --sp-line-w，百分比绝对挂右侧，绝不参与居中计算。无滑头。 */
+.sp-prog{position:relative;width:var(--sp-line-w);margin:0;isolation:isolate}
+.sp-prog::before{content:"";position:absolute;z-index:0;left:-3%;right:-3%;top:50%;height:16px;transform:translateY(-50%) scaleX(.965);border-radius:999px;
+  background:radial-gradient(ellipse at center,var(--sp-breath) 0%,rgba(112,145,181,.075) 42%,transparent 74%);
+  filter:blur(6px);opacity:.14;pointer-events:none;animation:spBreathGlow 2.45s ease-in-out .55s infinite}
+@keyframes spBreathGlow{0%,100%{opacity:.10;transform:translateY(-50%) scaleX(.965)}50%{opacity:.48;transform:translateY(-50%) scaleX(1.015)}}
+.sp-track{position:relative;z-index:1;width:100%;height:6px;border-radius:999px;overflow:hidden;isolation:isolate;
+  background:linear-gradient(180deg,var(--sp-track-top),var(--sp-track-bottom));
+  border:1px solid var(--sp-track-line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.52),inset 0 -1px 0 var(--sp-track-inner),0 5px 18px rgba(31,61,96,.12);
+  transform:translateZ(0);backface-visibility:hidden}
+html.sp-dark .sp-track,body.theme-infernal .sp-track{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 var(--sp-track-inner),0 5px 18px rgba(0,0,0,.22)}
+.sp-track::before{content:"";position:absolute;z-index:3;left:7px;right:7px;top:1px;height:1px;border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72) 26%,rgba(255,255,255,.32) 70%,transparent);
+  opacity:.7;pointer-events:none}
+.sp-fill{position:absolute;z-index:1;left:0;top:0;bottom:0;width:100%;border-radius:inherit;overflow:hidden;
+  background:linear-gradient(90deg,var(--sp-fill-a) 0%,var(--sp-fill-b) 58%,var(--sp-fill-c) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.54),inset 0 -1px 0 rgba(26,83,139,.16),0 0 14px var(--sp-fill-glow);
+  transform-origin:left center;transform:translateZ(0) scaleX(0);will-change:transform;backface-visibility:hidden}
+.sp-fill::before{content:"";position:absolute;inset:0;width:62%;
+  background:linear-gradient(105deg,transparent 0 28%,rgba(255,255,255,.26) 45%,transparent 63%);
+  transform:translateX(-135%);animation:spLiquidSheen 3.2s cubic-bezier(.45,0,.3,1) .8s infinite;opacity:.38;pointer-events:none}
+@keyframes spLiquidSheen{0%,18%{transform:translateX(-135%)}68%,100%{transform:translateX(235%)}}
+.sp-pct{position:absolute;z-index:2;left:calc(100% + 10px);top:50%;transform:translateY(-50%);display:block;text-align:left;
+  font-family:var(--sys);font-style:normal;font-weight:500;font-size:10.5px;line-height:1;letter-spacing:0;
+  color:var(--sp-sub);text-shadow:0 1px 4px rgba(255,255,255,.40);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+html.sp-dark .sp-pct,body.theme-infernal .sp-pct{
+  text-shadow:0 1px 2px rgba(8,14,28,.50),0 3px 10px rgba(8,14,28,.32)}
+
+/* Welcome：与轨道同宽、同中轴；排版参数按锁屏顶部欢迎语口径。 */
+.sp-welcome{width:var(--sp-line-w);min-height:1.08em;text-align:center;
+  font-family:var(--sys);font-weight:600;font-size:clamp(.88rem,3.55vw,.98rem);line-height:1.08;
+  letter-spacing:.01em;color:var(--sp-sub);text-shadow:0 1px 4px rgba(255,255,255,.40);white-space:nowrap;
+  opacity:1;transform:none}
+html.sp-dark .sp-welcome,body.theme-infernal .sp-welcome{
+  text-shadow:0 1px 2px rgba(8,14,28,.50),0 3px 10px rgba(8,14,28,.32)}
+
+/* 状态控制 */
+#ib-splash.paused *,#ib-splash.suspended *{animation-play-state:paused!important}
+#ib-splash.paused .sp-prog::before,#ib-splash.paused .sp-fill::before,
+#ib-splash.suspended .sp-prog::before,#ib-splash.suspended .sp-fill::before{animation-play-state:paused!important}
+#ib-splash.done{opacity:0;transition:opacity .72s ease}
+@media (prefers-reduced-motion:reduce){
+  #ib-splash .sp-petals{display:none}
+  #ib-splash .sp-center{animation-duration:.2s;animation-delay:0s}
+  .sp-fill::before{animation:none;opacity:.2}
+  .sp-prog::before{animation:none;opacity:.14}}
 </style>
 </head>
 <body>
+<!-- ═══ v112-m：开屏加载动画（Splash · Ice Blue Liquid Glass） ═══ -->
+<script>
+/* v112-m：body 顶部同步设置 theme-infernal 类——主脚本稍后再设一次，同值幂等 */
+try{if(localStorage.getItem('ib_m_theme')==='infernal')document.body.classList.add('theme-infernal')}catch(e){}
+</script>
+<div id="ib-splash" aria-hidden="true">
+  <div class="sp-bg"></div>
+  <div class="sp-veil"></div>
+  <div class="sp-petals" id="sp-petals">
+    <i class="sp-petal" style="--px:12%;--ps:0.85;--pd:11.5s;--pw:-4.2s;--pk:1;--pr:-24deg"></i>
+    <i class="sp-petal" style="--px:30%;--ps:1.1;--pd:13s;--pw:-9s;--pk:-1;--pr:12deg"></i>
+    <i class="sp-petal" style="--px:52%;--ps:0.7;--pd:10s;--pw:-2.5s;--pk:1;--pr:-8deg"></i>
+    <i class="sp-petal" style="--px:71%;--ps:1;--pd:12.2s;--pw:-6.6s;--pk:-1;--pr:20deg"></i>
+    <i class="sp-petal" style="--px:88%;--ps:0.8;--pd:11s;--pw:-11s;--pk:1;--pr:-16deg"></i>
+    <i class="sp-petal" style="--px:42%;--ps:0.95;--pd:12.8s;--pw:-1.2s;--pk:-1;--pr:6deg"></i>
+  </div>
+  <div class="sp-center">
+    <div class="sp-loading"><span class="sp-loading-word">Now Loading<span class="sp-dots" id="sp-dots"></span></span></div>
+    <div class="sp-prog"><div class="sp-track"><div class="sp-fill" id="sp-fill"></div></div><span class="sp-pct" id="sp-pct">0%</span></div>
+    <div class="sp-welcome" id="sp-welcome"></div>
+  </div>
+</div>
+<noscript><style>#ib-splash{display:none}</style></noscript>
+<script>
+/* Splash stability hotfix：固定大视口 + transform 进度 + 前后台时间冻结；避免地址栏伸缩、恢复页面与 width transition 造成整页闪烁/追帧。 */
+(function(){try{
+var sp=document.getElementById('ib-splash');if(!sp)return;
+var fill=document.getElementById('sp-fill'),pct=document.getElementById('sp-pct'),
+    dotsEl=document.getElementById('sp-dots'),wEl=document.getElementById('sp-welcome'),
+    pets=document.getElementById('sp-petals');
+var dark=false;try{dark=localStorage.getItem('ib_m_theme')==='infernal'}catch(e){}
+var RM=false;try{RM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+var timers=[],ivs=[],raf=0,dead=false;
+function T(f,ms){var t=setTimeout(f,ms);timers.push(t);return t}
+function I(f,ms){var t=setInterval(f,ms);ivs.push(t);return t}
+function clearAll(){timers.forEach(clearTimeout);ivs.forEach(clearInterval);timers=[];ivs=[];if(raf){cancelAnimationFrame(raf);raf=0}}
+function cleanup(){if(dead)return;dead=true;clearAll();try{sp.remove()}catch(e){}
+  var st=document.getElementById('ib-splash-style');if(st)st.remove();
+  var pc=document.getElementById('ib-splash-precheck');if(pc)pc.remove();
+  var fp=document.getElementById('ib-splash-firstpaint');if(fp)fp.remove();
+  document.documentElement.classList.remove('sp-dark')}
+sp.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
+var dn=0,dotHold=false;I(function(){if(document.hidden)return;if(dotHold){dotsEl.textContent='';dn=0;dotHold=false;return}dn++;dotsEl.textContent='...'.slice(0,dn);if(dn>=3)dotHold=true},RM?220:320);
+var msg='Welcome to '+(dark?'Infernal':'Internal')+' Beyond.';
+T(function(){var wi=0,wiv=null;wEl.textContent='';wiv=I(function(){if(document.hidden)return;if(wi<msg.length){wEl.textContent=msg.slice(0,++wi)}else if(wiv){clearInterval(wiv)}},RM?18:48)},RM?180:920);
+if(!RM){I(function(){if(document.hidden||dead)return;if(pets.children.length>9)return;
+  var p=document.createElement('i');p.className='sp-petal once';
+  p.style.setProperty('--px',(4+Math.random()*92).toFixed(1)+'%');
+  p.style.setProperty('--ps',(0.65+Math.random()*0.55).toFixed(2));
+  p.style.setProperty('--pd',(9.5+Math.random()*4).toFixed(1)+'s');
+  p.style.setProperty('--pk',Math.random()<0.5?'1':'-1');
+  p.style.setProperty('--pr',(Math.random()*48-24).toFixed(0)+'deg');
+  p.addEventListener('animationend',function(){p.remove()});
+  pets.appendChild(p)},1700)}
+var loaded=document.readyState==='complete',t0=performance.now(),hiddenAt=0;
+addEventListener('load',function(){loaded=true},{once:true});
+function ready(now){if(now-t0>9000)return true;if(!loaded)return false;
+  var v=document.getElementById('lk-preveil');return !v||v.classList.contains('off')}
+var MIN=RM?1800:5200,fin=false,finT=0,lastPct=-1;
+function draw(v){var x=Math.max(0,Math.min(100,v));fill.style.transform='translateZ(0) scaleX('+(x/100).toFixed(4)+')';
+  var n=Math.round(x);if(n!==lastPct){lastPct=n;pct.textContent=n+'%'}}
+function frame(now){if(dead)return;if(document.hidden){raf=requestAnimationFrame(frame);return}
+  var el=now-t0;
+  if(!fin){var k=Math.min(1,el/MIN),e=1-Math.pow(1-k,3);draw(e*96);
+    if(k>=1&&ready(now)){fin=true;finT=now}}
+  else{var q=Math.min(1,(now-finT)/260);draw(96+4*q);
+    if(q>=1){finish();return}}
+  raf=requestAnimationFrame(frame)}
+function finish(){if(dead)return;draw(100);dotsEl.textContent='...';clearAll();sp.classList.add('paused');
+  T(function(){if(!dead)sp.classList.add('done')},360);
+  T(cleanup,1140)}
+function onVis(){if(dead)return;var now=performance.now();
+  if(document.hidden){if(!hiddenAt){hiddenAt=now;sp.classList.add('suspended')}}
+  else if(hiddenAt){var d=now-hiddenAt;t0+=d;if(fin&&finT)finT+=d;hiddenAt=0;sp.classList.remove('suspended')}}
+document.addEventListener('visibilitychange',onVis);
+addEventListener('pageshow',function(e){if(e.persisted)cleanup()});
+raf=requestAnimationFrame(frame);
+}catch(e){try{var bad=document.getElementById('ib-splash');if(bad)bad.remove();var fp=document.getElementById('ib-splash-firstpaint');if(fp)fp.remove();document.documentElement.classList.remove('sp-dark')}catch(x){}}
+})();
+</script>
+
+
 
 <div id="top-veil" aria-hidden="true"></div><!-- v69-m t4：顶栏上方渐变帘，盖住滚动透出的文字 -->
 <header id="topbar" class="glass">
@@ -1739,7 +1950,7 @@ body.theme-infernal .sb-hero .tp-time{background:none!important;-webkit-backgrou
         <h3>界面结构</h3>
         <p><strong>汉堡菜单</strong>：顶栏左侧，页面切换 — Home · Guide · Blog · Chat · Letters · Memory · ICode · API · DIY；抽屉底部为 Data（备份与导入导出）与 Setting（视觉设置）。Beyond（社交圈）、Visual（视觉页）、Music（全屏听歌界面）与日历 App 从 Desk 应用矩阵进入。<!-- v86-m：任务 6——补文档（对齐现行抽屉项）；v91-m：+音乐/日历两个 App 图标 --></p>
         <p><strong>系统与辅助</strong>：API 页 → Presence（定时推送）可设固定间隔或时段内随机触发，并可设勿扰时段（时段内暂停定时推送与自动发动态）。DIY 页 → 外部工具分区「通知」卡，可在页面退到后台时按分档弹系统通知（AI 主动消息 / 社交圈动态，需浏览器授权）。Home 设置 → Space → Display 提供竖屏方向锁与触控目标放大。<!-- v101-m 任务3：整墙分段重排 --></p>
-        <p><strong>音乐（Desk 图标）</strong>：打开全屏听歌界面。黑胶唱片带唱臂——播放时唱臂落盘、唱片旋转，歌曲封面印在盘芯上并糊化为背景；左侧为大字歌名与逐句滚动歌词（导入与音频同名的 .lrc / .srt / .vtt 即可）；下方是可拖进度条与五键控制（末位为播放队列），顶栏右上角「＋」添加音乐或歌词。</p>
+        <p><strong>音乐（Desk 图标）</strong>：打开全屏听歌界面。黑胶唱片带唱臂——播放时唱臂落盘、唱片旋转，歌曲封面印在盘芯上并糊化为背景；左侧为大字歌名与逐句滚动歌词（当前歌曲页导入单个 .lrc / .srt / .vtt 会直接绑定；批量导入按文件名匹配）；下方是可拖进度条与五键控制（末位为播放队列），顶栏右上角「＋」添加音乐或歌词。</p>
         <p><strong>一起听</strong>：歌名右侧的小按钮。未配对时点它邀请一位 AI，选定后自动开启共享正在播放；配对后界面上方出现你和 TA 的头像对，下方实时累计一起听的时长，点头像对可「去聊天」或「结束一起听」。TA 会在对话中被告知你正与 TA 一起听这首歌，聊天里的听歌卡片也能一键跳回此界面。</p>
         <p><strong>日历 App（Desk 图标）</strong>：照桌面端 Calendar 悬浮窗的日程页设计。顶部相遇纪念卡可用 ‹ › 切换查看与本站及每位 AI 的相遇纪念日（已相伴天数＋周年倒计时）；下方列出全部日程，按下一次发生排序，行内含类型 / 日期 / 重复 / 提醒 / 备注，行尾为倒计时角标；右上「＋」新建、点行编辑、点 ✕ 删除，与桌面月历挂件和 AI 的日历标签共用同一份数据。</p>
         <p><strong>底部分区栏</strong>：每个页面各自不同，用于在该页面内部切换分区。Home 页在 Desk 桌面、Space 名片与 Circle AI 名片三个面板间切换，设置从第四格进入。</p>
@@ -2000,7 +2211,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
           <p class="aw-salome">——Yours,<br><span class="aw-name">Salome.</span></p><!-- v104-m：Infernal 主题下欢迎块第四段签名；Internal 主题隐藏 -->
         </div>
         <p><strong>Sui / 水</strong> — Internal Beyond 的设计者。</p>
-        <p>QQ：1282901880　·　邮箱：<a href="mailto:1282901880@qq.com">1282901880@qq.com</a></p><!-- v104-m：还原 Cloudflare 邮箱混淆残留——单文件无解码脚本且 CSP 禁外部脚本，原写法永远显示 [email protected] -->
+        <p>QQ：1282901880　·　邮箱：<a href="/cdn-cgi/l/email-protection#6a5b585258535a5b52525a2a1b1b44090507"><span class="__cf_email__" data-cfemail="0e3f3c363c373e3f36363e4e7f7f206d6163">[email&#160;protected]</span></a></p><!-- v104-m：还原 Cloudflare 邮箱混淆残留——单文件无解码脚本且 CSP 禁外部脚本，原写法永远显示 [email protected] -->
         <p>手机端仓库：<a href="https://github.com/Sui-IB/InternalBeyond-Mobile" target="_blank" rel="noopener">github.com/Sui-IB/InternalBeyond-Mobile</a><br>电脑端仓库：<a href="https://github.com/Sui-IB/InternalBeyond" target="_blank" rel="noopener">github.com/Sui-IB/InternalBeyond</a></p>
         <p><strong>社交媒体</strong><br>
           小红书：<a href="https://www.xiaohongshu.com/user/profile/3628686381" target="_blank" rel="noopener">3628686381</a><br>
@@ -2028,7 +2239,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <p>项目图像素材均由 OpenAI GPT-IMAGE-2 生成，并由 Sui 使用 Adobe Photoshop CS 进行修改、合成与编绘。对于 Sui 依法享有或有权授权的部分——包括界面设计、图标、背景与项目文档——采用 CC BY-NC-SA 4.0。署名后可进行非商业分享与改作；公开衍生素材时，须注明修改内容并采用同一许可。项目名称、Logo 与作者标识不授予商标权，不得冒充官方版本或造成由 Sui 官方发布与认可的误认。</p>
         <div class="g-name">授权范围</div>
         <p>上述许可仅覆盖 Sui 有权授权的代码与素材。第三方字体、库、模型名称、商标及其他第三方内容继续遵循各自许可。商业使用须事先取得 Sui 的单独书面授权；未经授权，付费下载、收费分发、收费部署与商业打包均不被允许。</p>
-        <p>本项目官方版本免费提供。<br>如果你通过付费方式获得了未经作者授权的副本，请停止传播并联系作者：<br>GitHub: <a href="https://github.com/Sui-IB" target="_blank" rel="noopener">Sui-IB</a>　｜　QQ: 1282901880　｜　Email: <a href="mailto:1282901880@qq.com">1282901880@qq.com</a></p>
+        <p>本项目官方版本免费提供。<br>如果你通过付费方式获得了未经作者授权的副本，请停止传播并联系作者：<br>GitHub: <a href="https://github.com/Sui-IB" target="_blank" rel="noopener">Sui-IB</a>　｜　QQ: 1282901880　｜　Email: <a href="/cdn-cgi/l/email-protection#49787b717b707978717179093838672a2624"><span class="__cf_email__" data-cfemail="f2c3c0cac0cbc2c3cacac2b28383dc919d9f">[email&#160;protected]</span></a></p>
         <p>本许可自 2026-08-16 起适用于当前版本及后续版本。此前已合法取得的旧版本，继续受取得时随附的许可约束。完整许可文件应与 GitHub 仓库一并发布。</p>
         <!-- v104-m：版权条款正文——原作者信息与签名保留在上方；LICENSE / COPYRIGHT.md 全文随仓库发布 -->
       </div>
@@ -2136,7 +2347,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
           <button class="pw-btn" id="pw-next" title="下一首"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 5.9v12.2h-2V13l-7 4.8V6.2l7 4.8V5.9z"/></svg></button>
           <button class="pw-btn" id="pw-add" title="添加音乐"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg></button>
         </div>
-        <input type="file" id="pw-file" accept="audio/*,.lrc,.srt,.vtt" multiple hidden>
+        <input type="file" id="pw-file" class="pw-file-native" accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.oga,.opus,.webm,.mp4,.mpeg,.mpga,.3gp,.3gpp,.amr,.caf,.aif,.aiff,.lrc,.srt,.vtt" multiple tabindex="-1" aria-hidden="true">
       </div>
       </div><!-- /sb-desk v77-m r7 -->
     </div>
@@ -3340,7 +3551,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
     <div class="sheet-btns"><button class="btn" data-close="1">关闭</button></div>
   </div>
   <div id="toast"></div>
-<script>/* v104-m：删除随邮箱一起粘贴进来的 Cloudflare email-decode 死引用（路径不存在，独立部署下每次加载都 404） */</script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>/* v104-m：删除随邮箱一起粘贴进来的 Cloudflare email-decode 死引用（路径不存在，独立部署下每次加载都 404） */</script><script>
 'use strict';
 const SEC_RENDER={};/* v68-m f1：分区渲染注册表——声明前移到脚本最顶端。v67-m 在 Visual 段注册 visual:main 时早于原声明（const TDZ，ReferenceError），整块脚本解析即崩、全站只剩占位符打不开。 */
 /* ═══════════ 与电脑版一致的数据层 ═══════════ */
@@ -9563,7 +9774,7 @@ function _orientApply(){try{
   el=$('ui-orient');if(el)el.addEventListener('click',async function(){await loadMP();_mp.ui=_mp.ui||{};_mp.ui.orientLock=!_mp.ui.orientLock;await saveMP();sw2(el,!!_mp.ui.orientLock);_orientApply();if(_mp.ui.orientLock)toast('已请求锁定竖屏（标签页可能不放行，安装为 PWA 后生效）')});
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')});
 })();
-var IB_VER='v104-m',IB_VER_DATE='2026-08-16';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
+var IB_VER='v113-m',IB_VER_DATE='2026-08-17';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
@@ -11615,7 +11826,33 @@ function _pwListDraw(){
     _pwPaint();
     try{await loadMP();_mp.ui=_mp.ui||{};_mp.ui.musicMode=_pw.mode;await saveMP()}catch(e){}
   });
-  var pick=function(){var f=$('pw-file');f.value='';f.onchange=function(){_pwAddFiles(f.files)};f.click()};
+  /* v111-m：所有“+ / 添加音乐 / 导入歌词”统一走一个文件选择器。change 固定绑定一次，避免 MUSIC 顶栏首次添加选完无响应。 */
+  var _pwAcceptAudio='audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.oga,.opus,.webm,.mp4,.mpeg,.mpga,.3gp,.3gpp,.amr,.caf,.aif,.aiff,.lrc,.srt,.vtt';
+  var _pwAcceptLyrics='.lrc,.srt,.vtt,text/plain,text/vtt,application/x-subrip';
+  var _pwFile=$('pw-file');
+  window._pwPickContext={mode:'audio',trackId:null};
+  if(_pwFile){
+    try{if(_pwFile.parentNode!==document.body)document.body.appendChild(_pwFile)}catch(e){}
+    _pwFile.addEventListener('change',function(){
+      var chosen=Array.prototype.slice.call(_pwFile.files||[]);if(!chosen.length)return;
+      var pc=window._pwPickContext||{};
+      var ctx={mode:pc.mode==='lyrics'?'lyrics':'audio',trackId:pc.trackId||null};
+      Promise.resolve(_pwAddFiles(chosen,ctx)).catch(function(err){console.error('[Music picker]',err);toast('添加失败，请重试')}).finally(function(){try{_pwFile.value=''}catch(e){}});
+    });
+  }
+  window._pwPickFiles=function(mode){
+    var f=$('pw-file');if(!f){toast('文件选择器不可用');return false}
+    mode=mode==='lyrics'?'lyrics':'audio';
+    var targetId=null;try{if(mode==='lyrics'&&_pw.idx>=0&&_pw.list&&_pw.list[_pw.idx])targetId=_pw.list[_pw.idx].id||null}catch(e){}
+    window._pwPickContext={mode:mode,trackId:targetId};
+    try{f.accept=mode==='lyrics'?_pwAcceptLyrics:_pwAcceptAudio;f.value=''}catch(e){}
+    var opened=false;
+    try{if(typeof f.showPicker==='function'){f.showPicker();opened=true}}catch(e){}
+    if(!opened){try{f.click();opened=true}catch(e){console.error('[Music picker open]',e)}}
+    if(!opened)toast('无法打开本地文件，请从曲库页重试');
+    return opened
+  };
+  var pick=function(){window._pwPickFiles('audio')};
   $('pw-add').addEventListener('click',function(e){e.stopPropagation();pick()});
   $('pw-add2').addEventListener('click',pick);
   $('pw-info').addEventListener('click',async function(){await _pwLoad();openSheet('sheet-music');_pwListDraw()});
@@ -14806,7 +15043,7 @@ window.addEventListener('unhandledrejection',function(e){try{console.error('[IB-
   function ext(name){var m=String(name||'').toLowerCase().match(/\.([a-z0-9]+)$/);return m?m[1]:''}
   function base(name){return String(name||'').replace(/\.[^.]+$/,'').trim()}
   function isLyricFile(f){var e=ext(f&&f.name);return e==='lrc'||e==='srt'||e==='vtt'}
-  function isAudioFile(f){if(!f)return false;if(/^audio\//i.test(f.type||''))return true;return /^(mp3|m4a|mp4|wav|flac|ogg|oga|webm|aac|mpeg|mpga)$/i.test(ext(f.name))}
+  function isAudioFile(f){if(!f)return false;if(/^audio\//i.test(f.type||''))return true;return /^(mp3|m4a|mp4|wav|flac|ogg|oga|opus|webm|aac|mpeg|mpga|3gp|3gpp|amr|caf|aif|aiff)$/i.test(ext(f.name))}
   function cleanText(s){return String(s==null?'':s).replace(/^\uFEFF/,'').replace(/\u0000/g,'').trim()}
   function _utf16(bytes,be){var out='',i=0;if(bytes.length>=2){if(bytes[0]===0xff&&bytes[1]===0xfe){be=false;i=2}else if(bytes[0]===0xfe&&bytes[1]===0xff){be=true;i=2}}for(;i+1<bytes.length;i+=2){var c=be?((bytes[i]<<8)|bytes[i+1]):((bytes[i+1]<<8)|bytes[i]);if(c===0)continue;out+=String.fromCharCode(c)}return out}
   function _decText(bytes,enc){try{if(enc===1)return _utf16(bytes,false);if(enc===2)return _utf16(bytes,true);if(enc===3)return new TextDecoder('utf-8').decode(bytes);try{return new TextDecoder('iso-8859-1').decode(bytes)}catch(e){var s='';for(var i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);return s}}catch(e){return''}}
@@ -14929,13 +15166,59 @@ function nearLyrics(lyrics,sec,span){if(!lyrics||!Array.isArray(lyrics.segments)
 var _ibMusicMJobs={},_ibMusicMSeen={};
 _pwName=function(r){return String((r&&(r.title||r.name))||'').replace(/\.[a-z0-9]{1,5}$/i,'')||'未命名音频'};
 function _musicTrackByIdM(id){return (_pw.list||[]).find(function(x){return x&&x.id===id})||null}
-async function _musicSaveLyricsFileM(f){var txt='';try{txt=await f.text()}catch(e){return false}var lyr=IBMusicCore.parseLyrics(txt,f.name);if(!lyr.segments.length)return false;await _pwLoad();var b=IBMusicCore.base(f.name).toLowerCase(),rec=(_pw.list||[]).find(function(r){return IBMusicCore.base(r.name||r.title).toLowerCase()===b});if(!rec)return false;rec.lyrics=lyr;rec.lyricsAttemptedAt=Date.now();try{await dbPut('music',rec)}catch(e){return false}return true}
-_pwAddFiles=async function(files){
-  var fs=Array.prototype.slice.call(files||[]).filter(function(f){return f&&f.size});if(!fs.length)return;await _pwLoad();var aud=fs.filter(IBMusicCore.isAudioFile),lyr=fs.filter(IBMusicCore.isLyricFile),ids=[];
-  for(var k=0;k<aud.length;k++){var f=aud[k],meta=await IBMusicCore.readMeta(f),rec={id:'msong_'+Date.now()+'_'+Math.floor(Math.random()*1e6),name:f.name||'音频',title:meta.title||IBMusicCore.base(f.name),artist:meta.artist||'',album:meta.album||'',cover:meta.cover||'',type:f.type||'',size:f.size||0,addedAt:Date.now()+k,src:'mobile',blob:f,metaScanned:true};try{await dbPut('music',rec);ids.push(rec.id)}catch(e){}}
-  await _pwLoad();var lk=0;for(k=0;k<lyr.length;k++)if(await _musicSaveLyricsFileM(lyr[k]))lk++;
-  if(aud.length)toast('已添加 '+ids.length+' 首'+(lk?' · 绑定 '+lk+' 份歌词':''));else if(lyr.length)toast(lk?'歌词已绑定':'没有找到同名歌曲，歌词未绑定');
-  var first=_pw.idx<0;_pwPaint();_pwListDraw();if(first&&ids.length){var ix=_pw.list.findIndex(function(r){return r.id===ids[0]});if(ix>=0)_pwPlayIdx(ix)}
+async function _musicReadLyricsTextM(f){
+  try{
+    var ab=await f.arrayBuffer(),u=new Uint8Array(ab),txt='';
+    if(u.length>=2&&u[0]===0xff&&u[1]===0xfe){try{return new TextDecoder('utf-16le').decode(u)}catch(e){}}
+    if(u.length>=2&&u[0]===0xfe&&u[1]===0xff){try{return new TextDecoder('utf-16be').decode(u)}catch(e){}}
+    if(u.length>=3&&u[0]===0xef&&u[1]===0xbb&&u[2]===0xbf){try{return new TextDecoder('utf-8').decode(u.subarray(3))}catch(e){}}
+    try{txt=new TextDecoder('utf-8').decode(u)}catch(e){txt=await f.text()}
+    var bad8=(txt.match(/\uFFFD/g)||[]).length;
+    if(bad8){try{var gb=new TextDecoder('gb18030').decode(u),badg=(gb.match(/\uFFFD/g)||[]).length;if(badg<bad8)txt=gb}catch(e){}}
+    return txt;
+  }catch(e){try{return await f.text()}catch(x){return''}}
+}
+function _musicNormBaseM(name){
+  var s=IBMusicCore.base(name||'');try{s=s.normalize('NFKC')}catch(e){}
+  return s.toLowerCase().replace(/[\s\u3000]+/g,' ').replace(/(?:\s*[-_—–·]\s*)?(?:lyrics?|lyric|lrc|歌词|滚动歌词|逐字歌词)\s*$/i,'').replace(/[\s._\-—–·()[\]【】{}]+/g,'').trim()
+}
+async function _musicSaveLyricsFileM(f,opt){
+  var txt=await _musicReadLyricsTextM(f);if(!txt)return false;
+  var lyr=IBMusicCore.parseLyrics(txt,f.name);if(!lyr.segments.length){console.warn('[Lyrics import] no timed lines',f&&f.name);return false}
+  await _pwLoad();var rec=null,opt=opt||{};
+  if(opt.trackId)rec=(_pw.list||[]).find(function(r){return r&&r.id===opt.trackId})||null;
+  if(!rec){var b=_musicNormBaseM(f.name);rec=(_pw.list||[]).find(function(r){return _musicNormBaseM(r.name||r.title)===b})||null}
+  if(!rec)return false;
+  lyr.imported=true;lyr.importedAt=Date.now();lyr.fileName=f.name||'';
+  rec.lyrics=lyr;rec.lyricsAttemptedAt=Date.now();
+  try{await dbPut('music',rec)}catch(e){console.error('[Lyrics save]',e);return false}
+  try{if(window._maRefreshMusicM)window._maRefreshMusicM()}catch(e){}
+  return true
+}
+_pwAddFiles=async function(files,ctx){
+  var fs=Array.prototype.slice.call(files||[]).filter(function(f){return f&&f.size});if(!fs.length)return;
+  ctx=ctx||{};
+  var aud=fs.filter(IBMusicCore.isAudioFile),lyr=fs.filter(IBMusicCore.isLyricFile),ids=[],failed=0;
+  if(!aud.length&&!lyr.length){toast('未识别到可用音频或歌词文件');return}
+  await _pwLoad();var first=_pw.idx<0;
+  for(var k=0;k<aud.length;k++){var f=aud[k],meta=null;
+    try{meta=await IBMusicCore.readMeta(f)}catch(e){meta={title:IBMusicCore.base(f.name),artist:'',album:'',cover:''}}
+    var rec={id:'msong_'+Date.now()+'_'+Math.floor(Math.random()*1e6),name:f.name||'音频',title:(meta&&meta.title)||IBMusicCore.base(f.name),artist:(meta&&meta.artist)||'',album:(meta&&meta.album)||'',cover:(meta&&meta.cover)||'',type:f.type||'',size:f.size||0,addedAt:Date.now()+k,src:'mobile',blob:f,metaScanned:true};
+    try{await dbPut('music',rec);ids.push(rec.id)}catch(e){failed++;console.error('[Music import]',f&&f.name,e)}
+  }
+  await _pwLoad();var lk=0;
+  for(k=0;k<lyr.length;k++){
+    try{
+      var bind=(ctx.mode==='lyrics'&&ctx.trackId&&lyr.length===1)?{trackId:ctx.trackId}:{};
+      if(await _musicSaveLyricsFileM(lyr[k],bind))lk++
+    }catch(e){console.warn('[Lyrics import]',e)}
+  }
+  if(aud.length){
+    if(ids.length)toast('已添加 '+ids.length+' 首'+(failed?' · '+failed+' 首失败':'')+(lk?' · 绑定 '+lk+' 份歌词':''));
+    else toast('音乐添加失败，请检查浏览器存储空间或文件格式');
+  }else if(lyr.length)toast(lk?(ctx.mode==='lyrics'&&ctx.trackId&&lyr.length===1?'歌词已绑定到当前歌曲':'歌词已绑定'):'歌词解析失败，或没有找到可绑定的歌曲');
+  _pwPaint();_pwListDraw();try{if(window._maRefreshMusicM)window._maRefreshMusicM()}catch(e){}
+  if(first&&ids.length){var ix=_pw.list.findIndex(function(r){return r.id===ids[0]});if(ix>=0)_pwPlayIdx(ix)}
 };
 _pwPlayIdx=async function(i){
   await _pwLoad();if(!_pw.list.length){toast('曲库为空，先添加音乐');_pwPaint();return}i=((i%_pw.list.length)+_pw.list.length)%_pw.list.length;_pw.idx=i;var rec=_pw.list[i],a=_pwA();a.src=_pwSrc(rec);try{await a.play()}catch(e){toast('播放失败')}_pwPaint();_pwListDraw();try{await loadMP();_musicEnsureM(rec,!!(_mp.musicAi&&_mp.musicAi.share))}catch(e){_musicEnsureM(rec,false)}_musicSyncCardsM()
@@ -14946,7 +15229,7 @@ async function _musicEnsureM(rec,wantTranscript){
     try{if(!rec.metaScanned&&rec.blob instanceof Blob){var m=await IBMusicCore.readMeta(rec.blob);rec.title=m.title||rec.title||IBMusicCore.base(rec.name);rec.artist=m.artist||rec.artist||'';rec.album=m.album||rec.album||'';rec.cover=m.cover||rec.cover||'';rec.metaScanned=true;dirty=true}}catch(e){}
     if(!rec.analysis||rec.analysis.version!==IBMusicCore.VERSION){try{rec.analysis=await IBMusicCore.analyze(rec.blob);dirty=true;if(_pw.idx>=0&&_pw.list[_pw.idx]&&_pw.list[_pw.idx].id===rec.id)toast('歌曲结构分析完成')}catch(e){}}
     if(dirty){try{await dbPut('music',rec)}catch(e){}_pwPaint();_pwListDraw()}
-    if(wantTranscript&&!rec.lyrics&&rec.blob instanceof Blob){try{var vt=await loadVT();if(vt&&vt.endpoint&&vt.apiKey&&vt.model){var lr=await IBMusicCore.transcribe(rec,vt,vtUrl);lr=_musicCleanLyricsM(lr);rec.lyrics=lr||{source:'transcript',segments:[],text:'',timed:false,at:Date.now()};rec.lyricsAttemptedAt=Date.now();await dbPut('music',rec);if(lr&&((lr.segments&&lr.segments.length)||lr.text))toast('歌曲人声时间轴已生成');else toast('歌曲结构已分析，未识别到可用人声')}}catch(e){console.warn('[Music Together] transcript failed',e)}}
+    if(wantTranscript&&!rec.lyrics&&rec.blob instanceof Blob){try{var vt=await loadVT();if(vt&&vt.endpoint&&vt.apiKey&&vt.model){var lr=await IBMusicCore.transcribe(rec,vt,vtUrl);lr=_musicCleanLyricsM(lr);var latest=null;try{latest=await dbGet('music',rec.id)}catch(x){}if(latest&&latest.lyrics){Object.assign(rec,latest);console.info('[Music Together] transcript discarded: lyrics already exist (manual import wins)')}else{rec.lyrics=lr||{source:'transcript',segments:[],text:'',timed:false,at:Date.now()};rec.lyricsAttemptedAt=Date.now();await dbPut('music',rec);if(lr&&((lr.segments&&lr.segments.length)||lr.text))toast('歌曲人声时间轴已生成');else toast('歌曲结构已分析，未识别到可用人声')}try{if(window._maRefreshMusicM)window._maRefreshMusicM()}catch(x){}}}catch(e){console.warn('[Music Together] transcript failed',e)}}
     _musicSyncCardsM();return rec;
   })();try{return await _ibMusicMJobs[rec.id]}finally{delete _ibMusicMJobs[rec.id]}
 }
@@ -14970,7 +15253,7 @@ function _musicSyncCardsM(){var g=convEl('cv-msgs');if(!g)return;var cards=Array
 var _oldRenderAiBodyM=renderAiBody;renderAiBody=function(host,msgEl,m){_oldRenderAiBodyM(host,msgEl,m);if(m&&m.musicCard&&!host.querySelector(':scope>.chat-music-card'))host.appendChild(_musicBuildCardM(m.musicCard));setTimeout(_musicSyncCardsM,0)};
 var _oldSaveAiM=saveAi;saveAi=async function(cfg,content,thinking,aiEl,ctx){var am=await _oldSaveAiM(cfg,content,thinking,aiEl,ctx);try{if(am&&!/<ws_music\b/i.test(String(content||''))){await loadMP();var ma=(_mp&&_mp.musicAi)||{},rec=(_pw.idx>=0&&_pw.list)?_pw.list[_pw.idx]:null,a=_pw.a;if(ma.share&&rec&&a&&!a.paused){var key=(am.friendId||'')+'|'+(am.threadId||'')+'|'+rec.id;if(!_ibMusicMSeen[key]||_musicRelatedM(content,rec)){_ibMusicMSeen[key]=1;am.musicCard=IBMusicCore.snapshot(rec,a.currentTime||0,isFinite(a.duration)?a.duration:(rec.analysis&&rec.analysis.duration));await dbPut('chatMessages',am);redrawMsg(am);_musicEnsureM(rec,true)}}}}catch(e){}return am};
 var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m.content||''),has=/<ws_music\b/i.test(raw),oldN=(m&&m.ibOps&&m.ibOps.length)||0;await _oldProcIbOpsM(cfg,m);if(!has||!m)return;try{await new Promise(function(r){setTimeout(r,90)});var labs={播放器:1,播放歌曲:1,播放:1,继续播放:1,暂停播放:1,暂停:1,下一首:1,上一首:1};if(Array.isArray(m.ibOps)){var kept=[],removed=false;m.ibOps.forEach(function(x,i){if(i>=oldN&&!removed&&x&&labs[x.label]){removed=true;return}kept.push(x)});m.ibOps=kept}var rec=(_pw.idx>=0&&_pw.list)?_pw.list[_pw.idx]:null,a=_pw.a;if(rec){m.musicCard=IBMusicCore.snapshot(rec,a?(a.currentTime||0):0,a&&isFinite(a.duration)?a.duration:(rec.analysis&&rec.analysis.duration));await dbPut('chatMessages',m);redrawMsg(m);_musicSyncCardsM()}}catch(e){}};
-(function(){try{var f=$('pw-file');if(f)f.setAttribute('accept','audio/*,.lrc,.srt,.vtt');var s=$('music-share');if(s)s.addEventListener('click',function(){setTimeout(async function(){try{await loadMP();if(_mp.musicAi&&_mp.musicAi.share&&_pw.idx>=0&&_pw.list[_pw.idx])_musicEnsureM(_pw.list[_pw.idx],true)}catch(e){}},80)});var a=_pwA();['timeupdate','play','pause','loadedmetadata','ended'].forEach(function(ev){a.addEventListener(ev,_musicSyncCardsM)})}catch(e){}})();
+(function(){try{var f=$('pw-file');if(f)f.setAttribute('accept','audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.oga,.opus,.webm,.mp4,.mpeg,.mpga,.3gp,.3gpp,.amr,.caf,.aif,.aiff,.lrc,.srt,.vtt');var s=$('music-share');if(s)s.addEventListener('click',function(){setTimeout(async function(){try{await loadMP();if(_mp.musicAi&&_mp.musicAi.share&&_pw.idx>=0&&_pw.list[_pw.idx])_musicEnsureM(_pw.list[_pw.idx],true)}catch(e){}},80)});var a=_pwA();['timeupdate','play','pause','loadedmetadata','ended'].forEach(function(ev){a.addEventListener(ev,_musicSyncCardsM)})}catch(e){}})();
 
 
 /* ═══ v91-m：MUSIC 全屏听歌界面 + 日历 App（任务 1/2）═══
@@ -14990,7 +15273,7 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
     if(_maBound)return;_maBound=true;
     $i('ma-back').addEventListener('click',closeMusicApp);
     $i('ma-queue').addEventListener('click',function(){openSheet('sheet-music');try{_pwListDraw()}catch(e){}});
-    $i('ma-addtop').addEventListener('click',function(){var f=$('pw-file');if(f)f.click()});
+    $i('ma-addtop').addEventListener('click',function(){if(window._pwPickFiles)window._pwPickFiles('audio');else{var f=$('pw-file');if(f){try{f.value=''}catch(e){}f.click()}}});
     $i('ma-mate').addEventListener('click',_maMateBtn);
     $i('ma-play').addEventListener('click',function(){var b=$('pw-play');if(b)b.click();setTimeout(function(){_maPaint()},80)});
     $i('ma-prev').addEventListener('click',function(){var b=$('pw-prev');if(b)b.click()});
@@ -15002,7 +15285,7 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
       var mv=function(ev){seek(ev)},up=function(){window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up)};
       window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up)});
     $i('ma-lyr').addEventListener('click',function(e){
-      var ab=e.target.closest('#ma-lyradd');if(ab){var f=$('pw-file');if(f)f.click();return}
+      var ab=e.target.closest('#ma-lyradd');if(ab){if(window._pwPickFiles)window._pwPickFiles('lyrics');else{var f=$('pw-file');if(f){try{f.value=''}catch(x){}f.click()}}return}
       var ln=e.target.closest('.ma-ln');if(!ln)return;var s=parseFloat(ln.dataset.s);var a=_pwA();
       if(isFinite(s)){a.currentTime=s;a.play().catch(function(){})}
     });
@@ -15036,6 +15319,7 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
     }
     _maTime();
   }
+  window._maRefreshMusicM=function(){try{_maPaint(true)}catch(e){}};
   function _maLyrDraw(cur){
     var box=$i('ma-lyr');if(!box)return;box.innerHTML='';
     var raw=(cur&&cur.lyrics&&Array.isArray(cur.lyrics.segments))?cur.lyrics.segments.slice():[];
@@ -15044,8 +15328,8 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
     if(!segs.length){
       var _instr=!!(cur.lyrics&&(cur.lyrics.instrumental||raw.length))||!!cur.lyricsAttemptedAt;
       box.innerHTML=_instr
-        ?'<div class="ma-lyr-empty">听起来是纯音乐——转写没有检出人声歌词。<br>如果它其实有词，可以导入与音频<b>同名</b>的 .lrc / .srt / .vtt 文件。<br><button class="btn mini" id="ma-lyradd">导入歌词文件</button></div>'
-        :'<div class="ma-lyr-empty">这首歌还没有歌词。<br>导入与音频<b>同名</b>的 .lrc / .srt / .vtt 文件即可逐句滚动显示。<br><button class="btn mini" id="ma-lyradd">导入歌词文件</button></div>';
+        ?'<div class="ma-lyr-empty">听起来是纯音乐——转写没有检出人声歌词。<br>如果它其实有词，可以直接导入 .lrc / .srt / .vtt 文件；单个文件会绑定到当前歌曲。<br><button class="btn mini" id="ma-lyradd">导入歌词文件</button></div>'
+        :'<div class="ma-lyr-empty">这首歌还没有歌词。<br>直接导入 .lrc / .srt / .vtt 文件即可逐句滚动显示；单个文件会绑定到当前歌曲。<br><button class="btn mini" id="ma-lyradd">导入歌词文件</button></div>';
       return;
     }
     segs.sort(function(x,y){return (Number(x.start)||0)-(Number(y.start)||0)});
@@ -15285,5 +15569,6 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
 })();
 
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 </body>
 </html>
