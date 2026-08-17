@@ -1,6 +1,6 @@
 # InternalBeyond-Mobile（IB-Mobile）（IB机）
 
-一个离线运行的单文件个人网站应用——Internal Beyond 的移动端同源版本，旨于维系情感的连续性。
+Internal Beyond 的移动端同源版本：一个离线运行的单文件个人网站应用项目，旨于维系情感的连续性。
 
 该项目包含 11 项核心功能模块与两套视觉主题，支持同时对接多个 AI 模型。
 
