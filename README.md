@@ -1,4 +1,4 @@
-# Internal Beyond · Mobile（IB-Mobile）（IB机）
+# InternalBeyond-Mobile（IB-Mobile）（IB机）
 
 一个离线运行的单文件个人网站应用——Internal Beyond 的移动端同源版本，旨于维系情感的连续性。
 
@@ -8,6 +8,7 @@
 
 个人名片、锁屏、壁纸、气泡与桌面布局均可自定义，用户数据支持一键导出与导入。
 
+> 🌏 **桌面版 / InternalBeyond**: [InternalBeyond](https://github.com/Sui-IB/InternalBeyond)
 
 <!-- 宣传图：上传仓库后，把 Issue/PR 附件生成的图片链接替换到下一行 -->
 <!-- <img alt="InternalBeyond Mobile" src="在这里粘贴 GitHub attachments 图片链接" /> -->
