@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- InternalBeyond Mobile v121-p -->
+<!-- InternalBeyond Mobile v122-p -->
 <!-- PWA compatibility patch: static manifest.webmanifest + 192/512 icons; runtime blob manifest disabled for Android/Chromium install reliability. -->
 <!-- v104-m 修订单（GitHub PWA 公开发布轮）：①修复「外部工具连续调用轮数」保存错库——out-tools 误写 dbPut('settings')（库内无此 store，空 catch 吞错，改值刷新即丢），改为 dbPut('apiSettings') 并补失败日志；②_ibNotify 升级——安卓 Chrome 页面态 new Notification 抛 Illegal constructor 导致通知静默失效，有 SW 注册时改走 registration.showNotification，无 SW 环境回落原实现；③GUIDE 第五分区「作者」改「版权信息」：底栏图标换 ©，原作者信息与签名全部保留，其下新增完整版权条款（代码 PolyForm Noncommercial 1.0.0 / 素材 CC BY-NC-SA 4.0）；④欢迎语「——See you in the next world.」去破折号；Infernal 主题下欢迎块新增第四段签名 ——Yours, Salome.（Internal 下隐藏）；⑤修复作者邮箱 Cloudflare 混淆残留（[email protected] 无解码脚本、CSP 亦禁其加载，永远显示不出），还原明文 mailto；⑥版本口径统一：文件头 / IB_VER 同步 v104-m；⑦语音输入错误提示区分场景——file:/content: 等非 HTTPS 打开时浏览器本就禁用麦克风，原「未获得麦克风权限」误导排查，现明示需 HTTPS/PWA。 -->
 <!-- v113-m Splash 稳定性热修：开屏固定为 100lvh 合成层，背景不再随移动浏览器地址栏伸缩重算；进度条由 width+rAF+transition 改为 transform scaleX；移除 Splash 轨道 backdrop-filter；前后台切换冻结时间轴，BFCache 恢复直接清理旧 Splash；首帧主题底色提前，抑制 PWA/浏览器启动交接闪白。 -->
@@ -14,6 +14,7 @@
 <!-- v119-p 修订单（缺陷修复轮）：①Settings→Space 结构修复——上轮重排时 Space 滑片闭合标签错落在 Gallery 卡后，「个人页」「Permissions」两卡被甩出滑片成 zone-wrap 散装子元素（挤成竖排细条、Desk 页签点开错区）；闭合标签归位。②语音抗打断——pointercancel 且未上滑、已录满 0.8s 改按松开发送处理（部分浏览器在滚动判定/布局变化时会凭空发 cancel，表现为按住说话被"已取消"）。③日历导入即现——_mioRunImport 缓存重置补 _calEvents/_calNotes，电脑端备份导入后日历/日程立即可见，不再等冷启动。④版本三处联动 v119-p。 -->
 <!-- v120-p 修订单（复核与补修轮）：①日程挂件照库渲染——Desk 的 Schedule 挂件此前只读内存缓存，导入备份/他处写入后不同步；进 Desk 即重读日历库（库小代价可忽略）。②便笺三补——执行器补电脑端 v45 同款传统节日分支（itemId hol: 前缀、标题带年份，两端字段同构；「传统节日提醒」未开时明说原因）；未闭合 cal_note 标签双路打捞（电脑端 <600 剪除守卫同款，正文≥10 字照常入库），残缺标签不再裸奔进聊天，剪除后零结果也回写清洗文本；日历栏节日照约打〔可留笺〕标（指令写明「事项或者节日」，此前节日从不打标、执行器也不收）。③导入导出选择性勾选——工作台每行自绘勾选框，默认全选；取消勾选即本次跳过该模块（导出写空数组、导入直接略过），低内存设备可只倒必要模块压内存峰值。④版本联动 v120-p。 -->
 <!-- v121-p 修订单（联合修复轮·与 a 线 v123-a 同源五件套；本线不含 Bubble Lab / GitHub Studio / 壳内 BLE，未受波及）：①便笺配额改制——「每日期一张」退役：每个事项/节日每天至多 3 张、同日同内容拒收；日历栏与节日行按当日计数照实打三态标（〔可留笺〕/〔今日已留N张·可补充〕/〔今日已满〕），便笺指令同步改写；节日原「年份维度一次性封锁」一并退役。②定时推送两修——留笺任务只在配额允许时下达，配额用尽在提示里明说「不要留、不要声称留了」，AI 不再被静默拒绝还嘴硬；新增 _hbClash 撞车守卫（t0 对账）：推送生成期间用户插话或正在生成回复，该条推送静默作废，根治「像连发两条」。③ws 管线复活——_gwEnsure 与 _WMO 两个符号此前根本不存在，任何一次 <ws_loc/>/<ws_weather/> 调取都让 procIbOps 抛 ReferenceError 整轮静默死亡（同批 <ws_phone/> 陪葬、标签原文裸奔、无卡无回传）；本轮补齐实现（授权定位→手动城市兜底→反查城市→取天气），_ibfMaster/_gwEnsure 调用点加 try 护栏；定时推送与日程提醒两条主动消息路补挂 procMemOps/procIbOps（此前主动消息里的 ws_/mem_ 标签从不执行——用户截图里裸奔的 <ws_phone/> 正是这条路）。④设置改组——API 页新增 Presence 分区（心形页签，居「全局设置」与「工具」之间）：Permissions 三权限＋手动城市（原 设置→Space）与 定时推送/通知/Music（原 全局设置）四组整体迁入，id、绑定与存储键原样；自动发布最小间隔改自定义（5 分钟–7 天，新键 ib.gapMin，旧 gapH 自动换算）。⑤命名修正——Desk 图标 Friends→Circle、主页下坞 Circle→Friends、Circle 页顶栏 Beyond→Internet Beyond。⑥版本联动 v121-p。 -->
+<!-- v122-p 修订单（联合修复轮 2·与 a 线 v124-a 同源六件套；本线不含 Bubble Lab，宽度修复与「后台推送」改名不涉及）：①回传信箱补建——_gwFeedQ 全文使用 5 处却从未声明，严格模式下任何一次投递/取件都抛 ReferenceError 且被 try 吞掉：天气/定位/手机状态/AI付 的结果自 v83 起从未真正回传给 AI；主脚本顶部补上声明，链路当场复活。②<ws_phone/> 进正式渲染清单——WS_OPEN_RE / WS_META / segmentAiText 分支 / 卡标题分支 / WS_ICON 五处补齐，定稿重渲染后不再裸奔原文。③社交圈进群聊——群聊按成员开关（IB 总开关＋该成员 beyond.on）注入与 1对1 完全同一份 _ibBeyondInstrM 常量块（System 段，开关不变则字节不变、缓存前缀稳定）与 buildBeyondTail/_bxInboxTail 数据块（走末条用户消息，零缓存代价），提示词零改动；群聊回复补挂 procIbOps，动作成败经 _gwFeedQ 在群内回传；ws_beyond_view 属确认管线，群聊维持不执行。④自动发布改轮转——ibAutoTick 新增 ibf_rr 记账，本次扫描从上次被选中那位的下一位开始；定时推送径的发动态同步记账。⑤定时推送提醒治理——ib_hb_rmday 按日记账：同一位 AI 每天至多主动提醒 1 次日程/节日，其余推送落回普通开口；_hbFireFor 普通开口补带当前时间与【今天与临近的日子】日历背景参考（知道就行、不主动播报），撞车判定前移到便笺写入之前。⑥版本联动 v122-p。 -->
 <meta name="referrer" content="no-referrer">
 <!-- v99-m 任务1（部署到 PWA 后的隐私）：CSP——禁止加载任何外部脚本与样式，从浏览器层面根治「在线渠道自动注入统计信标」（文件顶部的净化哨兵此前只能在信标节点插进 DOM 之后再删掉，属于事后补救）。connect-src 保持放开，否则 AI 接口会被一并挡下。v100-m：按用户要求恢复全站原字体，故在 style-src / font-src 单独放行 Google Fonts 两个域名——这是白名单里仅有的第三方来源，且只允许样式表与字体文件，脚本仍然一律禁止。 -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src * data: blob:; media-src * data: blob:; connect-src * data: blob:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
@@ -3549,6 +3550,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>/* v104-m：删除随邮箱一起粘贴进来的 Cloudflare email-decode 死引用（路径不存在，独立部署下每次加载都 404） */</script><script>
 'use strict';
 const SEC_RENDER={};/* v68-m f1：分区渲染注册表——声明前移到脚本最顶端。v67-m 在 Visual 段注册 visual:main 时早于原声明（const TDZ，ReferenceError），整块脚本解析即崩、全站只剩占位符打不开。 */
+var _gwFeedQ=[];/* v122-p：#1 回传信箱补建——ws_loc/ws_weather/ws_phone/AI付 的调取结果暂存于此、随下一条消息回传给 AI。此前该变量从未声明，严格模式下 5 处投递/取件全部抛 ReferenceError 并被 try 静默吞掉，权限与数据都正常、AI 却始终收不到结果 */
 /* ═══════════ 与电脑版一致的数据层 ═══════════ */
 const DB_NAME='InternalBeyondDB',DB_VER=15;/* v72-m：+feed（Internet Beyond 动态流），两端同轮 14→15 */
 const IB_STORES=['posts','categories','about','music','apiSettings','chatMessages','letters','apiConfigs','groups','blogComments','memories','chatThreads','chatSummaries','uploadedFiles','blogAnnotations','projects','projectFiles','autoMemory','calEvents','calNotes','calLedger','feed'];
@@ -4336,7 +4338,7 @@ function mdSoften(text){
 }
 
 /* ═══════════ 电脑版工作台指令的宽容解析（展示 + ws_tool 可执行）═══════════ */
-const WS_OPEN_RE=/<ws_(help|project|read|create|edit|run|tool|gen_image|make_docx|make_pdf|make_xlsx|ask|mem_search|mem_write|cal_add|cal_edit|cal_del|cal_meet|cal_list|beyond_view|post|comment|repost|sig|music|weather|loc|beyond_inbox|search|ctx)\b([^>]*)>|```file:([^\n]+)\n/gi;/* v74-m r5：+mem_write */
+const WS_OPEN_RE=/<ws_(help|project|read|create|edit|run|tool|gen_image|make_docx|make_pdf|make_xlsx|ask|mem_search|mem_write|cal_add|cal_edit|cal_del|cal_meet|cal_list|beyond_view|post|comment|repost|sig|music|weather|loc|phone|beyond_inbox|search|ctx)\b([^>]*)>|```file:([^\n]+)\n/gi;/* v74-m r5：+mem_write */
 function wsAttr(attrs,name){
   const s=String(attrs||'');
   let m=s.match(new RegExp(name+'\\s*=\\s*"([^"]*)"','i'));
@@ -4383,7 +4385,7 @@ function segmentAiText(text){
     else if(tag==='post'){op.vis=wsAttr(attrs,'vis');op.img=wsAttr(attrs,'img')}
     else if(tag==='comment'){op.pid=wsAttr(attrs,'id')}
     else if(tag==='repost'){op.pid=wsAttr(attrs,'id')}/* v84-m r3 */
-    else if(tag==='sig'||tag==='music'||tag==='weather'||tag==='loc'){/* v83-m r2：社交圈/播放器/天气/定位标签也进最终渲染折叠卡——procIbOps 剥离前的窗口期不再裸奔原文（任务 1） */}
+    else if(tag==='sig'||tag==='music'||tag==='weather'||tag==='loc'||tag==='phone'){/* v122-p：#2 +phone——最终渲染期不再裸奔原文；v83-m r2：社交圈/播放器/天气/定位标签也进最终渲染折叠卡——procIbOps 剥离前的窗口期不再裸奔原文（任务 1） */}
     else if(tag.indexOf('cal_')===0){op.calId=wsAttr(attrs,'id');op.calKind=wsAttr(attrs,'kind');op.date=wsAttr(attrs,'date');op.title=wsAttr(attrs,'title');op.end=wsAttr(attrs,'end');op.note=wsAttr(attrs,'note')}
     else if(tag==='search'){op.q=wsAttr(attrs,'q')||wsAttr(attrs,'query')||body.trim();op.path=wsAttr(attrs,'path')}
     else if(tag==='ctx'){op.path=wsAttr(attrs,'path');op.line=wsAttr(attrs,'line');op.span=wsAttr(attrs,'span')}
@@ -5506,6 +5508,8 @@ async function _hbNoteTry(cfgArg){/* fix-r4：定时推送动作之二——有�
     var _t0=Date.now();/* v121-p：#3 撞车对账基线 */
     var blk='';try{blk=await buildCalBlock(cfg)}catch(e){}
     if(!blk)return false;
+    var _rdT=ymd(new Date()),_rdM={};try{_rdM=JSON.parse(localStorage.getItem('ib_hb_rmday')||'{}')||{}}catch(e){}
+    if(_rdM[cfg.id]===_rdT)return false;/* v122-p：#5 提醒配额——同一位 AI 每天至多主动提醒 1 次日程/节日，之后的推送落回普通开口；普通开口自带日历背景参考（见 _hbFireFor），TA 知道就行、不再反复播报，日程周不再饿死普通聊天 */
     var pm=[false,false];try{pm=calPerm(cfg.id)}catch(e){}
     var ctx='';if(cfg.relationship)ctx+='你和对方的关系是：'+cfg.relationship+'。\n';
     var _canNote=pm[1]&&blk.indexOf('〔可留笺〕')!==-1,_addNote=pm[1]&&!_canNote&&blk.indexOf('〔今日已留')!==-1;/* v121-p：#3 留笺任务只在配额允许时下达——配额用尽时明说，AI 不再被静默拒绝还坚持声称留了 */
@@ -5517,13 +5521,14 @@ async function _hbNoteTry(cfgArg){/* fix-r4：定时推送动作之二——有�
     var notes=[];t=t.replace(/<cal_note\b([^>]*)>([\s\S]*?)<\/cal_note\s*>/gi,function(_,at,body){notes.push({item:wsAttr(at,'item'),body:String(body||'').trim()});return ''}).trim();
     var _dg=t.toLowerCase().lastIndexOf('<cal_note');/* v120-p：#2 未闭合标签打捞——电脑端「<600 剪除」守卫同款；正文完整（≥10 字）则照常尝试入库，残缺标签不再整段裸奔进聊天 */
     if(_dg!==-1){var _fr=t.slice(_dg);if(_fr.length<600&&!/<\/cal_note\s*>/i.test(_fr)){var _fm=_fr.match(/<cal_note\b([^>]*)>([\s\S]*)$/i);if(_fm&&notes.length<2){var _fb=String(_fm[2]||'').trim();if(_fb.length>=10)notes.push({item:wsAttr(_fm[1],'item'),body:_fb})}t=t.slice(0,_dg).replace(/\s+$/,'')}}
+    if(await _hbClash(cfg,_t0))return true;/* v122-p：#5 撞车判定前移到便笺写入之前——撞车即整条作废、便笺一并不写（原先先写便笺后判撞车，会出现「日历里凭空多一张便笺但 TA 从没提过」） */
     var _nOk=0,_nErr='';
     for(var i2=0;i2<notes.length&&i2<2;i2++){try{var _nr=await _mCalNoteExec(cfg,notes[i2].item,notes[i2].body);if(_nr&&_nr.ok)_nOk++;else if(_nr&&!_nErr)_nErr=String(_nr.detail||'')}catch(e){if(!_nErr)_nErr=String(e&&e.message||e)}}
     if(notes.length&&!_nOk){t=(t?t+'\n':'')+'（便笺未写入：'+(_nErr||'格式或事项不匹配').slice(0,60)+'）'}else if(_nOk){try{toast('已在日历留下便笺')}catch(e){}}/* v117-p：#5 写库失败不再静默 */
     if(!t){var t2=blk.split('\n')[1]||'有临近的日程要留意。';t='（提醒）'+t2}
-    if(await _hbClash(cfg,_t0))return true;/* v121-p：#3 撞车即弃——用户正在说话，这条日程提醒静默作废（便笺如已写入仍保留） */
     var am={id:'msg_'+Date.now()+'_hn',role:'assistant',content:t.slice(0,600),friendId:cfg.id,senderName:cfgName(cfg),timestamp:Date.now(),proactive:true};
     await dbPut('chatMessages',am);
+    try{var _rdS={};_rdS[cfg.id]=_rdT;for(var _rk in _rdM){if(_rdM[_rk]===_rdT)_rdS[_rk]=_rdT}localStorage.setItem('ib_hb_rmday',JSON.stringify(_rdS))}catch(e){}/* v122-p：#5 提醒按日记账——只在消息真正写入后计数，且只保留今天的记录，键不膨胀 */
     if(_activeCfg&&_activeCfg.id===cfg.id&&(typeof _activeThread==='undefined'||!_activeThread)){_msgs.push(am);var bx=convEl('cv-msgs');bx.appendChild(buildMsgEl(am,_msgs[_msgs.length-2]||null));bx.scrollTop=bx.scrollHeight}
     try{procMemOps(cfg,am)}catch(e){}try{procIbOps(cfg,am)}catch(e){}/* v121-p：#4.2 同上——cal_note 已在上方剥离执行，不会重复 */
   try{_tmCollapseAll()}catch(e){}/* v97-m 任务3 */
@@ -5783,7 +5788,7 @@ function bindImgTaps(root){
       document.getElementById('imgview').classList.add('show')});
   });
 }
-const WS_META={help:['','ICode Skill'],project:['','建项目'],read:['','读文件'],search:['','检索工作区'],ctx:['','读取上下文'],create:['','建文件'],edit:['','改文件'],run:['','跑代码'],gen_image:['','生成图片'],make_docx:['','生成 Word'],make_pdf:['','生成 PDF'],make_xlsx:['','生成表格'],tool:['','调用工具'],ask:['','选项卡'],mem_search:['','检索记忆库'],mem_write:['','写入记忆库'],cal_add:['','写入日历'],cal_edit:['','修改日历'],cal_del:['','移除日程'],cal_meet:['','更正纪念日'],cal_list:['','查询日程'],beyond_view:['','查看动态'],post:['','发布动态'],comment:['','评论动态'],repost:['','转发动态'],sig:['','更新签名'],music:['','播放器'],weather:['','天气'],loc:['','定位'],beyond_inbox:['','查询互动收件箱']};/* fix-r3：跨端历史兼容——电脑端专属取数标签在手机端渲染为卡片而非原文 *//* v49h-m：操作卡去 emoji，与电脑端一致靠左侧竖杠与文字标识 */
+const WS_META={help:['','ICode Skill'],project:['','建项目'],read:['','读文件'],search:['','检索工作区'],ctx:['','读取上下文'],create:['','建文件'],edit:['','改文件'],run:['','跑代码'],gen_image:['','生成图片'],make_docx:['','生成 Word'],make_pdf:['','生成 PDF'],make_xlsx:['','生成表格'],tool:['','调用工具'],ask:['','选项卡'],mem_search:['','检索记忆库'],mem_write:['','写入记忆库'],cal_add:['','写入日历'],cal_edit:['','修改日历'],cal_del:['','移除日程'],cal_meet:['','更正纪念日'],cal_list:['','查询日程'],beyond_view:['','查看动态'],post:['','发布动态'],comment:['','评论动态'],repost:['','转发动态'],sig:['','更新签名'],music:['','播放器'],weather:['','天气'],loc:['','定位'],phone:['','手机状态'],beyond_inbox:['','查询互动收件箱']};/* fix-r3：跨端历史兼容——电脑端专属取数标签在手机端渲染为卡片而非原文 *//* v49h-m：操作卡去 emoji，与电脑端一致靠左侧竖杠与文字标识 */
 var WS_ICON={
   folder:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h3.17a2 2 0 0 1 1.41.59l1.42 1.41h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5z"/></svg>',
   file:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6l-4-4z"/><path d="M12 2v4h4"/></svg>',
@@ -5808,6 +5813,7 @@ WS_ICON.make_docx=WS_ICON.opfile;WS_ICON.make_pdf=WS_ICON.opfile;WS_ICON.make_xl
 WS_ICON.help=WS_ICON.read;
 WS_ICON.beyond_view='<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.6" r="2.3"/><path d="M2.4 13a3.6 3.6 0 0 1 7.2 0"/><path d="M10.2 3.9a2.3 2.3 0 0 1 0 3.5"/><path d="M11 9.6a3.6 3.6 0 0 1 2.4 3.4"/></svg>';/* v76-m r7：Beyond 双人剪影 16 栅格 */
 WS_ICON.loc='<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s-4.4-3.6-4.4-6.9a4.4 4.4 0 1 1 8.8 0C12.4 10.4 8 14 8 14z"/><circle cx="8" cy="7" r="1.6"/></svg>';/* v83-m r7：定位卡图标 */
+WS_ICON.phone='<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4.6" y="1.8" width="6.8" height="12.4" rx="1.5"/><path d="M7.1 12h1.8"/></svg>';/* v122-p：#2 手机状态卡图标 */
 function wsOpCard(op,res){
   const meta=WS_META[op.type]||['',op.type];
   const d=document.createElement('div');
@@ -5842,7 +5848,7 @@ function wsOpCard(op,res){
     else if(op.type==='edit')title=okF?'已编辑文件':'编辑失败';
     else if(op.type==='run'){title=!okF?'脚本运行失败':'运行脚本'}
     else if(op.type==='gen_image'){title=!okF?'生成图像失败':(res&&res.dataUrl?('已生成图像'+((res.path)?'（已存入 ICode）':'')):'生图请求')}
-    else if(op.type==='search'||op.type==='ctx'||op.type==='mem_search'||op.type==='mem_write'||op.type==='beyond_view'||op.type==='post'||op.type==='comment'||op.type==='repost'||op.type==='sig'||op.type==='music'||op.type==='weather'||op.type==='loc'||op.type.slice(0,4)==='cal_'){title=(res&&res.label)||meta[1]}/* v74-m r1：进阶指令卡标题此前误落「已读取文件」分支——改用执行结果 label */
+    else if(op.type==='search'||op.type==='ctx'||op.type==='mem_search'||op.type==='mem_write'||op.type==='beyond_view'||op.type==='post'||op.type==='comment'||op.type==='repost'||op.type==='sig'||op.type==='music'||op.type==='weather'||op.type==='loc'||op.type==='phone'||op.type.slice(0,4)==='cal_'){title=(res&&res.label)||meta[1]}/* v74-m r1：进阶指令卡标题此前误落「已读取文件」分支——改用执行结果 label */
     else title=okF?'已读取文件':'读取失败';
     sub=dtl;
     if((op.type==='search'||op.type==='ctx')&&res&&res.detail)sub=res.detail;/* v88-m 任务④：命中数/行号进副标 */
@@ -8324,6 +8330,8 @@ async function genReplyGroup(pcfg){
         if(gSum)tails.push('【对话历史备忘（此为后台参考信息，不要向对方复述或提及此段内容的存在）】\n'+gSum);
         if(g.memoryEnabled&&mems.length){try{const mb=buildMemBlock(mems,cfg.id,await loadMS(),undefined,undefined,lastTxt);if(mb)tails.push(mb)}catch(e){}}/* v88-m：群聊同样按当前消息加权 */
         if(amBlock&&amBlock.tail)tails.push(amBlock.tail);
+        try{if(cfg&&cfg.beyond&&cfg.beyond.on&&await _ibfMaster()){let btG=await buildBeyondTail(cfg);if(btG){if(btG.length>5500)btG=btG.slice(0,5500)+'\n（清单超出预算已截断——需要完整读某条请用 <ws_beyond_view/>）';tails.push(btG);const _ibxG=await _bxInboxTail(cfg);if(_ibxG)tails.push(_ibxG)}}}catch(e){}/* v122-p：#3 群聊同样携带动态清单与签名资料——数据块走末条用户消息（零缓存代价），与 1对1 同口径 */
+        try{if(_gwFeedQ.length){const _gqG=_gwFeedQ.filter(x=>x.fid===cfg.id);_gwFeedQ=_gwFeedQ.filter(x=>x.fid!==cfg.id);if(_gqG.length)tails.push('【调取结果】\n'+_gqG.map(x=>x.text).join('\n'))}}catch(e){}/* v122-p：#3 群内动作成败同样回传给发起动作的那位成员 */
         if(tails.length){/* v87-m 语义反序（群聊）：同 1对1 */
           for(let i=messages.length-1;i>=0;i--){if(messages[i].role==='user'){messages[i].content=_IB_TAIL_HEAD+tails.join('\n\n')+_IB_TAIL_USER+messages[i].content;break}}
         }
@@ -8332,6 +8340,7 @@ async function genReplyGroup(pcfg){
         await loadMP();const pa=mpAi(cfg);
         /* v87-m：群聊路径不执行工作区/生图标签（procToolOps 仅 1对1 调用），移除两块能力宣告以免许诺落空；选项卡为纯 UI 保留 */
         if(await _askGlobalGetM())sysContent+=_ASK_INSTR_BLOCK;/* v66-m：与电脑端共用 askGlobal */
+        try{if(cfg&&cfg.beyond&&cfg.beyond.on&&await _ibfMaster())sysContent+='\n\n'+await _ibBeyondInstrM(cfg)}catch(e){}/* v122-p：#3 社交圈指令进群聊——与 1对1 完全同一份常量块、同一组开关（IB 总开关＋该成员 beyond.on）整块注入；开关不变则 System 字节不变，缓存前缀稳定；提示词零改动 */
         /* v89-m：群聊联网搜索边界已按用户决定移除 */
         sysContent+=_IB_PERSONA_LOCK;/* v87-m 人格收束（群聊） */
         const r=await callAIC(gc,messages,sysContent,onDelta,myAc.signal,pa);/* v61-m t9：接入自动续写 */
@@ -8348,6 +8357,7 @@ async function genReplyGroup(pcfg){
   try{_tmCollapseAll()}catch(e){}/* v97-m 任务3 */
         roundExtras.push(am);
         procMemOps(cfg,am);
+        try{procIbOps(cfg,am)}catch(e){}/* v122-p：#3 群聊回复同样执行社交圈标签（发布/评论/转发/签名/留笺等；ws_beyond_view 走确认管线，群聊维持不执行——动态清单已随消息注入，通常无需再查） */
       }catch(err){
         if(err&&err.name==='AbortError'){
           if(accT.trim()){
@@ -9927,7 +9937,7 @@ function _orientApply(){try{
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')});
   setTimeout(function(){try{if(window.IBNative&&window.IBNative.available){var _bg=$('pres-bg');var _row=_bg&&_bg.closest('.tog');if(_row)_row.style.display=''}}catch(e){}},1200);/* v116-p：壳内显露「后台 Presence（App）」开关（桥在文末激活，故延时探测；浏览器 / PWA 保持隐藏） */
 })();
-var IB_VER='v121-p',IB_VER_DATE='2026-08-18';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
+var IB_VER='v122-p',IB_VER_DATE='2026-08-18';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
@@ -13233,14 +13243,17 @@ async function ibAutoTick(trigger){
     await loadCfgs();
     var gapMs=_ibGapMs(ib),now=Date.now();/* v121-p：#4.1 */
     var cands=(_cfgs||[]).filter(function(c){return c&&c.apiKey&&c.beyond&&c.beyond.on&&c.beyond.post!==false});
+    var _rr='';try{_rr=localStorage.getItem('ibf_rr')||''}catch(e){}
+    var _st=0;for(var _j=0;_j<cands.length;_j++){if(cands[_j].id===_rr){_st=_j+1;break}}/* v122-p：#4 轮转——本次扫描从「上次被选中那位」的下一位开始；原先永远从队首取人，排在后面的好友长期轮不到发动态 */
     for(var i=0;i<cands.length;i++){
-      var c=cands[i];
+      var c=cands[(_st+i)%cands.length];
       var last=0,tried=0;
       try{last=parseInt(localStorage.getItem('ibf_last_'+c.id))||0}catch(e){}
       try{tried=parseInt(localStorage.getItem('ibf_try_'+c.id))||0}catch(e){}
       if(now-last<gapMs)continue;
       if(now-tried<30*60000)continue;/* 半小时防重试风暴 */
       try{localStorage.setItem('ibf_try_'+c.id,String(now))}catch(e){}
+      try{localStorage.setItem('ibf_rr',c.id)}catch(e){}/* v122-p：#4 轮转记账（被选中即记，成败都轮到下一位） */
       _ibfAutoOnce(c,ib).catch(function(){});
       break;/* 每次触发最多一位 */
     }
@@ -13267,11 +13280,12 @@ async function _hbFireFor(cfg,o){try{/* v115-m：主动开口生成（原模块�
   var _t0=Date.now();/* v121-p：#3 撞车对账基线 */
   _hbLastFire=Date.now();
   var about=null;try{about=await loadAbout()}catch(e){}
-  var ctx='';
+  var ctx='当前时间：'+new Date().toLocaleString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long',hour:'2-digit',minute:'2-digit'})+'。\n';/* v122-p：#5 主动开口先知道「今天是什么日子」 */
   if(cfg.relationship)ctx+='你和对方的关系是：'+cfg.relationship+'。\n';
   var _seal=(cfg.sealTimestamp||0);/* v117-p：#6 封档线之上不再进定时推送/自动发布上下文 */
   var hist=[];try{hist=(await dbGetByIndex('chatMessages','byFriend',cfg.id)).filter(function(m){return !m.threadId&&(m.timestamp||0)>_seal}).sort(function(a,b){return (a.timestamp||0)-(b.timestamp||0)}).slice(-8)}catch(e){}
   if(hist.length){ctx+='\n【最近的聊天记录】\n';hist.forEach(function(m){ctx+=(m.role==='user'?((about&&about.name)||'用户'):cfgName(cfg))+'：'+String(m.content||(m.voice?'[语音消息]':'')).slice(0,120)+'\n'})}/* v73-m r4 */
+  try{var _cbF=await buildCalBlock(cfg);if(_cbF)ctx+='\n【今天与临近的日子｜背景参考】知道今天是什么日子、什么日子快到了就够了；除非对方先提起或话头确实自然，不要主动把话题引到这些日程上，更不要逐条播报。\n'+_cbF+'\n'}catch(e){}/* v122-p：#5 普通主动开口携带日历背景——提醒被配额限流后 TA 仍然心里有数；便笺协议随块附带，日常主动开口也能留笺 */
   var mins=Math.max(0,parseInt(o.sinceMin)||0);
   var whereLine=o.reason==='wake'?'对方刚点开你的消息通知，回到了应用里。':(o.inConv?'对方仍停留在聊天界面。':'对方在应用里，但没有停在你们的聊天界面。');
   ctx+='\n你们的对话已经安静了大约 '+mins+' 分钟，'+whereLine+'\n请自然地主动开口。你可以只发一条，也可以像真人那样连发 2–3 条短消息：分条时在每条之间单独占一行写 ---（三个半角减号），不要编号。直接输出消息内容。';/* v73-m r4 → v115-m 场景分句 → v117-p：#10 允许连发 */
@@ -13362,6 +13376,7 @@ setInterval(async function(){
         var last=0;try{last=parseInt(localStorage.getItem('ibf_last_'+cfg.id))||0}catch(e){}
         if(now-last>=_ibGapMs(ib)){/* v121-p：#4.1 */
           try{localStorage.setItem('ibf_try_'+cfg.id,String(now))}catch(e){}
+          try{localStorage.setItem('ibf_rr',cfg.id)}catch(e){}/* v122-p：#4 定时推送径的发动态同样计入轮转 */
           _ibfAutoOnce(cfg,ib).catch(function(){});
           return;
         }
