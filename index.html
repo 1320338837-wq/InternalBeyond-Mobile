@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- InternalBeyond Mobile v142-p · 纪念卡环线与桌面仪表轮（站点纪念日手动值修复 / 双环流光与名字CP化 / Token 统计挂件三款式 / 导航区新增社交圈 / 桌面图标改名 / 磨砂气泡双色重调） -->
+<!-- v142-p 修订单：①站点相遇纪念日不吃手动值（BUG）——设置 → Calendar「站点纪念日」与电脑端导入的 meetSet.__ib__/__ib 在纪念卡里从未被读取，_caBuildHeros 的站点卡恒按「全体最早聊天」推算（怎么设、怎么导都不变的根因；每位 AI 的手动值本就生效）；现手动值优先、无手动值沿用旧推算，口径对齐电脑端 meetIsoIB。②相遇纪念卡重绘——头像并排改固定 236×74 轨道盘：底层 SVG 画爱心主线（2px 主笔 + 5.5px 同色浅晕），顶层 SVG 沿「左头像环整圈 → 爱心 → 右头像环整圈 → 爱心折返」的闭合轨道跑彗星流光（亮头 + 拖尾双层、pathLength 归一、8.4s 匀速），轨道半径 36.2 正落在头像强调色描边带上、且流光层在头像之上不被描边盖住；减少动效时双层流光隐藏；≤380px 不再缩头像（236px 盘任何机型都放得下）。名字行 CP 化：按字符集给两个名字分派 n-cjk / n-lat——中文加字重与 0.14em 疏排，西文改站内已内嵌的 Cormorant Garamond 600（零新增载荷）放大 1.16em，「&」改衬线斜体，中西混排不再突兀。③Desk 新挂件「Token 仪表盘」——默认关闭，Visual → 桌面「Token 仪表盘挂件」四档：关闭 / 仪表环（缓存命中率圆环＋今日 Token 居中）/ 七日柱（近 7 天输入+输出，今日高亮）/ 极简（今日大数字＋一行明细）；与 Data 页 Token 分区共用同一份 ibTokenStats 台账与单价表（有模型未填单价时费用显 ≥），_tkRecord 落账即刷新、进 Desk / 换款式各刷一次；挂件可长按拖排、设置 → Desk 可隐藏，款式键 wgTk 入主题方案。④导航区 Memory 之后新增「Circle 社交圈」——图标沿用桌面社交圈图标（双人剪影），data-page=beyond 与桌面图标进的是同一页；.dw-item 统一绑定与 TITLES.beyond 均已在册，纯静态一条、零 JS 改动。⑤桌面图标改名 Circle→社交圈（sb-t 与 DK_NAMES 同步；主页下坞 Friends 不动）。⑥磨砂黑 / 磨砂白 / 磨砂灰气泡重调——旧配方我方与 TA 同一底色、仅靠一圈强调色描边区分；现改 iOS 双色式：同一材质家族里 TA 浅我方深（磨砂白配冷调云蓝、磨砂黑配石墨蓝、磨砂灰配深冷灰，明暗主题各一套），描边改同族发丝线并加内侧高光，彻底撤掉强调色描边；液态玻璃、文字色逻辑与毛玻璃视窗门控（.ibbf）零改动；气泡分区 hint 同步改写。⑦GUIDE：日历 App 连线描述、桌面分区挂件清单、Desk 图标清单、社交圈入口说明随改动同步。⑧版本联动 v142-p。原生工程零改动：本轮全部为 index 层（DOM/CSS/JS），沿用现工程直接替换 index 即可。 -->
 <!-- InternalBeyond Mobile v141-p · 名片连线与中转适配轮（相遇纪念卡爱心牵线 / 名字完整显示 / 去掉「每年重复」 / 自定义服务商中转站适配 / 暗色遮罩加深 / GUIDE 中转站说明与 Fork 部署教程） -->
 <!-- v141-p 修订单：①相遇纪念卡——头像间的连杆音符撤下，改为一条单色低饱和蓝的连续线：左尾 → 底部交叉上行右叶 → 顶部凹口 → 左叶 → 底部交叉 → 右尾，视觉上即一笔画成的爱心牵线；不做渐变，只加一段沿线滑动的高亮流光（pathLength 归一 + dashoffset），减少动效时流光隐藏；线尾伸入头像环下，头像 z-index 压在线上。②名字必须完整——.ca-names 去掉 66% 截断与省略号，渲染后 _caFitNames 按容器宽逐级缩字号（下限 0.55 倍），仍放不下才允许折行；旋转 / 改宽时重算；「与 … 的相遇纪念日」一行同样改为折行不截断。③日期后的「· 每年重复」只去显示字样，重复口径不变。④自定义服务商（中转站）适配——保存时整理接口地址（补 https://、去空白与多余斜杠、裸域名或 /vN 结尾补 /chat/completions）；报文格式按地址自动识别（/messages → Anthropic，generateContent → Gemini，其余 OpenAI 兼容），callAI / callAIC 同步；自定义 Anthropic 格式不再带 anthropic-dangerous-direct-browser-access 头；拉取模型列表改为按地址推导一组候选（…/models、/v1/models、Anthropic / Gemini 风格、new-api 公开模型表）依次探测，首个命中即用；解析兼容 data[] / models[] / result[] / model_list[] / 嵌套 data.data / 字典映射 / model_name / 纯字符串；列表 >10 个按模型家族分组并提供关键词筛选；失败提示区分 401/403、网页而非接口、CORS、超时。内置服务商链路不动。⑤暗色主题背景遮罩加暗加黑一档（0.40/0.68 → 0.50/0.77，底色偏黑）。⑥GUIDE——接口教程「方式二 · 中转站」改为详尽说明；PWA 部署新增「Fork 仓库部署与 Sync fork 更新」教程；模块页日历 App 描述同步。⑦版本联动 v141-p。 -->
 <!-- InternalBeyond Mobile v140-p · 名片与修缮轮（相遇纪念卡重做 / Lettre du diable 必触发＋警告弹窗 / 抽屉天气占位与解耦 / 开关点击加固 / 拉取模型列表） -->
@@ -2027,6 +2029,7 @@ raf=requestAnimationFrame(frame);
     <div class="dw-item" data-page="chat" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-5 4z"/></svg></span><span class="dw-en">Chat</span><span class="dw-cn">对话</span></div>
     <div class="dw-item" data-page="letters" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg></span><span class="dw-en">Letters</span><span class="dw-cn">邮局</span></div>
     <div class="dw-item" data-page="memory" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H5.5A1.5 1.5 0 0 1 4 15.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h4.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg></span><span class="dw-en">Memory</span><span class="dw-cn">记忆库</span></div>
+    <div class="dw-item" data-page="beyond" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.4" r="3.5"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 5.7a3.5 3.5 0 0 1 0 5.4"/><path d="M16.6 14.4a5.4 5.4 0 0 1 3.6 5.2"/></svg></span><span class="dw-en">Circle</span><span class="dw-cn">社交圈</span></div><!-- v142-p：#4 导航区 Memory 后新增社交圈——图标沿用桌面社交圈图标，data-page=beyond 与桌面图标同一页；.dw-item 统一委托绑定与 TITLES.beyond 均已在册，零 JS 改动 -->
     <div class="dw-item" data-page="icode" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><path d="M12 3.5v8.5"/><path d="M8.5 8.5 12 12l3.5-3.5"/><path d="M4 13.5v3.9A2.6 2.6 0 0 0 6.6 20h10.8a2.6 2.6 0 0 0 2.6-2.6v-3.9"/></svg></span><span class="dw-en">ICode</span><span class="dw-cn">工作区</span></div><!-- v74-m r2：ICode 前移至 API 之前 -->
     <div class="dw-item" data-page="api" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.4" r="3.5"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 5.7a3.5 3.5 0 0 1 0 5.4"/><path d="M16.6 14.4a5.4 5.4 0 0 1 3.6 5.2"/></svg></span><span class="dw-en">API</span><span class="dw-cn">接口设置</span></div>
     <div class="dw-item" data-page="diy" style="--dh:212"><span class="dw-med"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5.4 5L4 16.6V20h3.4l5.1-5.1a4 4 0 0 0 5-5.4l-2.6 2.6-2.4-2.4z"/></svg></span><span class="dw-en">DIY</span><span class="dw-cn">创意工坊</span></div>
@@ -2074,7 +2077,7 @@ raf=requestAnimationFrame(frame);
         <p><strong>视觉设置</strong>：抽屉底部 Setting 进入。可自定义全站与聊天背景图及模糊度、调整全局字号与文字投影，并把当前整套视觉素材存为方案槽（最多 4 套，一键回切）。视觉页底栏分「基础 / 文字 / 气泡 / 桌面」四个分区。<!-- v101-m 任务3：整墙分段重排 --></p>
         <p><strong>文字分区</strong>：顶部「全站色调」可整套更换界面主色（随壁纸取色，或月白 / 石灰 / 墨黑三档中性灰），覆盖图标发光、底坞、抽屉图标、便笺、进度槽与我方气泡等；其下可分别指定导航区（抽屉 / 顶栏 / 底坞）、Desk 挂件、桌面图标（含线条与发光）、Blog 页与 Chat 页（含会话面板）的文字颜色（黑 / 白 / 灰）。</p>
         <p><strong>气泡分区</strong>：为聊天气泡提供液态玻璃、磨砂白、磨砂黑、磨砂灰四种材质，并可单独调整气泡文字深浅。</p>
-        <p><strong>桌面分区</strong>：为桌面图标与挂件卡更换液态玻璃 / 磨砂 / 墨玻璃材质；为音乐、便笺、日程挂件换尺寸（整行 / 半宽 / 小方块）；可加开独立时钟挂件，切换英雄区款式（iOS 居中款撤掉玻璃底板，时刻直接落在壁纸上），并控制锁屏时刻的自适应取色；Deco 卡负责「桌面布局」（分页桌面 / 经典滚动）切换与装饰小组件的添加管理。</p><!-- v127-p 任务4：补分区新住户 -->
+        <p><strong>桌面分区</strong>：为桌面图标与挂件卡更换液态玻璃 / 磨砂 / 墨玻璃材质；为音乐、便笺、日程挂件换尺寸（整行 / 半宽 / 小方块）；可加开独立时钟挂件与 Token 仪表盘挂件（仪表环 / 七日柱 / 极简三款式，与 Data 页共用同一份用量台账与单价表），切换英雄区款式（iOS 居中款撤掉玻璃底板，时刻直接落在壁纸上），并控制锁屏时刻的自适应取色；Deco 卡负责「桌面布局」（分页桌面 / 经典滚动）切换与装饰小组件的添加管理。</p><!-- v127-p 任务4：补分区新住户 -->
         <p>手机端主题与视觉偏好独立于电脑端——电脑端不读也不写，随备份原样往返。</p>
       </div>
       <div class="g-sec">
@@ -2083,7 +2086,7 @@ raf=requestAnimationFrame(frame);
         <p><strong>系统与辅助</strong>：API 页 → Presence（定时推送）可设固定间隔或时段内随机触发，并可设勿扰时段（时段内暂停定时推送与自动发动态）。通知设置已并入 API 页 → Presence 下方：退到后台时按分档弹系统通知（需浏览器授权），停留在应用内则由顶部横幅提醒接手；每位 AI 是否参与定时推送，可在其配置页「主动消息」单独关闭。Home 设置 → Space → Display 提供竖屏方向锁与触控目标放大。<!-- v101-m 任务3：整墙分段重排 --></p>
         <p><strong>音乐（Desk 图标）</strong>：打开全屏听歌界面。黑胶唱片带唱臂——播放时唱臂落盘、唱片旋转，歌曲封面印在盘芯上并糊化为背景；左侧为大字歌名与逐句滚动歌词（当前歌曲页导入单个 .lrc / .srt / .vtt 会直接绑定；批量导入按文件名匹配）；下方是可拖进度条与五键控制（末位为播放队列），顶栏右上角「＋」添加音乐或歌词。</p>
         <p><strong>一起听</strong>：歌名右侧的小按钮。未配对时点它邀请一位 AI，选定后自动开启共享正在播放；配对后界面上方出现你和 TA 的头像对，下方实时累计一起听的时长，点头像对可「去聊天」或「结束一起听」。TA 会在对话中被告知你正与 TA 一起听这首歌，聊天里的听歌卡片也能一键跳回此界面。</p>
-        <p><strong>日历 App（Desk 图标）</strong>：照桌面端 Calendar 悬浮窗的日程页设计。顶部是你与 AI 的双人名片：两枚头像并排、由一条单色连线牵起（线条绕成一笔画的爱心，带流光），下方依次是「你 & TA」、Together for N days、相遇纪念日与周年倒计时；‹ › 切换本站与每位 AI（与本站那张右侧是站点图标）；下方日程按「今天 / 7 天内 / 之后 / 已过去」分组成卡片列表：每行左侧「日期叶」显示下一次发生的月 / 日并按类型着色（计划蓝、纪念与生日粉、备忘灰、相遇金），标题行右侧是倒计时胶囊，第二行以小胶囊列出类型 / 日期 / 重复 / 提醒 / 时间，备注单独成行；右上「＋」新建、点行编辑、点 ✕ 删除，与桌面月历挂件和 AI 的日历标签共用同一份数据。</p><!-- v139-p：#④ 随日程页重设计改写 -->
+        <p><strong>日历 App（Desk 图标）</strong>：照桌面端 Calendar 悬浮窗的日程页设计。顶部是你与 AI 的双人名片：两枚头像并排、由一条单色连线牵起（线条绕成一笔画的爱心；流光沿「头像环 → 爱心 → 另一枚头像环」的闭合轨道巡回，头尾相接），下方依次是「你 & TA」、Together for N days、相遇纪念日与周年倒计时；‹ › 切换本站与每位 AI（与本站那张右侧是站点图标）；下方日程按「今天 / 7 天内 / 之后 / 已过去」分组成卡片列表：每行左侧「日期叶」显示下一次发生的月 / 日并按类型着色（计划蓝、纪念与生日粉、备忘灰、相遇金），标题行右侧是倒计时胶囊，第二行以小胶囊列出类型 / 日期 / 重复 / 提醒 / 时间，备注单独成行；右上「＋」新建、点行编辑、点 ✕ 删除，与桌面月历挂件和 AI 的日历标签共用同一份数据。</p><!-- v139-p：#④ 随日程页重设计改写 -->
         <p><strong>底部分区栏</strong>：每个页面各自不同，用于在该页面内部切换分区。Home 页在 Desk 桌面、Space 名片与 Circle AI 名片三个面板间切换，设置从第四格进入。</p>
       </div>
       <div class="g-sec"><!-- v89-m 任务3：触屏手势总表（逐条对应代码内真实存在的手势，iOS / Android 通用） -->
@@ -2131,7 +2134,7 @@ raf=requestAnimationFrame(frame);
           <p><strong>蓝牙设备说明书</strong>：设置页 → 蓝牙设备，可为每台设备写一份说明书（设备是什么、各特征值对应什么功能、读写格式）。支持手动编辑、导入文本文档、从 ICode 工作区取文；按设备名（或地址）匹配，同名设备连接后自动注入给 AI，无需每轮手动发送。连 / 断一台配了说明书的设备会重建一次提示缓存，之后照常命中。<!-- v139-a·v137-p 任务2 --><!-- v136-p：②固定上限清单自设置卡迁入 --></p>
           <p><strong>语音消息</strong>：按住输入框右侧话筒按钮录音，松开发送，向上滑动 70px 取消（微信式）。配置了转写接口（API 页·工具分区）时自动附文字稿。</p>
           <p><strong>AI付</strong>：DIY 页 → MCP 分区 → AI付 开启并录入收款方后，AI 可用 &lt;ws_payreq/&gt; 发起一笔支付：聊天里出现 AI付 卡，你点「打开支付宝付款」亲手完成支付，再点「已完成支付」把结果回传给 TA。默认关闭；金额受单笔上限约束，收款方只能出自你的名单；每条回复的请求笔数上限默认 2，可在 AI付 卡内调整。<!-- v136-p：②路径与上限说明更新 --></p><!-- v97-m 任务7；v98-m 任务3：按拍板改用支付宝官方工具名「AI付」 -->
-          <p><strong>社交圈动态</strong>：Space（个人页）的动态分区与 Desk 的 Circle（社交圈）同属应用内社交圈。你可发文字动态、附至多 1 张配图与定位（需浏览器定位权限），正文中的链接自动可点；每条动态的 ⋮ 可改可见范围、连同评论存入记忆库、或删除。<!-- v101-m 任务5：文案精简分段 --></p>
+          <p><strong>社交圈动态</strong>：Space（个人页）的动态分区与 Desk 的社交圈图标同属应用内社交圈；侧边导航 Memory 之后也有「Circle 社交圈」入口，点按直达同一页。你可发文字动态、附至多 1 张配图与定位（需浏览器定位权限），正文中的链接自动可点；每条动态的 ⋮ 可改可见范围、连同评论存入记忆库、或删除。<!-- v101-m 任务5：文案精简分段 --></p>
           <p>获授权的 AI 能在对话里发布、评论与主动翻看动态（放行方式在其独立配置里选「需我确认」或「自动同意」）；开启配图后还能为自己的动态生成插图；开启「允许 TA 撰写签名」后，TA 还能更新自己资料卡上的个性签名（改动即时生效，你可随时改回）。</p>
           <p><strong>流式回复</strong>：AI 的回复以流式逐字呈现，可中途停止，已生成的部分会保留。</p>
           <p><strong>思考链</strong>：在 API 设置中开启。AI 回复前的思路笔记以可折叠文本块显示在气泡上方。</p>
@@ -2178,7 +2181,7 @@ raf=requestAnimationFrame(frame);
       <div class="g-sec"><!-- v127-p 任务4：分页桌面文档 -->
         <div class="g-name">Desk — 分页桌面</div>
         <p>Desk 像 iOS 主屏一样按页组织：每页钉满一屏、纵向不滚动，全部图标、挂件与装饰件按你的排序自动装页，装不下就顺延到下一页；左右滑动翻页，底部液态玻璃页标指示当前页位。<strong>第 1 页固定包含</strong>时钟英雄区、前八枚图标、月历与音乐播放器——任何屏幕高度都完整可见：空间不够时整页等比缩小（组件宽高同缩、比例不变，各页缩放一致），空间富余时按原始尺寸顶对齐、底部自然留白，与 iOS 主屏一致；其余条目严格按页高装页，装不下顺延后页。</p>
-        <p><strong>默认第 1 页</strong>：时钟英雄区、八枚常用图标（对话 / 信箱 / 记忆 / 日志 / Circle / 音乐 / 日历 / 设置）、月历长条与音乐播放器；工作区、数据、视觉、指南四枚工具图标与便笺、日程等排在第 2 页。屏幕较高的手机第 1 页可能自动多容纳一排。</p>
+        <p><strong>默认第 1 页</strong>：时钟英雄区、八枚常用图标（对话 / 信箱 / 记忆 / 日志 / 社交圈 / 音乐 / 日历 / 设置）、月历长条与音乐播放器；工作区、数据、视觉、指南四枚工具图标与便笺、日程等排在第 2 页。屏幕较高的手机第 1 页可能自动多容纳一排。</p>
         <p><strong>排列</strong>：长按任意条目拖动即可换位；拖到屏幕左右边缘悬停约半秒自动翻页，松手落在目标页。排序与显示 / 隐藏仍在设置 → Desk 统一管理，「恢复默认」一键回到出厂排列。</p>
         <p><strong>电脑 / 大屏</strong>：不止手滑——点底部圆点直接跳页，鼠标滚轮左右翻页，键盘 ← → 方向键翻页，按住鼠标左右拖拽同样翻页；鼠标悬停桌面时两侧还会浮现半透明的左右箭头按钮。</p><!-- v130 需求④：电脑端兜底 -->
         <p><strong>经典滚动</strong>：Visual → Deco 的「桌面布局」可切回上下滚动的老 Desk（含旧的 1–3 页装饰页逻辑），两种模式随时互切、互不丢数据。</p>
@@ -2477,7 +2480,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <button class="sb-app" data-page="letters" data-dk="app:letters"><span class="sb-ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.2 7.2l7.8 5.8 7.8-5.8"/></svg></span><span class="sb-t">信箱</span></button>
         <button class="sb-app" data-page="memory" data-dk="app:memory"><span class="sb-ic"><svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H5.5A1.5 1.5 0 0 1 4 15.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h4.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg></span><span class="sb-t">记忆</span></button>
         <button class="sb-app" data-page="blog" data-dk="app:blog"><span class="sb-ic"><svg viewBox="0 0 24 24"><path d="M5 4.5h11a2 2 0 0 1 2 2v13H7a2 2 0 0 1-2-2z"/><path d="M18 19.5H7.5a2.5 2.5 0 0 0 0 5H18"/></svg></span><span class="sb-t">日志</span></button>
-        <button class="sb-app" data-page="beyond" data-dk="app:beyond"><span class="sb-ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.4" r="3.5"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 5.7a3.5 3.5 0 0 1 0 5.4"/><path d="M16.6 14.4a5.4 5.4 0 0 1 3.6 5.2"/></svg></span><span class="sb-t">Circle</span><!-- v121-p：#4.3 桌面图标改名 Friends→Circle（它开的是社交圈） --></button><!-- v73-m r7：Beyond 标改双人剪影；v77-m r3：日历页眉栏（新建日程/日历管理）退役；v77-m r7：应用矩阵容器并入 sb-desk -->
+        <button class="sb-app" data-page="beyond" data-dk="app:beyond"><span class="sb-ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.4" r="3.5"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 5.7a3.5 3.5 0 0 1 0 5.4"/><path d="M16.6 14.4a5.4 5.4 0 0 1 3.6 5.2"/></svg></span><span class="sb-t">社交圈</span><!-- v142-p：#5 桌面图标改名 Circle→社交圈 --><!-- v121-p：#4.3 桌面图标改名 Friends→Circle（它开的是社交圈） --></button><!-- v73-m r7：Beyond 标改双人剪影；v77-m r3：日历页眉栏（新建日程/日历管理）退役；v77-m r7：应用矩阵容器并入 sb-desk -->
         <button class="sb-app" id="sb-musicapp" data-dk="app:player"><span class="sb-ic"><svg viewBox="0 0 24 24"><circle cx="8" cy="17" r="2.6"/><circle cx="17.5" cy="15" r="2.6"/><path d="M10.6 17V6.8l9.5-2.2V15"/></svg></span><span class="sb-t">音乐</span></button><!-- v99-m 任务9：音乐图标默认位次前移到「数据」与「视觉」之间，日历留在末位——默认排列即 DOM 顺序（deskApplyLayout 只在存档里有 order 时才覆盖），所以已经自己拖过顺序的用户不受影响 --><!-- v100-m：位置还原到 Circle 与日历之间——用户截图即基准（上一轮误挪到数据与视觉之间，Desk 第三行随之错位） -->
         <button class="sb-app" id="sb-calapp" data-dk="app:calendar"><span class="sb-ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3.2v3.4M16 3.2v3.4"/><path d="M7.5 13h2M11 13h2M14.5 13h2M7.5 16.5h2M11 16.5h2"/></svg></span><span class="sb-t">日历</span></button><!-- v91-m 任务2：日历 App 入口 -->
         <button class="sb-app" id="sb-setapp" data-dk="app:set"><span class="sb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.6v2.2M12 18.2v2.2M3.6 12h2.2M18.2 12h2.2M6.1 6.1l1.55 1.55M16.35 16.35l1.55 1.55M17.9 6.1l-1.55 1.55M7.65 16.35L6.1 17.9"/></svg></span><span class="sb-t">设置</span></button><!-- v127-p 任务2：第 12 枚图标「设置」——补齐 4×3；默认排位在常用 8 枚末位（页 1 第二排），点按直达设置。老用户存档没有 app:set 的 order，deskApplyLayout 会把它追加到既有排列末尾（页 2），拖回即可 -->
@@ -2529,6 +2532,10 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <span class="wgt-lab">Clock</span>
         <div class="cw-t" id="cw-t">--:--</div>
         <div class="cw-d" id="cw-d">—</div>
+      </div>
+      <div class="wgt tk-w dk-half" id="tk-wgt" data-dk="tk"><!-- v142-p：#3 Token 仪表盘挂件（默认关闭，Visual → 桌面选款式即开启；与 Data 页 Token 分区共用同一份 ibTokenStats 台账与单价表） -->
+        <span class="wgt-lab">Token</span>
+        <div class="tkw" id="tkw"></div>
       </div>
       <!-- v78-m r3：Health 挂件退役——DOM 整块下线；录入数据 _mp.health 与 API 页「健康数据注入」开关保留，渲染/录入 JS 因 DOM 缺位自然静默 -->
       </div><!-- /sb-desk v77-m r7 -->
@@ -2666,7 +2673,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
           <div class="uvseg" id="vz-bub"><button data-v="">默认</button><button data-v="glass">液态玻璃</button><button data-v="frostw">磨砂白</button><button data-v="frostb">磨砂黑</button><button data-v="gray">磨砂灰</button></div></div>
         <div class="uvrow last"><div class="uvr-h"><label>气泡文字</label></div>
           <div class="uvseg" id="vz-bubtx"><button data-v="">自动</button><button data-v="dark">深</button><button data-v="light">浅</button></div></div>
-        <p class="hint" style="margin:10px 0 0">液态玻璃直接透出聊天背景图，磨砂三款为 iOS 式毛玻璃；四款对明暗两主题分别配方，黑 / 白类背景图都能压住。我方气泡保留一圈强调色描边便于分辨；「自动」会按磨砂黑 / 白自动配浅深文字。</p>
+        <p class="hint" style="margin:10px 0 0">液态玻璃直接透出聊天背景图，磨砂三款为 iOS 式毛玻璃；四款对明暗两主题分别配方，黑 / 白类背景图都能压住。磨砂三款以同族深浅区分你我（TA 浅、你深，iOS 双色式、发丝描边），不再另加彩色描边；液态玻璃仍保留强调色描边便于分辨；「自动」会按磨砂黑 / 白自动配浅深文字。</p>
       </div>
     </div>
     <div class="psec" id="sec-visual-desk"><!-- v90-m 任务2/4/6：桌面图标与挂件材质、尺寸、时钟、英雄区、锁屏取色 -->
@@ -2692,9 +2699,12 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <div class="sc-t">Clock — 时钟挂件</div>
         <div class="uvrow"><div class="uvr-h"><label>开启与尺寸</label></div>
           <div class="uvseg" id="vz-ck"><button data-v="">关闭</button><button data-v="half">半宽 2×1</button><button data-v="low">半宽矮款</button><button data-v="full">整行</button></div></div>
-        <div class="uvrow last"><div class="uvr-h"><label>时钟款式</label></div>
+        <div class="uvrow"><div class="uvr-h"><label>时钟款式</label></div>
           <div class="uvseg" id="vz-ckst"><button data-v="">简约实字</button><button data-v="glass">玻璃字身</button></div></div>
         <p class="hint" style="margin:10px 0 0">独立于英雄区的桌面时钟：简约实字为 iOS 居中款，玻璃字身与锁屏时刻同一套字面；开启后出现在 Desk 末尾，可长按拖到任意位置、在设置 → Desk 里隐藏。</p>
+        <div class="uvrow last"><div class="uvr-h"><label>Token 仪表盘挂件</label></div>
+          <div class="uvseg" id="vz-tk"><button data-v="">关闭</button><button data-v="ring">仪表环</button><button data-v="bars">七日柱</button><button data-v="mini">极简</button></div></div><!-- v142-p：#3 -->
+        <p class="hint" style="margin:10px 0 0">今日用量仪表，三款任选：仪表环＝缓存命中率圆环＋今日 Token 居中；七日柱＝近 7 天输入+输出走势（今日高亮）；极简＝只留大数字与一行明细。与 Data 页 Token 分区同一份台账，费用按已填单价估算（有模型未填单价时显 ≥）；开启后出现在 Desk 末尾，可长按拖排、在设置 → Desk 里隐藏。</p>
       </div>
       <div class="set-card">
         <div class="sc-t">Hero — 英雄区</div>
@@ -4197,6 +4207,10 @@ function _vzCss(css,u){
          frostw:{l:['rgba(255,255,255,0.68)','rgba(255,255,255,0.6)'],d:['rgba(244,248,253,0.82)','rgba(255,255,255,0.5)'],blur:24},
          frostb:{l:['rgba(20,25,36,0.55)','rgba(255,255,255,0.16)'],d:['rgba(12,16,26,0.6)','rgba(200,218,244,0.14)'],blur:24},
          gray:{l:['rgba(128,138,156,0.3)','rgba(140,152,172,0.42)'],d:['rgba(120,132,154,0.24)','rgba(150,164,188,0.26)'],blur:22}};
+  var _BU={/* v142-p：#6 我方气泡双色配方（[底色, 发丝描边, 内侧高光]）——同材质家族里比 TA 深一档，iOS 式以色阶而非彩色描边分辨 */
+    frostw:{l:['rgba(206,224,244,0.78)','rgba(255,255,255,0.75)','rgba(255,255,255,0.8)'],d:['rgba(196,216,240,0.86)','rgba(255,255,255,0.6)','rgba(255,255,255,0.75)']},
+    frostb:{l:['rgba(46,60,84,0.62)','rgba(160,190,230,0.28)','rgba(200,222,250,0.22)'],d:['rgba(34,46,68,0.68)','rgba(170,198,236,0.26)','rgba(200,222,250,0.18)']},
+    gray:{l:['rgba(94,108,132,0.44)','rgba(210,222,240,0.4)','rgba(255,255,255,0.35)'],d:['rgba(88,102,128,0.4)','rgba(190,206,230,0.3)','rgba(255,255,255,0.22)']}};
   var bs=B[u.bubStyle];
   if(bs){
     /* v139-a·v137-p 任务4：材质按「谁在当气泡」分派——分段模式下 .m 是透明容器（.bs-msg），真正的气泡是每个 .bs-seg；
@@ -4204,7 +4218,9 @@ function _vzCss(css,u){
        .m.bs-msg 的 background:none 又只清底色不清毛玻璃，段落下方再铺一块磨砂矩形。三个症状同一根因。 */
     [['l','body:not(.theme-infernal)'],['d','body.theme-infernal']].forEach(function(p){var v=bs[p[0]];
       css.push(p[1]+' .m:not(.bs-msg),'+p[1]+' .m.bs-msg .bs-seg{background:'+v[0]+';border-color:'+v[1]+';text-shadow:none}');
-      css.push(p[1]+' .m.user{border-color:rgba(114,168,216,0.5)}');
+      var uv=(_BU[u.bubStyle]||{})[p[0]];/* v142-p：#6 磨砂三款走 iOS 双色；液态玻璃保持原描边逻辑 */
+      if(uv)css.push(p[1]+' .m.user:not(.bs-msg),'+p[1]+' .m.user.bs-msg .bs-seg{background:'+uv[0]+';border-color:'+uv[1]+';box-shadow:inset 0 1px 0 '+uv[2]+',0 4px 18px rgba(60,90,140,'+(p[0]==='d'?'0.22':'0.1')+')}');
+      else css.push(p[1]+' .m.user{border-color:rgba(114,168,216,0.5)}');
     });
     css.push('.m.bs-msg{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;text-shadow:none}');
     css.push('.m:not(.bs-msg),.m.bs-msg .bs-seg{-webkit-backdrop-filter:blur('+bs.blur+'px) saturate(1.4);backdrop-filter:blur('+bs.blur+'px) saturate(1.4)}');
@@ -4248,6 +4264,7 @@ function _vzApply(){var u=(_mp&&_mp.ui)||{};var b=document.body.classList;
   [['dk-os2',(u.deskLayout||'')!=='classic'],/* v127-p 任务2：分页桌面（默认开，经典滚动时摘除紧凑规格） */['vzm-half',u.wgMusic==='half'],['vzm-mini',u.wgMusic==='mini'],['vzn-full',u.wgNotes==='full'],['vzs-full',u.wgSched==='full'],
    ['vzn-low',u.wgNotes==='low'],['vzs-low',u.wgSched==='low'],['vzck-low',u.wgClock==='low'],/* v128 任务5：半宽矮款 */
    ['vzck-on',!!u.wgClock],['vzck-full',u.wgClock==='full'],['vzcks-glass',u.wgClockSt==='glass'],
+   ['vztk-on',!!u.wgTk],['vztk-ring',(u.wgTk||'ring')==='ring'],['vztk-bars',u.wgTk==='bars'],['vztk-mini',u.wgTk==='mini'],/* v142-p：#3 Token 挂件款式 */
    ['vzh-ios',_vzGet(u,'heroSt')==='ios']
   ].forEach(function(p){b.toggle(p[0],!!p[1])});
   _vzHeroTone();
@@ -4294,7 +4311,7 @@ function _vzSeg(id,key){var seg=$(id);if(!seg)return;var u=(_mp&&_mp.ui)||{};
 async function _vzSync(){await loadMP();
   [['vz-nav','zcNav'],['vz-desk','zcDesk'],['vz-icot','zcIcon'],['vz-blog','zcBlog'],['vz-chat','zcChat'],
    ['vz-bub','bubStyle'],['vz-bubtx','bubTx'],['vz-ico','icoStyle'],['vz-wg','wgStyle'],
-   ['vz-mus','wgMusic'],['vz-note','wgNotes'],['vz-sched','wgSched'],['vz-ck','wgClock'],['vz-ckst','wgClockSt'],
+   ['vz-mus','wgMusic'],['vz-note','wgNotes'],['vz-sched','wgSched'],['vz-ck','wgClock'],['vz-ckst','wgClockSt'],['vz-tk','wgTk'],/* v142-p：#3 */
    ['vz-hero','heroSt'],['vz-tone','tone'],['vz-dkpg','deskPages'],['vz-dkos','deskLayout']].forEach(function(p){_vzSeg(p[0],p[1])});/* v128 任务7：桌面页数 *//* v127-p 任务2：+布局模式 */
   (function(){var _os9=((_mp&&_mp.ui&&_mp.ui.deskLayout)||'')!=='classic';var _r9=$('vz-dkpg-row');if(_r9)_r9.style.display=_os9?'none':''})();/* 页数行只在经典模式露出 */
   var u=(_mp&&_mp.ui)||{};var la=$('vz-lockad');
@@ -4302,7 +4319,8 @@ async function _vzSync(){await loadMP();
     if(!la._uv){la._uv=1;la.addEventListener('click',async function(){await loadMP();_mp.ui=_mp.ui||{};
       _mp.ui.lockAdapt=(_mp.ui.lockAdapt===false);if(_mp.ui.lockAdapt)delete _mp.ui.lockAdapt;
       await saveMP();sw2(la,_mp.ui.lockAdapt!==false);toast('下次进入锁屏生效');})}}
-  try{_ddListDraw()}catch(e){}/* v128 任务6：装饰件管理行随视觉页刷新 */
+  try{_ddListDraw()}catch(e){}
+  try{_tkwDraw()}catch(e){}/* v142-p：#3 换款式即重绘 Token 挂件 *//* v128 任务6：装饰件管理行随视觉页刷新 */
 }
 /* ═══ v128 任务6/7 → v127-p 任务2/3 全面改建：Deco 装饰小组件（8 款）＋ Desk OS 分页桌面 ═══
    装饰件存 _mp.deskDeco（随备份同步，上限 12 枚，图片经 compressImg 压缩、每枚总量 ≤900k）；
@@ -4850,7 +4868,7 @@ async function _uvMateSync(){
     await saveMP();toast('Desk 陪伴头像已更新');try{_deskDuo()}catch(e){}/* v81-m r12：改完即刷英雄区 */
   })}
 }
-var _UV_THEME_KEYS=['fs','chatFs','uiScale','panelAlpha','scrimAlpha','scrimColor','glassBase','blurPx','bgBlur','accColor','txColor','txShadow','zcNav','zcDesk','zcIcon','zcBlog','zcChat','bubStyle','bubTx','icoStyle','wgStyle','wgMusic','wgNotes','wgSched','wgClock','wgClockSt','heroSt','heroTone','tone','lockAdapt','szTop','szDock','szBrv','szCvh','szCvi'];/* v128 任务1：五区尺寸入方案 *//* v78-m r15：主题方案快照的 _mp.ui 键位清单（背景图体积大不入方案）→ v90-m：视觉细分套件全部键位入方案 */
+var _UV_THEME_KEYS=['fs','chatFs','uiScale','panelAlpha','scrimAlpha','scrimColor','glassBase','blurPx','bgBlur','accColor','txColor','txShadow','zcNav','zcDesk','zcIcon','zcBlog','zcChat','bubStyle','bubTx','icoStyle','wgStyle','wgMusic','wgNotes','wgSched','wgClock','wgClockSt','wgTk','heroSt','heroTone','tone','lockAdapt','szTop','szDock','szBrv','szCvh','szCvi'];/* v128 任务1：五区尺寸入方案 *//* v78-m r15：主题方案快照的 _mp.ui 键位清单（背景图体积大不入方案）→ v90-m：视觉细分套件全部键位入方案 */
 function _uvThemesDraw(){/* v78-m r15 → v86-m：Visual 主题方案扩为 4 个槽位（本轮任务 4），存/应用当前全部 Visual 参数＋明暗模式；存 _mp.themes（mobilePrefs，手机专属，随备份往返） */
   var host=$('uv-themes');if(!host)return;
   var arr=(_mp&&Array.isArray(_mp.themes))?_mp.themes:[];
@@ -4952,7 +4970,7 @@ function openUiSet(){navTo('visual')}
 $('dw-setbtn').addEventListener('click',()=>{drawer(false);openUiSet()});
 $('uv-reset').addEventListener('click',async()=>{
   await loadMP();_mp.ui=_mp.ui||{};
-  delete _mp.ui.chatFs;delete _mp.ui.uiScale;delete _mp.ui.panelAlpha;delete _mp.ui.scrimAlpha;delete _mp.ui.blurPx;delete _mp.ui.accColor;delete _mp.ui.txColor;delete _mp.ui.txShadow;delete _mp.ui.bgBlur;delete _mp.ui.scrimColor;delete _mp.ui.glassBase;['zcNav','zcDesk','zcIcon','zcBlog','zcChat','bubStyle','bubTx','icoStyle','wgStyle','wgMusic','wgNotes','wgSched','wgClock','wgClockSt','heroSt','heroTone','tone','lockAdapt','szTop','szDock','szBrv','szCvh','szCvi'].forEach(function(k){delete _mp.ui[k]});_mp.ui.fs=1;/* v72-m r6：遮罩颜色/玻璃底色一并归位 *//* v70-m r1/r2：文字颜色/投影/背景图模糊一并归位；背景图有独立恢复键、陪伴头像属关系设定不动 *//* v90-m：视觉细分套件键位一并归位 */
+  delete _mp.ui.chatFs;delete _mp.ui.uiScale;delete _mp.ui.panelAlpha;delete _mp.ui.scrimAlpha;delete _mp.ui.blurPx;delete _mp.ui.accColor;delete _mp.ui.txColor;delete _mp.ui.txShadow;delete _mp.ui.bgBlur;delete _mp.ui.scrimColor;delete _mp.ui.glassBase;['zcNav','zcDesk','zcIcon','zcBlog','zcChat','bubStyle','bubTx','icoStyle','wgStyle','wgMusic','wgNotes','wgSched','wgClock','wgClockSt','wgTk','heroSt','heroTone','tone','lockAdapt','szTop','szDock','szBrv','szCvh','szCvi'].forEach(function(k){delete _mp.ui[k]});_mp.ui.fs=1;/* v72-m r6：遮罩颜色/玻璃底色一并归位 *//* v70-m r1/r2：文字颜色/投影/背景图模糊一并归位；背景图有独立恢复键、陪伴头像属关系设定不动 *//* v90-m：视觉细分套件键位一并归位 */
   await saveMP();_uiApply();_uvSync();toast('已恢复默认');
 });
 document.querySelectorAll('#ui-fs button').forEach(b=>b.addEventListener('click',async()=>{await loadMP();_mp.ui=_mp.ui||{};_mp.ui.fs=parseFloat(b.dataset.v)||1;await saveMP();_uiApply()}));
@@ -6158,6 +6176,7 @@ async function renderCalSec(){
   try{await loadCal()}catch(e){}/* v120-p：#1 挂件照库渲染——此前只读内存缓存 _calEvents，导入备份/他处写入后 Schedule 挂件不同步（缓存要么空要么旧）；日历库很小，进 Desk 重读一次，挂件永远反映数据库真值 */
   drawCalEvs();/* v52-m 修复：Schedule 日程卡此前从未被渲染 */
   drawCalNotes();
+  try{_tkwDraw()}catch(e){}/* v142-p：#3 进 Desk 刷一次 Token 挂件 */
   tickClock();refreshAstro(new Date());
   clearInterval(_clockT);_clockT=setInterval(tickClock,1000);
 }
@@ -11428,7 +11447,7 @@ function _orientApply(){try{
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){var el9=this;try{await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;sw2(el9,!!_mp.ui.bigTouch);await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')}catch(e){toast('设置保存失败，请重试');try{await loadMP();sw2(el9,!!(_mp.ui&&_mp.ui.bigTouch))}catch(e2){}}});
   setTimeout(function(){try{if(window.IBNative&&window.IBNative.available){var _bg=$('pres-bg');var _row=_bg&&_bg.closest('.tog');if(_row)_row.style.display=''}}catch(e){}},1200);/* v116-p：壳内显露「后台 Presence（App）」开关（桥在文末激活，故延时探测；浏览器 / PWA 保持隐藏） */
 })();
-var IB_VER='v141-p',IB_VER_DATE='2026-08-22';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
+var IB_VER='v142-p',IB_VER_DATE='2026-08-22';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
@@ -14509,7 +14528,7 @@ async function _bxVisSheet(mode,curList,cb){
 }
 (function(){var ok=$('bxvis-ok');if(ok)ok.addEventListener('click',function(){var f=_bxVisCb;_bxVisCb=null;closeSheets();if(f)f()})})();
 /* ═══ v77-m r7→v79-m r5：Desk 编辑——长按拖移排序；显示与隐藏统一在设置 → Desk（拖到底部移除退役） ═══ */
-var DK_NAMES={hero:'时钟英雄区','app:chat':'对话','app:letters':'信箱','app:memory':'记忆库','app:blog':'日志','app:icode':'工作区','app:data':'数据','app:visual':'视觉','app:guide':'指南','app:beyond':'Circle',cal:'月历',notes:'便笺',sched:'日程',music:'音乐挂件',clock:'时钟','app:player':'音乐','app:calendar':'日历','app:set':'设置','app:diy':'创意工坊','app:friends':'好友','app:space':'名片'};/* v136-p：③三枚新图标 *//* v127-p：+第 12 枚「设置」图标 *//* v91-m：音乐挂件与音乐 App 图标区分命名 *//* v78-m r3：health 项随挂件退役 *//* v90-m：+时钟挂件 */
+var DK_NAMES={hero:'时钟英雄区','app:chat':'对话','app:letters':'信箱','app:memory':'记忆库','app:blog':'日志','app:icode':'工作区','app:data':'数据','app:visual':'视觉','app:guide':'指南','app:beyond':'社交圈'/* v142-p：#5 */,tk:'Token 仪表盘'/* v142-p：#3 */,cal:'月历',notes:'便笺',sched:'日程',music:'音乐挂件',clock:'时钟','app:player':'音乐','app:calendar':'日历','app:set':'设置','app:diy':'创意工坊','app:friends':'好友','app:space':'名片'};/* v136-p：③三枚新图标 *//* v127-p：+第 12 枚「设置」图标 *//* v91-m：音乐挂件与音乐 App 图标区分命名 *//* v78-m r3：health 项随挂件退役 *//* v90-m：+时钟挂件 */
 function _dkEls(){return Array.prototype.slice.call(document.querySelectorAll('#sec-profile-cal .sb-desk>[data-dk]'))}/* v127-p：分页桌面下条目散在多张 .sb-desk 网格里，按分区圈选 */
 async function deskApplyLayout(){
   await loadMP();var d=_mp.desk||{};
@@ -15211,7 +15230,43 @@ async function renderChatMgr(){
 var _tkCacheDoc=null;
 async function _tkLoad(){if(_tkCacheDoc)return _tkCacheDoc;try{const r=await dbGet('apiSettings','ibTokenStats');_tkCacheDoc=(r&&r.data)||null}catch(e){}if(!_tkCacheDoc)_tkCacheDoc={since:Date.now(),records:[],prices:{}};if(!_tkCacheDoc.records)_tkCacheDoc.records=[];if(!_tkCacheDoc.prices)_tkCacheDoc.prices={};return _tkCacheDoc}
 function _tkSave(){if(_tkCacheDoc)try{dbPut('apiSettings',{id:'ibTokenStats',data:_tkCacheDoc})}catch(e){}}
-async function _tkRecord(cfg,u){try{if(!u)return;u={i:Math.max(0,u.i|0),cr:Math.max(0,u.cr|0),cw:Math.max(0,u.cw|0),o:Math.max(0,u.o|0)};if(!(u.i||u.cr||u.cw||u.o))return;const d=await _tkLoad();const _r={t:Date.now(),cid:(cfg&&cfg.id)||'',m:(cfg&&cfg.model)||'',i:u.i,cr:u.cr,cw:u.cw,o:u.o};if(cfg&&cfg.cacheTtl1h&&cfg.promptCache!==false)_r.h=1;d.records.push(_r);if(d.records.length>5000)d.records.splice(0,d.records.length-5000);_tkSave();}catch(e){}}
+async function _tkwDraw(){/* v142-p：#3 Token 仪表盘挂件——三款式共用 Data 页台账（_tkLoad 有内存缓存，重绘近乎零开销）；今日聚合 + 近 7 日柱；费用按已填单价（有缺口显 ≥） */
+  try{
+    var el=document.getElementById('tkw');if(!el)return;
+    if(!document.body.classList.contains('vztk-on')){el.innerHTML='';return}
+    var st=((_mp&&_mp.ui&&_mp.ui.wgTk)||'ring');
+    var d=await _tkLoad();
+    var n=new Date(),d0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime();
+    var t={n:0,i:0,cr:0,cw:0,o:0},by=new Array(7).fill(0),models={};
+    (d.records||[]).forEach(function(r){
+      var k=Math.floor((d0-new Date(r.t).setHours(0,0,0,0))/86400000);
+      if(k>=0&&k<7)by[6-k]+=(r.i||0)+(r.o||0);
+      if(r.t>=d0){t.n++;t.i+=r.i||0;t.cr+=r.cr||0;t.cw+=r.cw||0;t.o+=r.o||0;
+        var a=(models[r.m||'—']=models[r.m||'—']||{i:0,cr:0,cw:0,cwh:0,o:0});a.i+=r.i||0;a.cr+=r.cr||0;a.cw+=r.cw||0;if(r.h)a.cwh+=r.cw||0;a.o+=r.o||0}
+    });
+    var cost=0,known=true;Object.keys(models).forEach(function(m){var c=_tkCostM(models[m],d.prices[m]);if(c==null)known=false;else cost+=c});
+    var cs=t.n?((known?'$':'\u2265 $')+cost.toFixed(cost>=10?1:2)):'';
+    var hit=(t.i+t.cr)?Math.round(t.cr/(t.i+t.cr)*100):0;
+    var tot=_tkFmtN(t.i+t.cw+t.o),h='';
+    if(st==='bars'){
+      var mx=Math.max.apply(null,by.concat([1]));var W=['日','一','二','三','四','五','六'];
+      h='<div class="tkw-bars"><div class="tkw-bh"><span>近 7 天 · 输入+输出</span><b>'+tot+'</b></div>'
+       +'<div class="tkw-bx">'+by.map(function(v,ix){return '<i'+(ix===6?' class="td"':'')+' style="height:'+Math.max(7,Math.round(v/mx*100))+'%" title="'+v+'"></i>'}).join('')+'</div>'
+       +'<div class="tkw-bl">'+by.map(function(v,ix){var dd=new Date(d0-(6-ix)*86400000);return '<span>'+(ix===6?'今天':'周'+W[dd.getDay()])+'</span>'}).join('')+'</div>'
+       +'<div class="tkw-bh"><span>今日 '+t.n+' 次'+(cs?(' · '+cs):'')+'</span><span>命中 '+hit+'%</span></div></div>';
+    }else if(st==='mini'){
+      h='<div class="tkw-mini"><div class="mn">'+tot+'</div>'
+       +'<div class="ms">入 <b>'+_tkFmtN(t.i+t.cw)+'</b> · 出 <b>'+_tkFmtN(t.o)+'</b> · 命中 <b>'+hit+'%</b></div>'
+       +'<div class="mt">TODAY'+(cs?(' · '+cs):'')+'</div></div>';/* 费用落底行，半宽不吃省略号 */
+    }else{
+      var R=30,C=2*Math.PI*R;
+      h='<div class="tkw-ring"><div class="tkw-rc"><svg viewBox="0 0 74 74"><circle class="rg-bg" cx="37" cy="37" r="'+R+'"/><circle class="rg-v" cx="37" cy="37" r="'+R+'" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-hit/100)).toFixed(1)+'"/></svg><i><b>'+tot+'</b><span>TODAY</span></i></div>'
+       +'<div class="tkw-side"><div class="r1">命中 <b>'+hit+'%</b> · '+t.n+' 次</div><div class="r1">入 <b>'+_tkFmtN(t.i+t.cw)+'</b> 缓 '+_tkFmtN(t.cr)+'</div><div class="r1">出 <b>'+_tkFmtN(t.o)+'</b></div>'+(cs?('<div class="r1">今日 <b>'+cs+'</b></div>'):'')+'</div></div>';/* v142-p：半宽下四短行不吃省略号 */
+    }
+    el.innerHTML=h;
+  }catch(e){}
+}
+async function _tkRecord(cfg,u){try{if(!u)return;u={i:Math.max(0,u.i|0),cr:Math.max(0,u.cr|0),cw:Math.max(0,u.cw|0),o:Math.max(0,u.o|0)};if(!(u.i||u.cr||u.cw||u.o))return;const d=await _tkLoad();const _r={t:Date.now(),cid:(cfg&&cfg.id)||'',m:(cfg&&cfg.model)||'',i:u.i,cr:u.cr,cw:u.cw,o:u.o};if(cfg&&cfg.cacheTtl1h&&cfg.promptCache!==false)_r.h=1;d.records.push(_r);if(d.records.length>5000)d.records.splice(0,d.records.length-5000);_tkSave();try{_tkwDraw()}catch(e2){}/* v142-p：#3 落账即刷新桌面挂件 */}catch(e){}}
 let _tkRange='7d';
 function _tkT0(){
   const n=new Date();const d0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime();
@@ -16836,6 +16891,36 @@ body.vzs-full .sb-desk>[data-dk="sched"]{grid-column:1/-1}
 /* 时钟挂件：默认隐藏，视觉 → 桌面开启；简约实字为默认款，玻璃字身与锁屏同源 */
 .sb-desk>[data-dk="clock"]{display:none}
 body.vzck-on .sb-desk>[data-dk="clock"]:not(.dk-hidden){display:flex}
+.sb-desk>[data-dk="tk"]{display:none}
+body.vztk-on .sb-desk>[data-dk="tk"]:not(.dk-hidden){display:flex}/* v142-p：#3 选款式即显示（照时钟挂件门控）；隐藏管理与拖排照常走 data-dk */
+.tk-w{flex-direction:column;min-height:118px;padding:13px 12px 12px}
+.tk-w .tkw{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
+.tkw .tkw-ring{display:flex;align-items:center;gap:12px;width:100%}
+.tkw .tkw-rc{position:relative;flex:none;width:74px;height:74px}
+.tkw .tkw-rc svg{width:74px;height:74px;transform:rotate(-90deg);display:block}
+.tkw .tkw-rc svg circle{fill:none;stroke-width:7;stroke-linecap:round}
+.tkw .tkw-rc .rg-bg{stroke:var(--soft)}
+.tkw .tkw-rc .rg-v{stroke:var(--acc);filter:drop-shadow(0 0 4px rgba(114,168,216,.35));transition:stroke-dashoffset .6s ease}
+.tkw .tkw-rc i{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal}
+.tkw .tkw-rc i b{font-family:var(--disp);font-weight:600;font-size:.94rem;color:var(--tx);font-variant-numeric:tabular-nums;line-height:1.1}
+.tkw .tkw-rc i span{font-size:.48rem;letter-spacing:.16em;color:var(--tx3);margin-top:2px}
+.tkw .tkw-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.tkw .tkw-side .r1{font-size:.6rem;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.tkw .tkw-side .r1 b{font-family:var(--disp);font-weight:600;color:var(--tx);font-variant-numeric:tabular-nums}
+.tkw .tkw-bars{width:100%;display:flex;flex-direction:column;gap:6px}
+.tkw .tkw-bh{display:flex;align-items:baseline;justify-content:space-between;font-size:.6rem;color:var(--tx3)}
+.tkw .tkw-bh b{font-family:var(--disp);font-weight:600;font-size:.96rem;color:var(--tx);font-variant-numeric:tabular-nums}
+.tkw .tkw-bx{display:flex;align-items:flex-end;gap:5px;height:44px}
+.tkw .tkw-bx i{flex:1;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 55%,white),var(--acc));opacity:.5;min-height:3px}
+.tkw .tkw-bx i.td{opacity:1;box-shadow:0 0 8px rgba(114,168,216,.35)}
+.tkw .tkw-bl{display:flex;gap:5px;font-size:.48rem;color:var(--tx3)}
+.tkw .tkw-bl span{flex:1;text-align:center}
+.tkw .tkw-mini{width:100%;text-align:center}
+.tkw .tkw-mini .mn{font-family:var(--disp);font-weight:600;font-size:1.85rem;color:var(--tx);font-variant-numeric:tabular-nums;line-height:1.12}
+.tkw .tkw-mini .ms{margin-top:5px;font-size:.6rem;color:var(--tx3);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tkw .tkw-mini .ms b{color:var(--tx2);font-weight:600;font-variant-numeric:tabular-nums}
+.tkw .tkw-mini .mt{margin-top:3px;font-size:.5rem;letter-spacing:.2em;color:var(--tx3)}
+body.theme-infernal .tkw .tkw-bx i{opacity:.55}
 .clock-w{flex-direction:column;align-items:center;justify-content:center;min-height:104px;padding:16px 10px 13px}
 .clock-w .cw-t{font-family:var(--sys);font-weight:600;font-size:clamp(1.9rem,9.5vw,2.6rem);letter-spacing:-0.02em;line-height:1;font-variant-numeric:tabular-nums;color:var(--tx);text-shadow:0 1px 2px rgba(20,35,70,0.14)}
 body.theme-infernal .clock-w .cw-t{text-shadow:0 1px 3px rgba(0,0,0,0.35)}
@@ -16984,23 +17069,30 @@ body.theme-infernal .ma-btn svg{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.16
 #ca-hprev{left:2px}#ca-hnext{right:2px}
 .ca-hb svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .ca-hm{position:relative;z-index:1;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 30px}
-.ca-duo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:11px}
+.ca-duo{position:relative;flex:none;width:236px;height:74px;margin:0 auto 11px}/* v142-p：#2 固定 236×74 轨道盘——任何机型都放得下，≤380 不再缩头像 */
+.ca-duo .ca-ava{position:absolute;top:4px}.ca-duo .ca-ava.me{left:4px}.ca-duo .ca-ava.ai{right:4px}
 .ca-ava{position:relative;flex:none;width:66px;height:66px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:1.5rem;font-weight:400;color:var(--tx2);box-shadow:0 0 0 2.5px var(--panel),0 0 0 4px color-mix(in srgb,var(--acc) 40%,transparent),0 10px 22px rgba(42,72,112,.14)}
 .ca-ava.site{background-color:#fff}
 /* v141-p：#1 头像连线改「一笔画爱心」——单色低饱和蓝、一条连续线（左尾 → 底部交叉上行右叶 → 顶部凹口 → 左叶 → 底部交叉 → 右尾）；流光＝同路径的高亮短段沿线滑过（pathLength 归一 + dashoffset）；线尾伸入头像环下，头像压在线上；减少动效时流光隐藏 */
 .ca-duo{--caL:#7596c2;--caG:#dcebff;--caGs:rgba(110,156,214,.6)}
 body.theme-infernal .ca-duo{--caL:#8db0d8;--caG:#eef5ff;--caGs:rgba(190,220,255,.7)}
 .ca-duo .ca-ava{z-index:1}
-.ca-link{position:relative;z-index:0;flex:none;width:104px;height:52px;margin:0 -14px;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.ca-link svg{width:100%;height:100%;overflow:visible;display:block}
-.ca-link .l-base{fill:none;stroke:var(--caL);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
-.ca-link .l-flow{fill:none;stroke:var(--caG);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:11 89;stroke-dashoffset:100;opacity:.95;filter:drop-shadow(0 0 3px var(--caGs));animation:caFlow 3.6s linear infinite}
+.ca-orbit{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;display:block}/* v142-p：#2 轨道盘双层 SVG */
+.ca-orbit.under{z-index:0}.ca-orbit.over{z-index:2}
+.ca-orbit path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ca-orbit .l-halo{stroke:var(--caL);stroke-width:5.5;opacity:.16}/* 主线同色浅晕，2px 主笔更显精致 */
+.ca-orbit .l-base{stroke:var(--caL);stroke-width:2}
+.ca-orbit .l-flow{stroke:var(--caG);stroke-width:2.4;stroke-dasharray:4.5 95.5;stroke-dashoffset:100;filter:drop-shadow(0 0 3.5px var(--caGs));animation:caFlow 8.4s linear infinite}/* 彗星亮头 */
+.ca-orbit .l-flow2{stroke:var(--caG);stroke-width:2.2;stroke-dasharray:11 89;stroke-dashoffset:102.6;opacity:.36;filter:blur(1.6px);animation:caFlowT 8.4s linear infinite}/* 彗尾滞后 2.6/100 相位 */
 @keyframes caFlow{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
-@media (prefers-reduced-motion:reduce){.ca-link .l-flow{display:none}}
+@keyframes caFlowT{from{stroke-dashoffset:102.6}to{stroke-dashoffset:2.6}}
+@media (prefers-reduced-motion:reduce){.ca-orbit .l-flow,.ca-orbit .l-flow2{display:none}}/* v142-p：#2 减少动效时双层流光隐藏（口径不变） */
 .ca-names{display:flex;align-items:baseline;justify-content:center;gap:8px;width:100%;max-width:100%;font-family:var(--disp);font-size:1.2rem;font-weight:500;color:var(--tx);letter-spacing:.02em;line-height:1.2}
 .ca-names span{flex:0 0 auto;white-space:nowrap;word-break:keep-all}/* v141-p：#2 不截断、不省略——宽度由 _caFitNames 缩字号解决 */
 .ca-names.wrap{flex-wrap:wrap;row-gap:2px}.ca-names.wrap span{flex:0 1 auto;max-width:100%;white-space:normal;word-break:break-all}/* 缩到下限仍放不下才折行 */
-.ca-names i{font-style:italic;font-weight:300;color:var(--acc);font-size:1.05em}
+.ca-names i{font-family:'Cormorant Garamond',var(--disp);font-style:italic;font-weight:400;color:var(--acc);font-size:1.06em;opacity:.92;position:relative;top:-1px}/* v142-p：#2 「&」改衬线斜体 */
+.ca-names span.n-lat{font-family:'Cormorant Garamond',var(--disp);font-weight:600;font-size:1.16em;letter-spacing:.015em}/* v142-p：#2 西文名走站内已内嵌的衬线（零新增载荷），字重字号与中文视觉配平 */
+.ca-names span.n-cjk{font-weight:600;letter-spacing:.14em;margin-right:-.14em}/* v142-p：#2 中文名疏排提气质；负 margin 吃掉末字符 tracking */
 .ca-en{margin-top:6px;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tx3);white-space:nowrap}
 .ca-en b{font-weight:600;color:var(--acc);font-size:.74rem;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .ca-anni{margin-top:11px;max-width:100%;font-size:.8rem;font-weight:600;color:var(--tx);line-height:1.35;white-space:normal;overflow-wrap:anywhere}/* v141-p：#2 长名字折行不截断 */
@@ -17010,7 +17102,7 @@ body.theme-infernal .ca-duo{--caL:#8db0d8;--caG:#eef5ff;--caGs:rgba(190,220,255,
 .ca-meta2 em.today{color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
 .ca-hbar{position:relative;width:min(100%,220px);height:3px;border-radius:99px;background:var(--soft);margin-top:11px;overflow:hidden}
 .ca-hbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 72%,white));box-shadow:0 0 8px rgba(114,168,216,.16)}
-@media (max-width:380px){.ca-ava{width:58px;height:58px;font-size:1.3rem}.ca-names{font-size:1.1rem}.ca-hm{padding:0 26px}.ca-anni{font-size:.76rem}.ca-link{width:88px;height:44px;margin:0 -12px}}
+@media (max-width:380px){.ca-names{font-size:1.1rem}.ca-hm{padding:0 26px}.ca-anni{font-size:.76rem}}/* v142-p：#2 轨道盘定尺 236px，小屏不再缩头像与连线 */
 /* v95-m PS：Desk 日程区与日历 App 头部字防竖排——标题/日期单行省略，容器可收缩但绝不逐字换行 */
 .ag-tt h4{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ag-sub{max-width:100%}
@@ -17728,8 +17820,11 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
   /* v140-p：#1 名片素材——站点图标取当前 apple-touch-icon（用户自定义过 App 图标时同步）；音符：一对连杆八分音符＋两粒星光，描成 currentColor 随主题色 */
   function _caSiteIcon(){try{var l=document.getElementById('ib-ati');return (l&&l.getAttribute('href'))||''}catch(e){return ''}}
   /* v141-p：#1 头像连线——一笔画爱心路径（viewBox 120×60，两端在头像中心高度）；底层单色线 + 同路径高亮流光段 */
-  var _CA_LINK_D='M0 34C22 34 40 56 60 48C72 43 86 34 86 22C86 14.8 80.2 9 73 9C65.8 9 60 14.8 60 22C60 14.8 54.2 9 47 9C39.8 9 34 14.8 34 22C34 34 48 43 60 48C80 56 98 34 120 34';
-  var _CA_LINK_SVG='<svg viewBox="0 0 120 60" aria-hidden="true"><path class="l-base" d="'+_CA_LINK_D+'"/><path class="l-flow" d="'+_CA_LINK_D+'" pathLength="100"/></svg>';
+  var _CA_HEART_D='M73.2 37C89.63 37 103.07 54.16 118 47.92C126.96 44.02 137.41 37 137.41 27.64C137.41 22.02 133.08 17.5 127.71 17.5C122.33 17.5 118 22.02 118 27.64C118 22.02 113.67 17.5 108.29 17.5C102.92 17.5 98.59 22.02 98.59 27.64C98.59 37 109.04 44.02 118 47.92C132.93 54.16 146.37 37 162.8 37';/* v142-p：#2 爱心主线（236×74 轨道盘坐标；起止点即左右头像环 3/9 点切点，环心 (37,37)/(199,37)） */
+  var _CA_ORBIT_D='M73.2 37A36.2 36.2 0 1 1 0.8 37A36.2 36.2 0 1 1 73.2 37C89.63 37 103.07 54.16 118 47.92C126.96 44.02 137.41 37 137.41 27.64C137.41 22.02 133.08 17.5 127.71 17.5C122.33 17.5 118 22.02 118 27.64C118 22.02 113.67 17.5 108.29 17.5C102.92 17.5 98.59 22.02 98.59 27.64C98.59 37 109.04 44.02 118 47.92C132.93 54.16 146.37 37 162.8 37A36.2 36.2 0 1 1 235.2 37A36.2 36.2 0 1 1 162.8 37C146.37 37 132.93 54.16 118 47.92C109.04 44.02 98.59 37 98.59 27.64C98.59 22.02 102.92 17.5 108.29 17.5C113.67 17.5 118 22.02 118 27.64C118 22.02 122.33 17.5 127.71 17.5C133.08 17.5 137.41 22.02 137.41 27.64C137.41 37 126.96 44.02 118 47.92C103.07 54.16 89.63 37 73.2 37Z';/* v142-p：#2 流光闭合轨道：左环整圈 → 爱心 → 右环整圈 → 爱心折返；环 r=36.2 正落在头像强调色描边带上 */
+  var _CA_UNDER_SVG='<svg class="ca-orbit under" viewBox="0 0 236 74" aria-hidden="true"><path class="l-halo" d="'+_CA_HEART_D+'"/><path class="l-base" d="'+_CA_HEART_D+'"/></svg>';
+  var _CA_OVER_SVG='<svg class="ca-orbit over" viewBox="0 0 236 74" aria-hidden="true"><path class="l-flow2" d="'+_CA_ORBIT_D+'" pathLength="100"/><path class="l-flow" d="'+_CA_ORBIT_D+'" pathLength="100"/></svg>';
+  function _caNameCls(s){return /[\u3040-\u30ff\u3400-\u9fff\uF900-\uFAFF\uAC00-\uD7AF]/.test(String(s||''))?'n-cjk':'n-lat'}/* v142-p：#2 名字按字符集配对排印（中西混排 CP 化） */
   var _caBound=false,_caHeroIdx=0,_caHeros=[];
   async function _caEarliest(fid){var mn=0;try{var ms=await dbGetByIndex('chatMessages','byFriend',fid);(ms||[]).forEach(function(m){var x=m.timestamp||m.ts||0;if(x&&(!mn||x<mn))mn=x})}catch(e){}return mn}
   async function _caBuildHeros(){/* 首卡＝与本站（取全体最早聊天记录）；其后每位 AI：手动 meetSet 优先 → 首聊 → 配置创建时间（与 cal_list / bxJoined 同口径） */
@@ -17737,7 +17832,9 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
     var cs=null;try{cs=await _advCalSetM()}catch(e){}
     var ms=(cs&&cs.meetSet)||{};
     var list=[];try{await loadCfgs();list=(_cfgs||[]).concat((typeof _archived!=='undefined'&&_archived)||[])}catch(e){}
-    var site=0;
+    var site=0,siteManual=0;/* v142-p：#1 站点纪念日手动值（设置→Calendar「站点纪念日」/ 电脑端导入的 meetSet.__ib__）此前从未被读取，站点卡恒按全体最早聊天推算——「怎么设都不变」的根因；两键并读，与电脑端 meetIsoIB 同口径 */
+    var _sIso=ms.__ib__||ms.__ib;
+    if(_sIso){var _sd=new Date(_sIso+'T00:00:00');if(!isNaN(_sd))siteManual=_sd.getTime()}
     for(var i=0;i<list.length;i++){
       var c=list[i];if(!c||!c.id||c._group)continue;
       var t=0,iso=ms[c.id];
@@ -17748,7 +17845,7 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
       _caHeros.push({name:(typeof cfgName==='function'?cfgName(c):(c.nickname||c.model||'AI')),ts:t,ava:c.avatar||'',id:c.id});/* v140-p：#1 名片要头像 */
     }
     _caHeros.sort(function(a,b){return (a.ts||9e15)-(b.ts||9e15)});
-    _caHeros.unshift({name:'InternalBeyond',ts:site,site:true});
+    _caHeros.unshift({name:'InternalBeyond',ts:(siteManual||site),site:true});/* v142-p：#1 手动值优先，无手动值沿用推算 */
   }
   window.openCalApp=async function(){
     try{await loadCal()}catch(e){}
@@ -17815,8 +17912,8 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
       try{meAva=(typeof _pfAvatar==='function'?_pfAvatar(_about):(_about&&_about.avatar))||''}catch(e){}
       var aiAva=h.site?_caSiteIcon():(h.ava||'');
       var html='<button class="ca-hb" id="ca-hprev" title="上一位"><svg viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div class="ca-hm">'
-        +'<div class="ca-duo"><div class="ca-ava me"></div><div class="ca-link">'+_CA_LINK_SVG+'</div><div class="ca-ava ai'+(h.site?' site':'')+'"></div></div>'
-        +'<div class="ca-names"><span>'+esc(meName)+'</span><i>&amp;</i><span>'+esc(h.name)+'</span></div>';
+        +'<div class="ca-duo">'+_CA_UNDER_SVG+'<div class="ca-ava me"></div><div class="ca-ava ai'+(h.site?' site':'')+'"></div>'+_CA_OVER_SVG+'</div>'/* v142-p：#2 轨道盘——底层爱心主线压在头像下，顶层流光沿环跨行不被头像描边盖住 */
+        +'<div class="ca-names"><span class="'+_caNameCls(meName)+'">'+esc(meName)+'</span><i>&amp;</i><span class="'+_caNameCls(h.name)+'">'+esc(h.name)+'</span></div>';
       if(!h.ts){
         html+='<div class="ca-en">No record yet</div><div class="ca-anni">'+esc(nm)+'</div><div class="ca-meta2"><span>尚无记录 · 第一次说话的日子会记在这里</span></div>';
       }else{
