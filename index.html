@@ -2,6 +2,19 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- InternalBeyond Mobile v139-p · 日程页重设计轮（日历 App 分组卡片列表 / 相遇纪念卡精修 / 导入 BOM 容错） -->
+<!-- v139-p 修订单：①日历 App（Desk 图标日程页）重设计——针对「UI 简陋、排版不均衡、行内信息挤一行省略号」整治：列表从单面板平铺改「时间分组＋卡片行」：今天 / 7 天内 / 之后 / 已过去四组各成一块玻璃面板，组头 EN＋中文＋计数（PAST 组头转灰）；每行新增左侧「日期叶」——下一次发生的 月/日 色块，按类型着色（计划蓝 / 纪念·生日粉 / 备忘灰 / 相遇金），单次已过显原日期并降饱和；标题独占一行，右列上下分立倒计时胶囊（今天＝强调色描边底）与删除 ✕；第二行改小胶囊组（类型 / 日期 / 重复 / 提醒 / 时间）可自动换行、不再一行省略号，备注独立成行（超长截断）；行间分隔线避开日期叶。数据源、排序口径（按下一次发生升序、单次已过垫底标灰）、点行编辑、✕ 删除确认、右上＋新建全部原样；.ca-ev 基础款样式保留，新样式全部以 #ca-list 前缀覆盖，Desk 挂件 / 天视图 / 抽屉月历零牵连。②相遇纪念卡精修——留白与字号微调、进度条 3→4px 加粗、倒计时数字加辉光底、≤380px 窄屏同步缩放；‹ › 循环、无记录态、DOM id 与事件零改动。③导入 BOM 容错——Data 页导入 JSON.parse 前剥 \ufeff（String(text).replace），对齐电脑端导入的同款守卫：此前带 BOM 的备份文件会误报「文件格式错误」；除此以外本轮核对电脑端↔手机端导入导出全链（仓清单 21 仓一致、keyPath 一致、version:4 一致、空数组与未知仓两端互跳、密钥与 ib_fsSyncDir 过滤一致），逻辑对得上、无需其他改动。④GUIDE 日历 App 段落随新版式改写。⑤版本联动 v139-p。 -->
+<!-- InternalBeyond Mobile v138-p · 导出与检索内存治理轮（导出改游标＋分块 Blob / 搜索与日历天视图去全量装载 / 上版修订单勘误） -->
+<!-- v138-p 修订单：①导出内存治理（对应粉丝 docx 场景一）——Data 页导出改「游标逐条＋分块 Blob」：不再 dbGetAll 把整仓对象树拉进 JS 堆，也不再让整份 JSON 字符串驻留内存；每仓 openCursor 逐条序列化（chatMessages 剥 upstreamRaw/thinkingSources、apiSettings 滤 ib_fsSyncDir、不含密钥档逐条置空，口径不变），攒约 2MB 即落成子 Blob（WebKit 的 Blob 可离堆存放），收尾由子 Blob 拼装成品；产物 JSON 与旧版逐字节等价（无头浏览器同种子数据新旧对拍：普通档 / 不含密钥档 / 取消勾选档除 exportDate 外全部一致）。失败语义一处微调：某仓中途读失败保留已写出的部分（旧版整仓置空数组），JSON 仍合法、行标 ✕。②检索去全量装载（docx 场景三的同型面）——「搜索消息」与日历天视图此前 dbGetByIndex 把该好友全部消息（含图片 dataURL）一次拉进 JS 堆、搜索还每敲一键拉一次：改 _dbEachByFriend 游标逐条筛选，堆里只留命中 / 当天条目；搜索输入加 220ms 防抖。月历统计原本就走游标，不动。③勘误：上一版修订单误载「另加 .mrow content-visibility:auto」——该方案当轮实测破坏聊天钉底、已撤销、从未进入代码，句已从上版修订单删除。④范围如实：docx 场景二（全局设置页）本轮只查未改——静态入口未见整仓装载，待粉丝提供 IB 版本号与复现动作再治；大会话的 DOM 行与 _msgs 不回收留待下一轮，不盲改核心滚动。 -->
+<!-- InternalBeyond Mobile v137-p · 抽屉日历与蓝牙说明书轮（按日期查看聊天记录 / 蓝牙设备说明书 / 分段气泡材质修复 / 毛玻璃视窗门控） -->
+<!-- v137-p 修订单：①按日期查看聊天记录——会话抽屉搜索区重排为两行「输入框＋方钮」（搜消息＋日历 / 筛频道＋新建，省一整行），日历按钮进全屏月历（复用站内 ca-grid 组件）：按日聚合当前范围（主线 / 当前频道）消息数、带圆点，点日期把当天全部消息渲染进消息区（与搜索同通路，单日 >400 条截断），天视图工具条可前后翻天与「返回当前」，点年月标题速跳有记录的月份（近 24 个月）。②蓝牙设备说明书（用户自配）——存 _mp.bt.manuals 随备份互通：设备行「说明书」按钮 + 「设备说明书库」（含未连接设备可预建/编辑/删除），编辑框折叠显示下拉看全文（上限 8000 字），支持导入文本文档（≤300KB）与从 ICode 取文（二进制拒收、覆盖前确认）；按地址精确→设备名不分大小写匹配，连接后经 _btManualBlock 注入 system 末尾（与「随开关整块注入」同口径：连/断一台配了说明书的设备重建一次缓存，之后稳定命中），bt_status 里标「已配说明书」。③稳定性治理（用户反馈「频繁异常刷新」）——根因：气泡材质给每个气泡挂 backdrop-filter，每块＝一层合成层＋一次背景快照，列表上滑每页 +50 且不回收、层数无上限，屏幕分辨率越高每层越贵（渲染进程被系统回收→页面重载，「设备越好越容易崩」）；现毛玻璃改视窗门控（IntersectionObserver 只给视窗上下各约 1.5 屏的气泡挂 .ibbf，离开即摘，底色描边照旧全量、观感不变；IO 缺席退回全量），另加聊天图片 loading=lazy（离屏图不解码）。④分段气泡材质修复（反馈截图：磨砂黑白底白字 / 磨砂灰白底黑字 / 气泡下多一层磨砂）——根因单一：材质规则只认 .m，分段模式下 .m 已退化为透明容器（.bs-msg）、真正的气泡 .bs-seg 拿不到材质底色而文字色照改；.m.bs-msg 的 background:none 只清底色不清毛玻璃。现按「谁在当气泡」分派（.m:not(.bs-msg) 与 .bs-seg 吃底色描边，.m.bs-msg 显式摘毛玻璃），已在无头 Chromium 里复现三症状并验证修复。 -->
+<!-- v136-p 修订单：①「工具调用」卡文案精简重排——设置说明只讲“是什么、怎么用”：工具连续调用轮数与蓝牙每回复调用上限两枚上限设置并排绑定、说明合并为一段；「其余工具每回复固定上限」清单从设置卡撤下，移入 GUIDE → 工具调用；「续答触发范围」六枚按钮由标签胶囊（chip）改为与页面其他按钮一致的按钮式（.btn 基形，点亮态仍为强调色；文案、data-k 与存储键 outputSettings.toolTrig 全部不变）。②AI付 整卡（开关 / 单笔上限 / 收款方名单）从 API 页 → 工具 迁至 DIY 页 → MCP 分区（MCP 卡之后），id 与存储键不变；卡内新增「每回复调用上限」（默认 2、可选 1/2/3/5，存 pay.percap）——执行器（原先写死 2 笔）与系统能力行同步改按此值（改动后各家提示缓存重热一次，与改单笔上限同性质，属预期）；GUIDE 的 AI付 路径与说明同步更新。③三枚新桌面图标：工坊（DIY 创意工坊）/ 好友（Friends 名片墙）/ 名片（Space），线条款式与既有 12 枚均不重样（积木三块 / 叠卡头像行 / 圆角证件牌）；老用户已拖过的排列不动、新图标追加在排列末尾（通常最后一页），可拖动、可在 设置 → Desk 隐藏（与此前新增「设置」图标同机制）。本轮与 App 内测版 v138-b 的对应四项同步；App 侧其余更新（语音通话、原生定位）不随本版进入 PWA。 -->
+<!-- InternalBeyond Mobile v135-p · 设置分组与蓝牙上限轮（「工具调用」独立分组 / 蓝牙每回复调用上限可调） -->
+<!-- v135-p 修订单：①设置分组——「输出与续写」只留 自动续写轮数 / 单次输出上限；工具连续调用轮数与续答触发范围拆入新分组「工具调用」（纯挪位，id 与存储键不变），并附各工具每回复固定上限一览。②蓝牙每回复调用上限（新设置，默认 4、0=不限，存 outputSettings.btCap，与电脑端同一条记录合并写）——此前蓝牙是唯一没有每回复上限的工具；bt_read+bt_write 合计计数、bt_status 不计，超出的打 _btCap 标记不执行并回告 TA 上限所在；开启调用确认时用户点「执行」视为放行。纯执行器侧改动，不碰 system 注入，零缓存影响。③GUIDE 与设置提示的路径同步改「工具调用」。 -->
+<!-- v134-p 修订单：①记忆生成统一管线——Chat 已验证的 JSON 生成/解析抽为 _ibGenMemCore；Letters 接入（修裸记录：原先只落 content，无标题无归类无重要性，记忆卡与检索不可用）；Blog 阅读页补「生成记忆」入口（GUIDE 与电脑端早有、手机端一直缺失）；字段口径对齐电脑端四分类。②「记忆库写入」工具：指令书补 title 与 domain 参数（此前执行器认 domain 但从没告诉 AI，永远落「日常」；标题机械截取正文前 18 字），domain 校验收敛为四分类；换指令书文案＝开了该工具的会话重建一次缓存后照常命中，注入内容仍为常量、不引入逐轮变化。 -->
+<!-- v133-p 修订单：续答触发范围——上一轮把动作类指令从续答里摘掉后，取数类（外部工具 / MCP / 蓝牙读取 / 记忆检索 / 定位天气手机状态 / 查看动态与日程）仍一律续答；现在 API 页 → 全局设置 → 输出与续写 →「工具连续调用轮数」下新增六枚「续答触发范围」开关，逐类可关：关掉的类别结果不再另起一条，而是随你的下一条消息回传（与动作类同一通道，fed 机制不变）；全部关掉等同轮数设 0；ICode 工作区任务不受影响，始终连续执行。存 outputSettings.toolTrig（缺省全开），与电脑端共用记录、合并写。 -->
+<!-- InternalBeyond Mobile v132-p · 蓝牙多连与续答治理轮（蓝牙多设备并联 / 动作类指令不再连发两条 / 续答轮接停止键） -->
+<!-- v132-p 修订单：①蓝牙多设备并联——此前网页层只有一个槽位（_bt={dev,chars}），再连一台即顶掉前一台；现改为设备列表：设置页蓝牙卡每台一行（名称 / 特征值 / 各自「断开」），「连接设备」变为追加、「全部断开」一键清空；bt_status 列出全部设备，bt_read / bt_write 新增可选参数 dev（设备名 / 序号），只连一台或 uuid 不冲突时可省；连接 / 读 / 写加超时（设备不回包时工具调用不再无限期挂起、会话不再锁死）。Web Bluetooth 允许多条 GATT 并存（安卓 Chrome / Edge）。②「连发两条」治理——工具连续调用轮本为取数类设计（结果回传后让 AI 接着答），写记忆 / 留便笺 / 日历写入 / 蓝牙写入 / 发动态·评论·转发·签名 / 播放器 / AI付 这类动作类指令执行完只剩一句成败，被要求「继续」只能硬凑一句：现动作类不再触发续答轮（结果照旧随下一条消息回传，fed / _gwFeedQ 通道不变；续答轮若被同批取数类触发则一并回传）；设置项「工具连续调用轮数」与 GUIDE 文案同步改清楚。③续答轮接停止键——此前续答轮 callAIC 传的是 null 信号，停止键按了没反应、期间也发不出新消息，而 callAI 自身无超时，服务商一卡整条会话锁在「发送中」直到刷新；现接入本轮 AbortController，中断即落回正常状态并提示「已停止」。 -->
 <!-- InternalBeyond Mobile v131-p · 联网搜索与缩放修复轮（Parallel / Exa 联网搜索预设 / 界面缩放下开屏与背景铺满修复） -->
 <!-- v131-p 修订单：①联网搜索 MCP 预设——DIY 页 MCP 卡新增「Parallel 联网搜索」「Exa 联网搜索」两张预设（两家官方公开端点，实测允许浏览器跨域、无需令牌；Tavily 官方端点预检 405 / 需 OAuth，浏览器直连不通，未收录），无令牌预设点「添加」即入列并自动连接；搜索类 tools/call 超时放宽到 60s；服务器列表迷你徽标补底色；GUIDE 补段；②界面缩放（body zoom）把 vh/lvh/dvh 长度一并缩放——开屏层、站点背景两层、Blog 编辑页三处「铺满视口」高度随之变短，缩放 90% 时底部露出 10%（开屏中途露出锁屏一条，用户截图）：开屏层按 1/scale 反向缩放、其余两处经 --ibZoomInv 乘回。 -->
 <!-- InternalBeyond Mobile v130-p · 稳态修复轮（输出上限自适应 / 便笺可删 / 双端记忆卡互认 / Desk 跨分屏拖排 / 对话栏毛玻璃方块 / 间隔输入框） -->
@@ -363,6 +376,7 @@ body.theme-infernal .sel select{background:rgba(14,22,42,0.5)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-size:0.76rem;color:var(--tx2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--soft);cursor:pointer}
 .chip.on{color:var(--acc);border-color:var(--acc);background:rgba(114,168,216,0.12)}
+#out-trig .btn{padding:8px 14px;font-size:0.76rem;letter-spacing:0;color:var(--tx3)}#out-trig .btn.on{color:var(--acc);border-color:var(--acc);background:rgba(114,168,216,0.12)}/* v136-p：①触发范围按钮式——沿用 .btn 基形，点亮态用与其他 on 态一致的强调色 */
 .set-card{background:var(--panel);border:1px solid var(--panel-line);border-radius:18px;padding:16px;margin-bottom:12px}
 .set-card>.sc-t{font-family:var(--disp);font-weight:300;font-size:0.62rem;letter-spacing:0.28em;color:var(--tx3);text-transform:uppercase;margin-bottom:12px}
 .swatches{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -557,6 +571,36 @@ body.theme-infernal .mdr pre.md-cb{background:rgba(8,13,26,0.5)}
   font-size:inherit;line-height:inherit;white-space:inherit;word-wrap:break-word}
 body.theme-infernal .bs-seg{background:rgba(175,195,228,0.08);border-color:var(--glass-line);box-shadow:0 4px 18px rgba(0,0,0,0.18)}
 .bs-seg.mdr{white-space:normal}
+/* ═ v139-a·v137-p 任务1：抽屉搜索行与「按日期查看」日历页 ═ */
+.tp-srow{flex:none;display:flex;gap:8px;align-items:stretch}
+.tp-srow .tp-sp{flex:1;min-width:0}
+.tp-sq{flex:none;width:44px;min-height:40px;border-radius:16px;border:1px solid var(--line);background:var(--soft);color:var(--acc);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.tp-sq svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tp-sq:active{transform:scale(0.95)}
+#cvcal{position:fixed;inset:0;z-index:45;display:flex;flex-direction:column;background:#dfe9f6;opacity:0;transform:translateY(3%);pointer-events:none;transition:transform 0.26s cubic-bezier(0.32,0.72,0.28,1),opacity 0.22s}/* z 在会话(35)上、sheet(51)与抽屉(60)下：月份速跳的动作单照常盖在日历上 */
+body.theme-infernal #cvcal{background:#141a2e}
+#cvcal[hidden]{display:none}
+#cvcal.open{opacity:1;transform:none;pointer-events:auto}
+#cvcal .cvcal-head{flex:none;display:flex;align-items:center;gap:8px;padding:calc(10px + var(--sat)) 12px 10px;border-bottom:1px solid var(--glass-line)}
+#cvcal .cvcal-tt{flex:1;min-width:0;text-align:center}
+#cvcal #cvcal-name{font-family:var(--disp);font-weight:300;font-size:0.9rem;letter-spacing:0.16em;color:var(--tx)}
+#cvcal #cvcal-sub{font-size:0.62rem;color:var(--tx3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#cvcal .cvcal-body{flex:1;overflow-y:auto;padding:12px 14px calc(18px + var(--sab));-webkit-overflow-scrolling:touch}
+#cvcal .cvcal-nav{display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:8px}
+#cvcal .cvcal-nav .ca-ym{cursor:pointer}
+#cvcal .ca-cell.has{cursor:pointer}
+#cvcal .ca-cell.has:active{background:var(--soft)}
+#cvcal .ca-cell.no{cursor:default}
+#cvcal .ca-cell.no b{color:var(--tx3);opacity:0.4}
+.cvcal-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:8px 10px;margin:0 0 4px;border-radius:14px;background:var(--sheet);border:1px solid var(--glass-line);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
+.cvcal-bar .cvb-t{flex:1;min-width:0;font-size:0.74rem;color:var(--tx2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cvcal-bar .cvb-nav{flex:none;width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--tx2);font-size:1rem;line-height:1;cursor:pointer;padding:0}
+.cvcal-bar .cvb-x{flex:none;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:var(--acc);font-size:0.72rem;padding:6px 12px;cursor:pointer;font-family:inherit}
+/* ═ v139-a·v137-p 任务2：蓝牙说明书库 / ICode 取文行 ═ */
+.btlib-row{display:flex;align-items:center;gap:10px;padding:10px 11px;border:1px solid var(--glass-line);border-radius:13px;background:var(--soft);margin-bottom:8px;cursor:pointer}
+.btlib-row .btlib-m{flex:1;min-width:0}
+.btlib-row b{display:block;font-size:0.84rem;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btlib-row small{display:block;font-size:0.64rem;color:var(--tx3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 操作卡片 */
 
 .ws-op-card{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:8px 12px 8px 13px;margin:7px 0;border-radius:11px;background:rgba(175,195,228,0.07);border:1px solid rgba(165,188,230,0.16);transition:background 0.2s,border-color 0.2s;max-width:420px;font-family:'Noto Sans SC',sans-serif;white-space:normal}
@@ -1458,7 +1502,6 @@ body.theme-infernal .pw-bar{background:linear-gradient(180deg,rgba(255,255,255,0
 #tp-name{font-family:var(--serif);font-weight:600;font-size:1.06rem;color:var(--tx)}
 #tp-sub{font-size:0.66rem;color:var(--tx3);margin-top:2px}
 #tp-dummy-threads{display:none}
-.tp-new{flex:none;text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:0.84rem;color:var(--acc);cursor:pointer}
 #tp-list{flex:1}
 .tp-g{font-family:var(--disp);font-weight:300;font-size:0.56rem;letter-spacing:0.26em;color:var(--tx3);text-transform:uppercase;margin:16px 6px 7px}
 .tp-g:first-child{margin-top:4px}
@@ -2035,7 +2078,7 @@ raf=requestAnimationFrame(frame);
         <p><strong>系统与辅助</strong>：API 页 → Presence（定时推送）可设固定间隔或时段内随机触发，并可设勿扰时段（时段内暂停定时推送与自动发动态）。通知设置已并入 API 页 → Presence 下方：退到后台时按分档弹系统通知（需浏览器授权），停留在应用内则由顶部横幅提醒接手；每位 AI 是否参与定时推送，可在其配置页「主动消息」单独关闭。Home 设置 → Space → Display 提供竖屏方向锁与触控目标放大。<!-- v101-m 任务3：整墙分段重排 --></p>
         <p><strong>音乐（Desk 图标）</strong>：打开全屏听歌界面。黑胶唱片带唱臂——播放时唱臂落盘、唱片旋转，歌曲封面印在盘芯上并糊化为背景；左侧为大字歌名与逐句滚动歌词（当前歌曲页导入单个 .lrc / .srt / .vtt 会直接绑定；批量导入按文件名匹配）；下方是可拖进度条与五键控制（末位为播放队列），顶栏右上角「＋」添加音乐或歌词。</p>
         <p><strong>一起听</strong>：歌名右侧的小按钮。未配对时点它邀请一位 AI，选定后自动开启共享正在播放；配对后界面上方出现你和 TA 的头像对，下方实时累计一起听的时长，点头像对可「去聊天」或「结束一起听」。TA 会在对话中被告知你正与 TA 一起听这首歌，聊天里的听歌卡片也能一键跳回此界面。</p>
-        <p><strong>日历 App（Desk 图标）</strong>：照桌面端 Calendar 悬浮窗的日程页设计。顶部相遇纪念卡可用 ‹ › 切换查看与本站及每位 AI 的相遇纪念日（已相伴天数＋周年倒计时）；下方列出全部日程，按下一次发生排序，行内含类型 / 日期 / 重复 / 提醒 / 备注，行尾为倒计时角标；右上「＋」新建、点行编辑、点 ✕ 删除，与桌面月历挂件和 AI 的日历标签共用同一份数据。</p>
+        <p><strong>日历 App（Desk 图标）</strong>：照桌面端 Calendar 悬浮窗的日程页设计。顶部相遇纪念卡可用 ‹ › 切换查看与本站及每位 AI 的相遇纪念日（已相伴天数＋周年倒计时进度条）；下方日程按「今天 / 7 天内 / 之后 / 已过去」分组成卡片列表：每行左侧「日期叶」显示下一次发生的月 / 日并按类型着色（计划蓝、纪念与生日粉、备忘灰、相遇金），标题行右侧是倒计时胶囊，第二行以小胶囊列出类型 / 日期 / 重复 / 提醒 / 时间，备注单独成行；右上「＋」新建、点行编辑、点 ✕ 删除，与桌面月历挂件和 AI 的日历标签共用同一份数据。</p><!-- v139-p：#④ 随日程页重设计改写 -->
         <p><strong>底部分区栏</strong>：每个页面各自不同，用于在该页面内部切换分区。Home 页在 Desk 桌面、Space 名片与 Circle AI 名片三个面板间切换，设置从第四格进入。</p>
       </div>
       <div class="g-sec"><!-- v89-m 任务3：触屏手势总表（逐条对应代码内真实存在的手势，iOS / Android 通用） -->
@@ -2078,9 +2121,11 @@ raf=requestAnimationFrame(frame);
           <p><strong>附件</strong>：输入框左侧 <strong>+</strong> 按钮可附加图片（最多 4 张，发送前自动压缩至 1280px，需对应 API 开启视觉能力）或文本类文件（txt / md / json / csv / 代码等，最多 4 个）。文件全文随消息注入，超长自动截断；点消息里的文件标签可查看内容。</p>
           <p><strong>联网搜索</strong>：在该 API 的设置中开启后，请求会携带服务端搜索工具（Anthropic / Gemini / OpenAI 兼容端点支持）；端点不接受搜索参数时本轮自动去除并重发。</p>
           <p><strong>图像生成</strong>：API 页 → 工具 → 启用图像生成后，所有对话中的 AI 都可生成图片（每条回复最多 1 张）：图片直接显示在聊天里并自动存入 ICode，成功图卡底注可点「查看提示词」回看 AI 当时输入的完整生图提示词。生图模型 / 地址 / 密钥留空时沿用当前对话 API，填写后统一改走全局配置；仅 OpenAI 兼容与 Gemini 接口支持。<!-- v86-m：任务 6——补文档 --></p>
-          <p><strong>工具连续调用轮</strong>：外部工具、MCP、记忆检索、查看动态等指令的结果默认在同一条回复内直接回传并让 AI 续答；连续轮数在 API 页 → 全局 → 输出与续写调整（0–5 轮、默认 2；设为 0 时结果只在下一条消息回传）。</p>
+          <p><strong>工具连续调用轮</strong>：外部工具、MCP、记忆检索、定位 / 天气 / 手机状态、蓝牙读取、查看动态等<strong>取数类</strong>指令的结果默认在同一条回复内直接回传并让 AI 续答——所以 TA 会连着发两条：第一条是发起调用，第二条是拿到结果后的回答。连续轮数在 API 页 → 全局设置 → 工具调用 →「工具连续调用轮数」调整（0–5 轮、默认 2；设为 0 时结果只随你的下一条消息回传，不再多出一条）。写记忆、留便笺、写日历、蓝牙写入、发动态 / 评论 / 转发、改签名、控制播放器这类<strong>动作类</strong>指令不会触发续答，成败同样随下一条消息告知 TA。续答进行中可按停止键中断。同一处的「续答触发范围」六枚按钮可逐类关掉续答（外部工具 / MCP / 蓝牙读取 / 记忆检索 / 定位天气手机状态 / 查看动态与日程）：熄灭的类别结果随下一条消息回传、不再多出一条；全部熄灭等同轮数设 0；ICode 工作区任务不受影响。<!-- v132-p → v133-p：+触发范围 --></p>
+          <p><strong>各工具的每回复上限</strong>：为防单条回复连发刷屏，部分工具有固定的每回复执行上限——记忆库写入 3 · 日历 2 · 播放器 1 · 生图 1 · 选项卡 1 · 动态 1（评论 2）· 签名 1，超出的不执行并告知 TA。可调的两处：蓝牙读写上限在 API 页 → 全局设置 → 工具调用；AI付 的每回复上限在 DIY 页 → MCP → AI付 卡内（默认 2）。</p>
+          <p><strong>蓝牙设备说明书</strong>：设置页 → 蓝牙设备，可为每台设备写一份说明书（设备是什么、各特征值对应什么功能、读写格式）。支持手动编辑、导入文本文档、从 ICode 工作区取文；按设备名（或地址）匹配，同名设备连接后自动注入给 AI，无需每轮手动发送。连 / 断一台配了说明书的设备会重建一次提示缓存，之后照常命中。<!-- v139-a·v137-p 任务2 --><!-- v136-p：②固定上限清单自设置卡迁入 --></p>
           <p><strong>语音消息</strong>：按住输入框右侧话筒按钮录音，松开发送，向上滑动 70px 取消（微信式）。配置了转写接口（API 页·工具分区）时自动附文字稿。</p>
-          <p><strong>AI付</strong>：API 页 → 工具 → AI付 开启并录入收款方后，AI 可用 &lt;ws_payreq/&gt; 发起一笔支付：聊天里出现 AI付 卡，你点「打开支付宝付款」亲手完成支付，再点「已完成支付」把结果回传给 TA。默认关闭；金额受单笔上限约束，收款方只能出自你的名单。</p><!-- v97-m 任务7；v98-m 任务3：按拍板改用支付宝官方工具名「AI付」 -->
+          <p><strong>AI付</strong>：DIY 页 → MCP 分区 → AI付 开启并录入收款方后，AI 可用 &lt;ws_payreq/&gt; 发起一笔支付：聊天里出现 AI付 卡，你点「打开支付宝付款」亲手完成支付，再点「已完成支付」把结果回传给 TA。默认关闭；金额受单笔上限约束，收款方只能出自你的名单；每条回复的请求笔数上限默认 2，可在 AI付 卡内调整。<!-- v136-p：②路径与上限说明更新 --></p><!-- v97-m 任务7；v98-m 任务3：按拍板改用支付宝官方工具名「AI付」 -->
           <p><strong>社交圈动态</strong>：Space（个人页）的动态分区与 Desk 的 Circle（社交圈）同属应用内社交圈。你可发文字动态、附至多 1 张配图与定位（需浏览器定位权限），正文中的链接自动可点；每条动态的 ⋮ 可改可见范围、连同评论存入记忆库、或删除。<!-- v101-m 任务5：文案精简分段 --></p>
           <p>获授权的 AI 能在对话里发布、评论与主动翻看动态（放行方式在其独立配置里选「需我确认」或「自动同意」）；开启配图后还能为自己的动态生成插图；开启「允许 TA 撰写签名」后，TA 还能更新自己资料卡上的个性签名（改动即时生效，你可随时改回）。</p>
           <p><strong>流式回复</strong>：AI 的回复以流式逐字呈现，可中途停止，已生成的部分会保留。</p>
@@ -2092,6 +2137,7 @@ raf=requestAnimationFrame(frame);
           <p><strong>Select（选择消息）</strong>：右上角菜单进入选择消息，点选消息（最多 50 条）。底栏操作：「删除」批量删除选中的消息；「封档到此处」选中一条消息作为封档截止点，该消息及之前的所有记录将不再发送给 API（已有封档线时不选消息直接点击可解除封档）；「生成记忆」仅用选中的消息（至少 2 条）生成记忆。</p>
           <p><strong>生成记忆</strong>：右上角菜单 Save Memory，AI 根据近期对话内容总结生成一条记忆，存入记忆库。</p>
           <p><strong>话题频道</strong>：同一位好友下可开多个相互隔离的对话上下文。频道消息不与主线互通；每个频道可单独选择是否注入记忆库。长按频道标签可编辑或删除。</p>
+          <p><strong>按日期查看</strong>：会话抽屉搜索框旁的日历按钮。月历上带圆点的日期表示当天有聊天记录，点日期即在消息区展示当天全部消息，可「前一天 / 后一天」翻页，「返回当前」回到正常视图；点年月标题可快速跳到任一有记录的月份。范围与搜索一致：当前主线或当前话题频道。<!-- v139-a·v137-p 任务1 --></p>
           <p><strong>对话摘要</strong>：开启后旧消息自动压缩为摘要注入上下文，保持长对话的连贯性。设置在 API 页 → 全局；右上角菜单可查看、更新或清除当前对话的摘要。</p>
           <p><strong>群聊</strong>：好友列表底部可创建群聊，选择成员后由各成员依次发言。每个成员只能以自己的身份发言，不会代答；静默成员仅在被 @名字 提到时参与。可选注入公开记忆与思考模式。与电脑版共用同一套群聊数据。</p>
           <p><strong>聊天记录管理</strong>：Data 页·备份，与电脑端一致——按对话多选导出 TXT 或删除（删除连带该对话的话题频道与摘要）。</p>
@@ -2212,6 +2258,7 @@ raf=requestAnimationFrame(frame);
           <p><strong>怎么快速验证某个配置能不能用？</strong> — API 页·工具分区可对每个配置发一次最小请求，验证 Key、地址与模型是否可用。</p>
           <p><strong>Desk 第 1 页怎么摆不下我想要的组件？</strong> — 分页桌面按排序自动装页：把想要的条目长按拖到前面即可挤进第 1 页，装不下的自动顺延；屏幕越高，每页能装越多。</p>
           <p><strong>新出现的「设置」图标是什么？为什么在我这儿排在最后？</strong> — 第 12 枚桌面图标，点按直达设置。老用户保留自己拖过的排列，新图标先追加在末尾（通常在最后一页），拖回想要的位置即可。</p>
+          <p><strong>「工坊 / 好友 / 名片」三枚新图标是什么？</strong> — 分别直达 DIY 创意工坊、Friends 好友名片墙与你的 Space 名片。老用户已拖过的排列不变，新图标追加在排列末尾（通常在最后一页），可拖回想要的位置，也可在 设置 → Desk 里隐藏。<!-- v136-p：③ --></p>
           <p><strong>怎么回到以前上下滚动的桌面？</strong> — Visual → Deco →「桌面布局」选「经典滚动」，随时可再切回来，两边数据互通。</p>
           <p><strong>聊天背景把字衬得看不清？</strong> — 专属聊天背景面板里把「淡化背景」滑杆往右拉，会在背景上叠一层随主题明暗的半透底色。</p>
           <p><strong>装饰件最多放多少？</strong> — 12 枚，每枚图片压缩后总量约 0.9MB 内；叠拍立得最多 3 张、胶片条最多 4 张。</p>
@@ -2441,6 +2488,9 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <button class="sb-app" data-page="data" data-dk="app:data"><span class="sb-ic"><svg viewBox="0 0 24 24"><path d="M12 3v11M8 10l4 4 4-4M4.5 17.5v1A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5v-1"/></svg></span><span class="sb-t">数据</span></button>
         <button class="sb-app" data-page="visual" data-dk="app:visual"><span class="sb-ic"><svg viewBox="0 0 24 24"><path d="M4 7.5h8.5M17.5 7.5H20M4 16.5h2.5M11 16.5h9"/><circle cx="15" cy="7.5" r="2.5"/><circle cx="8.5" cy="16.5" r="2.5"/></svg></span><span class="sb-t">视觉</span></button>
         <button class="sb-app" data-page="guide" data-dk="app:guide"><span class="sb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-2.1 4.3-4.3 2.1 2.1-4.3z"/></svg></span><span class="sb-t">指南</span></button>
+        <button class="sb-app" data-page="diy" data-dk="app:diy"><span class="sb-ic"><svg viewBox="0 0 24 24"><rect x="4" y="12.8" width="6.8" height="6.8" rx="1.5"/><rect x="13.2" y="12.8" width="6.8" height="6.8" rx="1.5"/><rect x="8.6" y="4.4" width="6.8" height="6.8" rx="1.5"/></svg></span><span class="sb-t">工坊</span></button><!-- v136-p：③新图标·DIY 创意工坊（积木三块，与既有 12 枚不重样；data-page 走通用绑定 navTo） -->
+        <button class="sb-app" id="sb-frdapp" data-dk="app:friends"><span class="sb-ic"><svg viewBox="0 0 24 24"><path d="M7.5 5.5h9.5a2.5 2.5 0 0 1 2.5 2.5v7.5"/><rect x="3.5" y="9" width="13.5" height="10" rx="2"/><circle cx="7.4" cy="13.4" r="1.7"/><path d="M10.8 12.6h3.4M10.8 15.4h2.2"/></svg></span><span class="sb-t">好友</span></button><!-- v136-p：③新图标·Friends 好友名片墙（叠卡带头像行） -->
+        <button class="sb-app" id="sb-spaceapp" data-dk="app:space"><span class="sb-ic"><svg viewBox="0 0 24 24"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.5"/><circle cx="12" cy="9.9" r="2.7"/><path d="M7.2 17.4a5.3 5.3 0 0 1 9.6 0"/></svg></span><span class="sb-t">名片</span></button><!-- v136-p：③新图标·Space 名片（圆角证件牌） -->
       <div class="wgt notes-wgt dk-half" id="notes-wgt" data-dk="notes">
           <div class="nw-note" id="nw-note"><div class="nw-body" id="nw-body"></div><div class="nw-date" id="nw-date"></div></div>
       </div>
@@ -2795,9 +2845,18 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <div class="f-group" style="margin:8px 0 6px"><label>单次输出上限 <span class="lb-note">（默认自动：按服务商顶格给，超限自动降档）</span></label>
           <div class="sel"><select id="out-maxtok"><option value="0">自动（推荐）</option><option value="4096">4096</option><option value="8192">8192</option><option value="16384">16384</option><option value="32768">32768</option><option value="65536">65536</option><option value="131072">131072</option></select></div></div>
         <p class="hint">一次回复最多生成多少 token（思考链与正文合计）。此前固定为 4096，思考链稍长正文就会被截断成空回复；现与电脑版同口径顶格给出。个别中转不接受大上限时会按其报错自动降档，一般无需手动调；只有明确想限制长度时才选具体数值。<!-- v130-p --></p>
-        <div class="f-group" style="margin:8px 0 6px"><label>工具连续调用轮数 <span class="lb-note">（默认 2；0 = 结果只在下一条消息回传）</span></label>
+      </div>
+      <!-- ── 工具调用 ──（v137-a·v135-p：#5 从「输出与续写」拆出，工具相关设置集中一处；纯挪位，id 与存储键不变） -->
+      <div class="sec-label">工具调用</div>
+      <div class="card fx-card"><div class="fx-ico"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4.5 4.5 0 0 0-6.1 5.9L4 16.8V20h3.2l4.4-4.4a4.5 4.5 0 0 0 5.9-6.1L14.6 12.4l-3-3z"/></svg></div>
+        <div class="f-group" style="margin:8px 0 6px"><label>工具连续调用轮数 <span class="lb-note">（默认 2；0 = 关闭续答）</span></label>
           <div class="sel"><select id="out-tools"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option></select></div></div>
-        <p class="hint">AI 在对话里调用外部工具 / MCP / 定位天气 / 查看动态等取数指令后，结果立即回传并让 TA 在同一轮里继续作答（可再次调用），最多这么多轮。<!-- v84-m r1：任务 1 --></p>
+        <div class="f-group" style="margin:10px 0 6px"><label>蓝牙每回复调用上限 <span class="lb-note">（默认 4；0 = 不限）</span></label>
+          <div class="sel"><select id="out-btcap"><option value="0">0（不限）</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="10">10</option></select></div></div><!-- v136-p：①两枚上限设置并排绑定（纯挪位，id 与存储键不变） -->
+        <p class="hint">连续调用轮数：取数类指令（外部工具 / MCP / 记忆检索 / 定位 天气 手机状态 / 蓝牙读取 / 查看动态等）的结果立即回传，TA 在同一条回复后接着作答、并可再次调用，最多此轮数；动作类指令（写记忆 / 留便笺 / 写日历 / 蓝牙写入 / 发动态 / 播放器等）不触发续答，成败随你的下一条消息回传；设为 0 时取数类同样随下一条消息回传。蓝牙上限：同一条回复内 bt_read＋bt_write 的合计次数，超出的不执行并告知 TA；bt_status 查询不计数；开启「调用确认」后你点「执行」的调用不受限。<!-- v136-p：①文案精简合并（v84-m r1 / v134-a / v137-a·v135-p：#5 原两段说明并轨） --></p>
+        <div class="f-group" style="margin:10px 0 4px"><label>续答触发范围 <span class="lb-note">（点亮＝该类结果立即续答；熄灭＝随下一条消息回传）</span></label>
+          <div id="out-trig" style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px"><button type="button" class="btn on" data-k="http">外部工具</button><button type="button" class="btn on" data-k="mcp">MCP</button><button type="button" class="btn on" data-k="bt">蓝牙读取</button><button type="button" class="btn on" data-k="mem">记忆检索</button><button type="button" class="btn on" data-k="env">定位 / 天气 / 手机状态</button><button type="button" class="btn on" data-k="view">查看动态 / 查询日程</button></div></div><!-- v136-p：①按钮式（chip→btn；data-k 与存储键不变） -->
+        <p class="hint" style="margin-bottom:0">熄灭的类别结果随你的下一条消息回传、不再另起一条；全部熄灭等同轮数设 0。ICode 工作区任务不受此处影响，始终连续执行。<!-- v136-p：①文案精简（v135-a / v133-p 原段） --></p>
       </div>
       <div class="card fx-card"><div class="fx-ico"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-4.4 3.4c-.3.24-.6.02-.6-.36z"/><path d="M8 9.5h8M8 13h5"/></svg></div>
         <div class="f-group"><label>聊天排版净化（Markdown 渲染处理）</label>
@@ -2882,15 +2941,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
           <div class="lb-note" id="app-ver" style="display:block;padding:2px 0">—</div></div>
         <p class="hint">本卡保存后会更新本机的 iOS / 书签名称与图标、状态栏主题色和安全区。Android / Chromium 的正式 PWA 安装使用仓库根目录的 manifest.webmanifest、icon-192.png、icon-512.png；如需改变安卓安装名称或图标，请同步修改并提交这三个静态文件。离线缓存：HTTPS 部署且同目录放置 ib-sw.js 时自动注册。</p>
       </div>
-      <div class="sec-label">AI付（Alipay · Agent Payment）</div><!-- v97-m 任务7：默认关闭；B 档——AI 发起请求卡，用户亲手完成支付并回传结果 -->
-      <div class="glass card">
-        <div class="tog nb"><div class="tog-m"><div class="tog-t">启用 AI付</div><div class="tog-s">支付宝面向智能体的支付工具同名功能。开启后 AI 可用 &lt;ws_payreq/&gt; 在聊天里生成一张 AI付 卡：写明用途、金额与收款方。付款永远由你亲手在支付宝完成，点「已完成支付 / 拒绝」后结果才回传给 TA。</div></div><div class="sw2" id="pay-on"></div></div>
-        <div class="f-group" style="margin-top:12px"><label>单笔上限（元）</label><input id="pay-cap" type="text" inputmode="decimal" placeholder="200"><!-- v98-m：浏览器原生数字步进器退役，改站内文本框＋JS 钳制 --></div>
-        <div class="f-group" style="margin-bottom:6px"><label>收款方名单 <span class="lb-note">（AI 只能从这里选，不能自拟收款目标）</span></label><div id="pay-list"></div></div>
-        <div class="f-group" style="margin-bottom:6px"><input id="pay-nm" maxlength="12" placeholder="收款方名称（例：奶茶基金）" style="margin-bottom:8px"><input id="pay-lk" placeholder="https://qr.alipay.com/… 或 alipays://…"></div>
-        <button class="btn" id="pay-add" style="width:100%">添加收款方</button>
-        <p class="hint" style="margin:10px 0 0">收款链接来自支付宝「收钱码 → 链接」或商家收款页。收款方名单会写进该 AI 的系统能力行：增删名单后，各家提示缓存会重热一次，属预期行为。</p>
-      </div>
+      <!-- v136-p：② AI付 整卡迁往 DIY 页 → MCP 分区（原位于此；id 与存储键不变） -->
       <div class="sec-label">连接测试</div>
       <div class="card" id="tool-ping"></div>
       <div class="sec-label">用量统计</div>
@@ -2916,6 +2967,16 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
         <button class="btn wide" id="mcp-add">＋ 添加服务器</button>
       </div>
       <p class="hint">支持多服务器并行接入，每个服务器可独立启用或禁用其工具。连接失败时请检查跨域（CORS）设置。麦当劳 / 瑞幸预设已预填官方端点，到对应开放平台（open.mcd.cn/mcp、open.lkcoffee.com）登录领取个人 Token 填入令牌栏即可连接。配置随备份导出，电脑版不读取手机端的 MCP 列表。</p>
+      <div class="sec-label">AI付（Alipay · Agent Payment）</div><!-- v136-p：②自 API 页 → 工具 迁入（v97-m 任务7 原卡；id 与存储键不变）；默认关闭；B 档——AI 发起请求卡，用户亲手完成支付并回传结果 -->
+      <div class="glass card">
+        <div class="tog nb"><div class="tog-m"><div class="tog-t">启用 AI付</div><div class="tog-s">支付宝面向智能体的支付工具同名功能。开启后 AI 可用 &lt;ws_payreq/&gt; 在聊天里生成一张 AI付 卡：写明用途、金额与收款方。付款永远由你亲手在支付宝完成，点「已完成支付 / 拒绝」后结果才回传给 TA。</div></div><div class="sw2" id="pay-on"></div></div>
+        <div class="f-group" style="margin-top:12px"><label>单笔上限（元）</label><input id="pay-cap" type="text" inputmode="decimal" placeholder="200"><!-- v98-m：浏览器原生数字步进器退役，改站内文本框＋JS 钳制 --></div>
+        <div class="f-group"><label>每回复调用上限 <span class="lb-note">（默认 2）</span></label><div class="sel"><select id="pay-percap"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option></select></div></div><!-- v136-p：②新设置 pay.percap——执行器与系统能力行按此值（原写死 2 笔） -->
+        <div class="f-group" style="margin-bottom:6px"><label>收款方名单 <span class="lb-note">（AI 只能从这里选，不能自拟收款目标）</span></label><div id="pay-list"></div></div>
+        <div class="f-group" style="margin-bottom:6px"><input id="pay-nm" maxlength="12" placeholder="收款方名称（例：奶茶基金）" style="margin-bottom:8px"><input id="pay-lk" placeholder="https://qr.alipay.com/… 或 alipays://…"></div>
+        <button class="btn" id="pay-add" style="width:100%">添加收款方</button>
+        <p class="hint" style="margin:10px 0 0">收款链接来自支付宝「收钱码 → 链接」或商家收款页。收款方名单与两处上限会写进该 AI 的系统能力行：增删改后各家提示缓存会重热一次，属预期行为。</p>
+      </div>
 
     </div>
     <div class="psec" id="sec-diy-tool">
@@ -2930,12 +2991,13 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
       <p class="hint">请求由浏览器直接发出，目标接口需允许跨域（CORS）。此处与电脑版共用同一份工具列表，两端改动互通。</p>
       <div class="sec-label">蓝牙设备（Web Bluetooth）</div>
       <div class="card fx-card"><div class="fx-ico"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M12 2v20l5-5-5-5 5-5z"/></svg></div>
-        <div class="tog"><div class="tog-m"><div class="tog-t">允许 AI 调用蓝牙工具</div><div class="tog-s">连接设备后，AI 可用 bt_status / bt_read / bt_write 查看并读写设备数据。</div></div><div class="sw2" id="bt-ai"></div></div>
+        <div class="tog"><div class="tog-m"><div class="tog-t">允许 AI 调用蓝牙工具</div><div class="tog-s">连接设备后，AI 可用 bt_status / bt_read / bt_write 查看并读写设备数据；可同时连接多台，AI 用 dev 参数（设备名或序号）区分；每台设备可配一份「说明书」，连接后自动注入给 AI。</div></div><div class="sw2" id="bt-ai"></div></div>
         <div class="f-group" style="margin-top:10px"><label>服务 UUID <span class="lb-note">（选填，逗号分隔；不填按常见标准服务扫描）</span></label><input id="bt-svc" placeholder="例如 0000ffe0-0000-1000-8000-00805f9b34fb" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--glass-line);background:var(--soft);color:var(--tx);font-size:0.88rem"></div>
-        <div style="display:flex;gap:10px;margin-top:10px"><button class="btn primary" id="bt-conn" style="flex:1">连接设备</button><button class="btn" id="bt-off" style="flex:1">断开</button></div>
+        <div style="display:flex;gap:10px;margin-top:10px"><button class="btn primary" id="bt-conn" style="flex:1">连接设备</button><button class="btn" id="bt-off" style="flex:1">全部断开</button></div>
         <p class="hint" id="bt-state" style="margin-bottom:0">未连接。</p>
         <div id="bt-chars"></div>
-        <p class="hint">仅安卓 Chrome / Edge 支持（iOS 不支持 Web Bluetooth）。连接必须由你手动点按发起，AI 只能操作已连接的设备。</p>
+        <button class="btn wide" id="bt-manlib" style="margin-top:10px">设备说明书库</button><!-- v139-a·v137-p 任务2 -->
+        <p class="hint">仅安卓 Chrome / Edge 支持（iOS 不支持 Web Bluetooth）。连接必须由你手动点按发起、可依次连接多台（每台一行、各自可断开），AI 只能操作已连接的设备；同一台设备一次只处理一个读写请求，多台之间互不阻塞。设备行的「说明书」为该设备写一份给 AI 的使用说明（是什么、各特征值对应什么、读写格式），同名设备连接时自动注入、不用每轮手动发；「设备说明书库」管理全部说明书（含未连接的设备）。<!-- v139-a·v137-p 任务2 --><!-- v132-p --></p>
       </div>
       <div class="sec-label">文件解析库</div>
       <div class="card fx-card"><div class="fx-ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
@@ -3162,13 +3224,31 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
     <div class="tp-mask"></div>
     <aside class="tp-panel glass">
       <div class="tp-who"><div class="mh-ava" id="tp-ava"></div><div class="tp-who-m"><div id="tp-name"></div><div id="tp-sub"></div></div></div>
-      <label class="spill tp-sp"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="tp-search" placeholder="搜索当前对话…" autocomplete="off"></label>
-      <label class="spill tp-sp"><svg viewBox="0 0 24 24"><path d="M9 4v16M4 9h16"/></svg><input id="tp-th-search" placeholder="搜索话题频道…" autocomplete="off"></label>
-      <button class="tp-new" id="tp-new">＋ 新建话题频道</button>
+      <div class="tp-srow"><label class="spill tp-sp"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="tp-search" placeholder="搜索消息…" autocomplete="off"></label><button class="tp-sq" id="tp-cal" type="button" title="按日期查看聊天记录" aria-label="按日期查看聊天记录"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></button></div><!-- v139-a·v137-p 任务1：搜索区重排——两个整行搜索框并成两行「输入框＋方钮」：第一行搜消息＋日历（都是找旧消息），第二行筛频道＋新建；省一整行 -->
+      <div class="tp-srow"><label class="spill tp-sp"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg><input id="tp-th-search" placeholder="筛选话题频道…" autocomplete="off"></label><button class="tp-sq" id="tp-new" type="button" title="新建话题频道" aria-label="新建话题频道"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
       <div id="tp-list"></div>
       <div id="tp-dummy-threads"></div>
 
     </aside>
+  </div>
+  <div id="cvcal" hidden><!-- v139-a·v137-p 任务1：按日期查看聊天记录 -->
+    <div class="cvcal-head glass">
+      <button class="icon-btn" id="cvcal-back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="cvcal-tt"><div id="cvcal-name">按日期查看</div><div id="cvcal-sub"></div></div>
+      <button class="ca-todaybtn icon-btn" id="cvcal-today" type="button" style="width:auto;padding:0 6px">今天</button>
+    </div>
+    <div class="cvcal-body">
+      <div class="cvcal-nav">
+        <button class="ca-nb" id="cvcal-py" type="button" title="上一年"><svg viewBox="0 0 24 24"><path d="M11 5l-7 7 7 7M20 5l-7 7 7 7"/></svg></button>
+        <button class="ca-nb" id="cvcal-pm" type="button" title="上一月"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="ca-ym" id="cvcal-ym" title="快速跳转月份">—</div>
+        <button class="ca-nb" id="cvcal-nm" type="button" title="下一月"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button class="ca-nb" id="cvcal-ny" type="button" title="下一年"><svg viewBox="0 0 24 24"><path d="M13 5l7 7-7 7M4 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="ca-wh"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+      <div class="ca-grid" id="cvcal-grid"></div>
+      <p class="hint" id="cvcal-stat" style="margin:12px 4px 0"></p>
+    </div>
   </div>
   <div id="cv-drawer" hidden><div class="cvd-mask"></div><div class="cvd-panel glass">
     <div class="cvd-name" id="cvd-name"></div><div class="cvd-sub" id="cvd-sub"></div>
@@ -3527,6 +3607,28 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
   <div class="sheet-btns"><button class="btn danger" id="ibte-del" style="display:none">删除</button><button class="btn" data-close="1">取消</button><button class="btn primary" id="ibte-save">保存</button></div>
 </div>
 
+<div class="sheet" id="sheet-btman"><!-- v139-a·v137-p 任务2：蓝牙设备说明书编辑 -->
+  <h3>设备说明书</h3>
+  <div class="f-group"><label>设备名 * <span class="lb-note">（与蓝牙设备名一致时自动匹配）</span></label><input id="btm-name" maxlength="48" placeholder="如 Mi Band 8"></div>
+  <div class="f-group"><label>说明书内容 * <span class="lb-note" id="btm-cnt">0 / 8000 字</span></label><textarea id="btm-text" rows="8" placeholder="写给 AI 看：这台设备是什么、各特征值（UUID）对应什么功能、读写格式与注意事项……" style="max-height:34vh;overflow-y:auto"></textarea></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="btm-file-btn" type="button">导入文档</button><button class="btn" id="btm-ic-btn" type="button">从 ICode 导入</button></div>
+  <p class="hint" style="margin:10px 0 0">编辑框只显示一部分，下拉可看全文。同名设备连接后自动注入给 AI（bt_read / bt_write 前 TA 会先看这份说明书），不用每轮手动发；也可为未连接的设备预先建档。</p>
+  <div class="sheet-btns"><button class="btn danger" id="btm-del" style="display:none">删除</button><button class="btn" data-close="1">取消</button><button class="btn primary" id="btm-save">保存</button></div>
+</div>
+<input type="file" id="btm-file" accept=".txt,.md,.markdown,.json,.log,.csv,.text,text/plain" hidden>
+
+<div class="sheet" id="sheet-btlib"><!-- v139-a·v137-p 任务2：设备说明书库 -->
+  <h3>设备说明书库</h3>
+  <div id="btlib-list" style="max-height:46vh;overflow-y:auto"></div>
+  <div class="sheet-btns"><button class="btn" id="btlib-add">＋ 新增</button><button class="btn primary" data-close="1">关闭</button></div>
+</div>
+
+<div class="sheet" id="sheet-btic"><!-- v139-a·v137-p 任务2：从 ICode 选择文本文件 -->
+  <h3 style="display:flex;align-items:center;gap:8px"><button class="icon-btn" id="btic-back" type="button" style="display:none;width:30px;height:30px"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M15 5l-7 7 7 7"/></svg></button><span id="btic-title">从 ICode 选择文本文件</span></h3>
+  <div id="btic-list" style="max-height:46vh;overflow-y:auto"></div>
+  <div class="sheet-btns"><button class="btn primary" id="btic-x" type="button">取消</button></div>
+</div>
+
 <div class="sheet" id="sheet-cvam">
   <div class="sec-label" style="margin-top:0">AUTO MEMORY 档案</div>
   <div id="cvam-list" style="max-height:52vh;overflow-y:auto"></div>
@@ -3724,6 +3826,8 @@ function openDB(){return new Promise((resolve,reject)=>{
 })}
 function dbGet(s,k){return new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 function dbGetAll(s){return new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function dbEach(s,cb){return new Promise((res,rej)=>{try{const req=db.transaction(s).objectStore(s).openCursor();req.onsuccess=ev=>{const c=ev.target.result;if(!c){res();return}try{cb(c.value)}catch(e){}c.continue()};req.onerror=()=>rej(req.error)}catch(e){rej(e)}})}/* v138-p·v140-a #①：游标逐条走仓（主键序与 getAll 一致）——导出不再整仓载入 */
+function _dbEachByFriend(fid,cb){return new Promise((res,rej)=>{try{const st=db.transaction('chatMessages').objectStore('chatMessages');let src=null;try{src=st.index('byFriend')}catch(e){}const req=src?src.openCursor(IDBKeyRange.only(fid)):st.openCursor();req.onsuccess=ev=>{const c=ev.target.result;if(!c){res();return}const v=c.value||{};if(src?true:v.friendId===fid){try{cb(v)}catch(e){}}c.continue()};req.onerror=()=>rej(req.error)}catch(e){rej(e)}})}/* v138-p·v140-a #②：按好友游标逐条——检索不再把全部消息拉进堆（与 _cvcalBuild 同款走法） */
 function dbCount(s){return new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).count();r.onsuccess=()=>res(r.result||0);r.onerror=()=>rej(r.error)})}
 function dbGetByIndex(s,idx,val){return new Promise((res,rej)=>{const r=db.transaction(s).objectStore(s).index(idx).getAll(IDBKeyRange.only(val));r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
 function dbPut(s,v){return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).put(v);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
@@ -3796,7 +3900,7 @@ try{document.addEventListener('visibilitychange',function(){if(!document.hidden)
 function _mpNorm(m){
   if(!m.perAi)m.perAi={};
   if(!m.chat)m.chat={mdMode:'full',bubbleSplit:false};
-  if(!m.bt)m.bt={aiTools:false};
+  if(!m.bt)m.bt={aiTools:false};if(!Array.isArray(m.bt.manuals))m.bt.manuals=[];/* v139-a·v137-p 任务2 */
   if(!m.mcp)m.mcp={enabled:false,confirm:true,servers:[]};
   if(!Array.isArray(m.mcp.servers))m.mcp.servers=[];
   if(!m.profile)m.profile={};
@@ -4050,10 +4154,17 @@ function _vzCss(css,u){
          gray:{l:['rgba(128,138,156,0.3)','rgba(140,152,172,0.42)'],d:['rgba(120,132,154,0.24)','rgba(150,164,188,0.26)'],blur:22}};
   var bs=B[u.bubStyle];
   if(bs){
+    /* v139-a·v137-p 任务4：材质按「谁在当气泡」分派——分段模式下 .m 是透明容器（.bs-msg），真正的气泡是每个 .bs-seg；
+       旧规则只认 .m：分段气泡拿不到材质底色（保持自带近白底）而文字色照改，于是磨砂黑＝白底白字、磨砂灰＝白底黑字（粉丝截图）；
+       .m.bs-msg 的 background:none 又只清底色不清毛玻璃，段落下方再铺一块磨砂矩形。三个症状同一根因。 */
     [['l','body:not(.theme-infernal)'],['d','body.theme-infernal']].forEach(function(p){var v=bs[p[0]];
-      css.push(p[1]+' .m{background:'+v[0]+';border-color:'+v[1]+';-webkit-backdrop-filter:blur('+bs.blur+'px) saturate(1.4);backdrop-filter:blur('+bs.blur+'px) saturate(1.4);text-shadow:none}');
+      css.push(p[1]+' .m:not(.bs-msg),'+p[1]+' .m.bs-msg .bs-seg{background:'+v[0]+';border-color:'+v[1]+';text-shadow:none}');
       css.push(p[1]+' .m.user{border-color:rgba(114,168,216,0.5)}');
     });
+    css.push('.m.bs-msg{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;text-shadow:none}');
+    css.push('.m:not(.bs-msg),.m.bs-msg .bs-seg{-webkit-backdrop-filter:blur('+bs.blur+'px) saturate(1.4);backdrop-filter:blur('+bs.blur+'px) saturate(1.4)}');
+    css.push('#cv-msgs .m:not(.bs-msg):not(.ibbf),#cv-msgs .m.bs-msg .bs-seg:not(.ibbf){-webkit-backdrop-filter:none;backdrop-filter:none}');/* 任务3：毛玻璃视窗门控——会话列表内只给视窗附近的气泡挂 blur（_ibBfObs 加 .ibbf），列表外（如预览）不受影响 */
+    css.push('body.ibbf-all #cv-msgs .m:not(.bs-msg),body.ibbf-all #cv-msgs .m.bs-msg .bs-seg{-webkit-backdrop-filter:blur('+bs.blur+'px) saturate(1.4);backdrop-filter:blur('+bs.blur+'px) saturate(1.4)}');/* IntersectionObserver 缺席时退回全量 */
     if(u.bubStyle==='frostb'&&!u.bubTx)css.push('.m,body.theme-infernal .m{--tx:#f7fafd;--tx2:#dde7f3;--tx3:#b7c5da;color:#f4f8fd}');
     if(u.bubStyle==='frostw'&&!u.bubTx)css.push('.m,body.theme-infernal .m{--tx:#1a2334;--tx2:#3a4763;--tx3:#5f6d8c;color:#1a2334}');
   }
@@ -4806,7 +4917,8 @@ $('ui-wx').addEventListener('click',async()=>{await loadMP();_mp.ui=_mp.ui||{};_
 $('pf-showall').addEventListener('click',async()=>{await loadMP();_mp.profile=_mp.profile||{};_mp.profile.showAll=_mp.profile.showAll===false;await saveMP();try{sw2($('pf-showall'),_mp.profile.showAll!==false)}catch(e){}try{if(typeof bxRenderUserFeed==='function')bxRenderUserFeed()}catch(e){}});/* v83-m r9：Space 页聚合开关（任务 7） */
 $('dw-databtn').addEventListener('click',()=>{drawer(false);navTo('data')});
 $('menu-btn').addEventListener('click',()=>{try{_tbUserDraw()}catch(e){}},{capture:true});/* v60-m：开抽屉即刷新用户区与天气 */
-document.querySelectorAll('.sb-app[data-page]').forEach(b=>b.addEventListener('click',()=>{navTo(b.dataset.page);window.scrollTo(0,0)}));/* v91-m：新增音乐/日历图标走自有开启函数，不入 navTo *//* v68-m d1：Desk 应用矩阵——玻璃图标直达各页 */
+document.querySelectorAll('.sb-app[data-page]').forEach(b=>b.addEventListener('click',()=>{navTo(b.dataset.page);window.scrollTo(0,0)}));
+(function(){var f9=$('sb-frdapp');if(f9)f9.addEventListener('click',function(){_sec.profile='api';navTo('profile');window.scrollTo(0,0)});var s9=$('sb-spaceapp');if(s9)s9.addEventListener('click',function(){_sec.profile='card';navTo('profile');window.scrollTo(0,0)})})();/* v136-p：③好友/名片图标——跳主页对应分区（navTo 内部会 renderDock+showSec；回调运行在初始化之后，无 TDZ 问题） *//* v91-m：新增音乐/日历图标走自有开启函数，不入 navTo *//* v68-m d1：Desk 应用矩阵——玻璃图标直达各页 */
 /* v66-m：原 setTimeout(_uiApply,0) 在 DB 就绪前抢跑，触发 loadMP 失败缓存——已移至 init() 的 openDB 之后 */
 function mpAi(cfg){
   const base={maxTokens:4096,histLimit:40,grpLimit:30,postsLimit:0};
@@ -4844,7 +4956,7 @@ async function loadOUT(force){
   if(_out&&_outFromDb&&!force)return _out;
   let r=null,ok=false;
   try{r=await dbGet('apiSettings','outputSettings');ok=true}catch(e){}
-  _out=Object.assign({id:'outputSettings',maxContinues:3,toolRounds:2,wsRounds:3},r||{});/* v84-m r1：+工具连续调用轮数（任务 1） */
+  _out=Object.assign({id:'outputSettings',maxContinues:3,toolRounds:2,wsRounds:3,btCap:4},r||{});/* v84-m r1：+工具连续调用轮数（任务 1） */
   if(ok)_outFromDb=true;
   return _out;
 }
@@ -5054,6 +5166,31 @@ function bsSplit(text){
   }
   return parts;
 }
+
+/* ═══ v139-a·v137-p 任务3：气泡毛玻璃视窗门控 ═══
+   为什么：气泡材质给每个气泡挂 backdrop-filter，每一块都是一层合成层＋一次背景快照；
+   消息列表首屏 50 条、上滑每页 +50 且不回收，层数没有上限，屏幕分辨率越高每层越贵——
+   这正是「设备更好的人反而异常刷新」的机制：GPU 内存被毛玻璃层吃穿，渲染进程被系统回收后页面整个重载。
+   分段气泡材质修复（任务4）后一条回复还会拆成 N 块，层数再乘 N，所以门控是该修复的前提而非可选项。
+   做法：只给视窗上下各约 1.5 屏内的气泡挂 .ibbf（毛玻璃），离开即摘；底色描边照旧全量，
+   观感不变，代价从「跟历史长度走」变成「跟屏幕大小走」。IntersectionObserver 缺席时退回全量（body.ibbf-all）。 */
+var _ibBfIO=null;
+function _ibBfObs(el){
+  if(!el)return;
+  if(typeof IntersectionObserver==='undefined'){try{document.body.classList.add('ibbf-all')}catch(e){}return}
+  if(!_ibBfIO){
+    try{
+      _ibBfIO=new IntersectionObserver(function(es){
+        for(var i=0;i<es.length;i++){var t=es[i].target;
+          if(!t.isConnected){try{_ibBfIO.unobserve(t)}catch(e){}continue}
+          t.classList.toggle('ibbf',es[i].isIntersecting);
+        }
+      },{root:document.getElementById('cv-msgs')||null,rootMargin:'150% 0px 150% 0px'});
+    }catch(e){try{document.body.classList.add('ibbf-all')}catch(e2){}_ibBfIO='off'}
+  }
+  if(_ibBfIO&&_ibBfIO!=='off'){try{_ibBfIO.observe(el)}catch(e){}}
+}
+function _ibBfReset(){if(_ibBfIO&&_ibBfIO!=='off'){try{_ibBfIO.disconnect()}catch(e){}}}/* 列表整体重建前松开旧元素，防观察表越挂越长 */
 
 /* ═══════════ 基础组件 ═══════════ */
 function esc(s){if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
@@ -6826,7 +6963,7 @@ function renderAiBody(host,msgEl,m){
     if(parts&&parts.length>1){
       msgEl.classList.add('bs-msg');
       parts.forEach(p=>{
-        const seg=document.createElement('div');seg.className='bs-seg';
+        const seg=document.createElement('div');seg.className='bs-seg';_ibBfObs(seg);/* v139-a·v137-p 任务3 */
         fillTextInto(seg,p,pref.mdMode==='full');
         host.appendChild(seg);
       });
@@ -6886,11 +7023,11 @@ function buildMsgEl(m,prev){
     if(!isCont){const avc=_avaCircle(av.name,av.src);avc.classList.add('m-ava');slot.appendChild(avc)}
     body.appendChild(slot);
   }
-  const d=document.createElement('div');d.className='m '+(isUser?'user':'ai');d.dataset.id=m.id||'';
+  const d=document.createElement('div');d.className='m '+(isUser?'user':'ai');d.dataset.id=m.id||'';_ibBfObs(d);/* v139-a·v137-p 任务3 */
   let inner='';
   if(Array.isArray(m.images)&&m.images.length){
     inner+='<div class="m-imgs">'+m.images.map(im=>{
-      const u=im&&(im.dataUrl||im.url);return u?'<img src="'+String(u).replace(/"/g,'&quot;')+'" alt="">':''
+      const u=im&&(im.dataUrl||im.url);return u?'<img loading="lazy" decoding="async" src="'+String(u).replace(/"/g,'&quot;')+'" alt="">':''/* v139-a·v137-p 任务3：懒加载——离屏图片不解码进内存 */
     }).join('')+'</div>';
   }
   if(Array.isArray(m.files)&&m.files.length){
@@ -6950,6 +7087,7 @@ function _tmCollapseAll(){try{var h=convEl('cv-msgs');if(h)_tmCollapse(h)}catch(
 function _rowOf(el){return (el&&el.closest&&el.closest('.mrow'))||el}
 function replaceMsgRow(oldEl,m){const r=_rowOf(oldEl);if(r){r.replaceWith(buildMsgEl(m));try{_tmCollapseAll()}catch(e){}}}
 function drawConv(){
+  try{_ibBfReset()}catch(e){}/* v139-a·v137-p 任务3 */
   const box=convEl('cv-msgs');box.innerHTML='';
   if(_more){
     const b=document.createElement('button');b.className='load-more';b.id='cv-more';b.textContent='上滑加载更早消息';/* v61-m t8：文案照电脑端 */
@@ -8009,7 +8147,7 @@ function buildTypingRow(name,avaSrc){
     if(!isCont){const avc=_avaCircle(name,avaSrc);avc.classList.add('m-ava');slot.appendChild(avc)}
     body.appendChild(slot);
   }
-  const d=document.createElement('div');d.className='m ai typing';
+  const d=document.createElement('div');d.className='m ai typing';_ibBfObs(d);/* v139-a·v137-p 任务3 */
   d.innerHTML='<div class="m-text"></div>';
   body.appendChild(d);
   row.appendChild(body);
@@ -8065,7 +8203,7 @@ async function genReply(cfg,internalCtx){
         if(_pm.geo)_gwCaps.push('<ws_loc/> 调取用户当前定位');
         if(_pm.wx)_gwCaps.push('<ws_weather/> 调取用户所在地当前天气');
         if(_pm.phone)_gwCaps.push('<ws_phone/> 调取用户手机的实时状态（电量/网络/存储等）');/* v95-m 任务7 */
-        var _payOn=false;try{var _pcc=(_mp&&_mp.pay)||{};if(_pcc.on&&Array.isArray(_pcc.payees)&&_pcc.payees.length){_payOn=true;_gwCaps.push('<ws_payreq item="用途" amount="金额(元)" to="收款方名" note="备注可省"/> 向用户发起一笔支付请求：聊天中出现支付卡，由用户亲手完成支付并把结果回传给你。to 只能取：'+_pcc.payees.map(function(p){return p.name}).join(' / ')+'；单笔上限 '+((+_pcc.cap>0?+_pcc.cap:200))+' 元，每条回复最多 2 笔')}}catch(e){}/* v97-m 任务7 */
+        var _payOn=false;try{var _pcc=(_mp&&_mp.pay)||{};if(_pcc.on&&Array.isArray(_pcc.payees)&&_pcc.payees.length){_payOn=true;_gwCaps.push('<ws_payreq item="用途" amount="金额(元)" to="收款方名" note="备注可省"/> 向用户发起一笔支付请求：聊天中出现支付卡，由用户亲手完成支付并把结果回传给你。to 只能取：'+_pcc.payees.map(function(p){return p.name}).join(' / ')+'；单笔上限 '+((+_pcc.cap>0?+_pcc.cap:200))+' 元，每条回复最多 '+Math.max(1,Math.min(9,parseInt(_pcc.percap)||2))+' 笔')}}catch(e){}/* v97-m 任务7 */
         if(_gwCaps.length)parts.push((_pm.phone?(_payOn?'【位置·天气·手机·支付】':'【位置·天气·手机】'):(_payOn?'【位置·天气·支付】':'【位置与天气】'))+_gwCaps.join('；')+'。结果会在之后的消息回传给你。');
       }catch(e){}/* v87-m：补齐 v83「标签调取制」缺失的能力说明——此前 AI 从未被告知这两个标签；随权限开关整块注入 */
     await loadMP();/* v54-m：以下均为常量指令块，随开关整块注入——切换后重建一次提示缓存即恢复稳定命中（电脑端同策略） */
@@ -8112,7 +8250,7 @@ async function genReply(cfg,internalCtx){
     if(!accT.trim())throw new Error((accK&&accK.trim())?'正文为空：思考内容占满了本次输出上限（可到 API → 全局设置 → 输出与续写 调大「单次输出上限」，或关闭该 AI 的思考链）':'返回为空');/* v130-p：把「返回为空」说清楚 */
     if(_fedH){try{_fedH.commit().catch(function(){})}catch(e9){}_fedH=null}_gqTaken=null;_pgTaken=null;/* fix-m①：请求已送达且有效——此刻才把工具/数据结果标“已回传”落库 */
     const _am0=await saveAi(cfg,accT,accK,aiEl,{myThread,myMsgs,sameConv,usage:_ru,truncated:_finTruncM(r.fin)});
-    try{await _mToolLoop(cfg,pa,sys,hist,accT,_am0,{myThread,myMsgs,sameConv})}catch(e){}/* v84-m r1：工具/数据类指令在同一轮内多次调用（任务 1） */
+    try{await _mToolLoop(cfg,pa,sys,hist,accT,_am0,{myThread,myMsgs,sameConv,signal:myAc.signal})}catch(e){}/* v84-m r1：工具/数据类指令在同一轮内多次调用（任务 1） */
   }catch(err){
     try{if(_fedH){_fedH.restore();_fedH=null}}catch(e9){}try{if(_gqTaken&&_gqTaken.length){_gwFeedQ=_gqTaken.concat(_gwFeedQ);_gqTaken=null}}catch(e9){}try{if(_pgTaken&&!_presGap){_presGap=_pgTaken;_pgTaken=null}}catch(e9){}/* fix-m①：请求未送达→动态配图/调取结果/离开时长放回队首；文本结果因未标 fed 下次自动重传 */
     if(err&&err.name==='AbortError'){
@@ -8269,6 +8407,7 @@ function parseArgs(s){
   return{_raw:String(s)};
 }
 async function execToolOp(op){
+  if(op&&op._btCap)return{ok:false,detail:'已达本条回复的蓝牙读写上限（可在 API → 全局设置 → 工具调用 调整），本次未执行'};/* v137-a·v135-p：#5 */
   const args=parseArgs(op.args);
   const name=op.name||'';
   if(/^mcp\./i.test(name))return await IBMCP.call(name,args);
@@ -8280,12 +8419,18 @@ async function execToolOp(op){
   return await ibToolFetch(tool,args);
 }
 const EXEC_WS={help:1,tool:1,search:1,ctx:1,gen_image:1,project:1,read:1,create:1,edit:1,make_docx:1,make_pdf:1,make_xlsx:1,mem_search:1,mem_write:1,cal_add:1,cal_edit:1,cal_del:1,cal_meet:1,cal_list:1,beyond_view:1};
-const WORKSPACE_EXEC_M={help:1,project:1,read:1,search:1,ctx:1,create:1,edit:1,make_docx:1,make_pdf:1,make_xlsx:1};/* v76-m r7：+beyond_view（结果按同通道回传） *//* v74-m r5：+mem_write *//* v61-m t11：make_* 已移植真实执行；仅 run 仍依赖桌面沙箱，只展示 */
+const WORKSPACE_EXEC_M={help:1,project:1,read:1,search:1,ctx:1,create:1,edit:1,make_docx:1,make_pdf:1,make_xlsx:1};
+const _WS_SIDE_EFFECT_M={mem_write:1,cal_add:1,cal_edit:1,cal_del:1,cal_meet:1};/* v132-p：动作类指令——执行完只剩一句「成功 / 失败」，不值得为它另起一轮续答；结果照旧随下一条消息回传（fed 机制不变） */
+function _wsSideEffectM(r){if(!r)return false;if(_WS_SIDE_EFFECT_M[r.type])return true;if(r.type==='tool'&&/^bt_write$/i.test(String(r.name||'')))return true;return false}
+/* v133-p：续答触发范围——取数类按类别可由用户关掉续答（outputSettings.toolTrig，缺省全开；关掉＝与动作类同样只随下一条消息回传）。类别：http 外部工具 / mcp MCP 工具 / bt 蓝牙读取 / mem 记忆检索 / view 查看动态与查询日程 / env 定位天气手机状态（走 _gwFeedQ）；工作区类型（ICode）不归此处管 */
+function _wsTrigKindM(r){if(!r)return '';if(r.type==='tool'){var n=String(r.name||'');if(/^mcp\./i.test(n))return 'mcp';if(/^bt_/i.test(n))return 'bt';return 'http'}if(r.type==='mem_search')return 'mem';if(r.type==='beyond_view'||r.type==='cal_list')return 'view';return ''}
+function _wsTrigOnM(kind){if(!kind)return true;try{var t=(_out&&_out.toolTrig)||{};return t[kind]!==false}catch(e){return true}}/* v76-m r7：+beyond_view（结果按同通道回传） *//* v74-m r5：+mem_write *//* v61-m t11：make_* 已移植真实执行；仅 run 仍依赖桌面沙箱，只展示 */
 async function procToolOps(cfg,m){
   const segs=segmentAiText(m.content||'');
   const ops=segs.filter(x=>x.type==='op'&&EXEC_WS[x.op.type]).map(x=>x.op);
   if(!ops.length)return;
   let _mwN=0;ops.forEach(o=>{if(o.type==='mem_write'&&++_mwN>3)o._mwCap=true});/* v74-m r5：每条回复最多执行 3 次记忆库写入 */
+  await loadOUT();const _btLim9=(_out&&_out.btCap!=null)?Math.max(0,parseInt(_out.btCap)||0):4;let _btN9=0;if(_btLim9>0)ops.forEach(o=>{if(o.type==='tool'&&/^bt_(read|write)$/i.test(String(o.name||''))&&++_btN9>_btLim9)o._btCap=true});/* v137-a·v135-p：#5 蓝牙每回复上限（bt_status 不计；用户点「执行」＝放行） */
   await loadIBT();await loadMP();
   m.wsResults=m.wsResults||[];
   for(let i=0;i<ops.length;i++){
@@ -8400,6 +8545,7 @@ async function runPendWsAt(m,i,op){/* 非工具类待确认项 */
   toast('已执行，结果将在下一轮回传给 AI');
 }
 async function runToolAt(m,i,op){
+  if(op&&op._btCap)delete op._btCap;/* v137-a·v135-p：#5 用户点「执行」＝放行蓝牙上限 */
   m.wsResults[i]={type:'tool',name:op.name,args:op.args,pendingConfirm:false,running:true};
   redrawMsg(m);
   let r;
@@ -8452,6 +8598,7 @@ async function _appendWorkspaceStepM(cfg,rootAm,text,usage){
 }
 async function _runToolLoopStateM(st){
   while(st.guard<Math.max(4,(st.wsMode?st.wsCap:st.toolCap)+4)){
+    if(st.signal&&st.signal.aborted){st.waitingConfirm=false;_wsLoopStateM.delete(st.rootAm.id);return}/* v132-p：停止键已按下——不再起新一轮 */
     try{const p0=st.lastAm&&_toolPW.get(st.lastAm);if(p0)await p0}catch(e){}try{const p1=st.lastAm&&_ibPW.get(st.lastAm);if(p1)await p1}catch(e){}/* v124-p：#1 也等 mem→ib 串行链落定——定位/天气/手机状态与社交圈动作的结果此刻已进 _gwFeedQ */
     const _rsAll=((st.lastAm&&st.lastAm.wsResults)||[]);
     if(_rsAll.some(r=>r&&r.pendingConfirm)){/* v95-m 任务5②：待确认判定不再要求先有 ok 布尔——pendingConfirm 态天生没有 ok，旧条件让「等待确认」永不可达，自动链条一遇需确认步骤即整条死掉 */
@@ -8462,7 +8609,9 @@ async function _runToolLoopStateM(st){
     const all=_rsAll.filter(r=>r&&EXEC_WS[r.type]&&typeof r.ok==='boolean'&&!r.fed);
     const pending=all;
     let gw9=[];try{gw9=_gwFeedQ.filter(x=>x.fid===st.cfg.id)}catch(e){}/* v124-p：#1 查岗当轮回传——信箱里有本会话的调取结果也触发续答（toolRounds=0 仍走下一条消息径，口径不变） */
-    if(!pending.length&&!gw9.length){st.waitingConfirm=false;_wsLoopStateM.delete(st.rootAm.id);return}
+    /* v132-p：只有取数类结果才触发续答轮（外部工具 / MCP / 检索 / 读文件 / 查看动态 / 天气定位手机 / 蓝牙读取…）；写记忆、日历写入、蓝牙写入与社交圈动作（发动态 / 评论 / 转发 / 签名 / 便笺 / 播放器 / AI付）不再另起一条——AI 已在本条把话说完，再被要求「继续」只能硬凑一句。续答轮一旦被取数类触发，同批动作类结果也一并回传 */
+    const _trigR=pending.filter(r=>!_wsSideEffectM(r)&&_wsTrigOnM(_wsTrigKindM(r))),_trigQ=gw9.filter(x=>!x.act&&_wsTrigOnM('env'));/* v133-p：逐类开关并入判定 */
+    if(!_trigR.length&&!_trigQ.length){st.waitingConfirm=false;_wsLoopStateM.delete(st.rootAm.id);return}
     if(pending.some(r=>WORKSPACE_EXEC_M[r.type]))st.wsMode=true;
     const onlyHelp=pending.length?pending.every(r=>r.type==='help'):false;/* v124-p：#1 纯信箱续答按普通轮计入 toolRounds 配额 */
     const cap=st.wsMode?st.wsCap:st.toolCap;
@@ -8470,7 +8619,7 @@ async function _runToolLoopStateM(st){
     st.h=st.h.concat([{role:'assistant',content:st.stepTxt},{role:'user',content:'［系统：以下为你刚才调用的工具/数据结果，请据此继续当前任务；仍可继续调用，但不要重复相同参数的调用。］'}]);
     var _gq9T=null;const _fed9=await feedToolResults(st.h,st.cfg,[st.rootAm,st.lastAm]);/* fix-m①：取回执 *//* v124-p：#4 后台续答自证——切窗后本会话消息已不在 _msgs 里，把根/末条 AI 消息直接递给回传器：结果不丢，不再出现「宣称结果如下却空手」的续答 */
     try{if(_gwFeedQ.length){const _gq9=_gwFeedQ.filter(x=>x.fid===st.cfg.id);_gwFeedQ=_gwFeedQ.filter(x=>x.fid!==st.cfg.id);_gq9T=_gq9;/* fix-m① */if(_gq9.length){for(let j9=st.h.length-1;j9>=0;j9--){if(st.h[j9].role==='user'){st.h[j9].content+='\n\n【调取结果】\n'+_gq9.map(x=>x.text).join('\n');break}}}}}catch(e){}/* v124-p：#1 出队注入续答轮（user 位）；已出队条目不会再走下一条消息的 tails 径，无重复 */
-    let t2='',u2=null;try{const r2=await callAIC(st.cfg,st.h,st.sys,()=>{},null,st.pa);t2=(r2&&r2.t)||'';u2=(r2&&r2.u)||null}catch(e){try{if(_fed9)_fed9.restore()}catch(e9){}try{if(_gq9T&&_gq9T.length)_gwFeedQ=_gq9T.concat(_gwFeedQ)}catch(e9){}break}
+    let t2='',u2=null;try{const r2=await callAIC(st.cfg,st.h,st.sys,()=>{},st.signal||null,st.pa);t2=(r2&&r2.t)||'';u2=(r2&&r2.u)||null}catch(e){if(e&&e.name==='AbortError'){try{toast('已停止')}catch(e9){}}/* v132-p：续答轮接上停止信号——此前这一轮传的是 null，停止键按了没反应，服务商一卡整条会话就锁在「发送中」直到刷新 */try{if(_fed9)_fed9.restore()}catch(e9){}try{if(_gq9T&&_gq9T.length)_gwFeedQ=_gq9T.concat(_gwFeedQ)}catch(e9){}break}
     if(!t2.trim()){try{if(_fed9)_fed9.restore()}catch(e9){}try{if(_gq9T&&_gq9T.length)_gwFeedQ=_gq9T.concat(_gwFeedQ)}catch(e9){}break}
     if(_fed9){try{_fed9.commit().catch(function(){})}catch(e9){}}/* fix-m①：本轮续答送达且有效，结果落“已回传”标 */
     if(st.wsMode){
@@ -8491,13 +8640,13 @@ async function _mToolLoop(cfg,pa,sys,hist,lastTxt,lastAm,ctx){/* ICode Skill：H
   const toolCap=Math.max(0,Math.min(5,parseInt(_out.toolRounds!=null?_out.toolRounds:2)||0));
   const wsMode=!!(((lastAm&&lastAm.wsResults)||[]).some(r=>r&&WORKSPACE_EXEC_M[r.type]));
   const wsCap=Math.max(0,Math.min(6,parseInt(_out.wsRounds!=null?_out.wsRounds:3)||0));
-  const st={cfg:cfg,pa:pa,sys:sys,h:hist.slice(),stepTxt:lastTxt,lastAm:lastAm,rootAm:lastAm,ctx:ctx,toolCap:toolCap,wsCap:wsCap,wsMode:wsMode,used:0,guard:0,waitingConfirm:false};
+  const st={cfg:cfg,pa:pa,sys:sys,h:hist.slice(),stepTxt:lastTxt,lastAm:lastAm,rootAm:lastAm,ctx:ctx,toolCap:toolCap,wsCap:wsCap,wsMode:wsMode,used:0,guard:0,waitingConfirm:false,signal:(ctx&&ctx.signal)||null};/* v132-p：+signal */
   _wsLoopStateM.set(lastAm.id,st);
   await _runToolLoopStateM(st);
 }
 async function _resumeWorkspaceLoopM(m){
   const st=m&&_wsLoopStateM.get(m.id);if(!st)return false;
-  st.lastAm=m;st.rootAm=m;st.waitingConfirm=false;
+  st.lastAm=m;st.rootAm=m;st.waitingConfirm=false;if(st.signal&&st.signal.aborted)st.signal=null;/* v132-p：用户确认后恢复的链条不受早先的停止影响 */
   await _runToolLoopStateM(st);return true;
 }
 async function feedToolResults(hist,cfg,extra){
@@ -8550,62 +8699,241 @@ async function feedToolResults(hist,cfg,extra){
 /* 系统提示词【外部工具】块（措辞对齐电脑版 14662 行）*/
 /* ── v49i-m 蓝牙设备（Web Bluetooth，安卓 Chrome）：连接由用户手动发起，AI 通过工具读写已连接设备 ── */
 const BT_STD=['generic_access','generic_attribute','device_information','battery_service','heart_rate','health_thermometer','blood_pressure','environmental_sensing','cycling_power','cycling_speed_and_cadence','running_speed_and_cadence','current_time','immediate_alert','link_loss','tx_power','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','6e400001-b5a3-f393-e0a9-e50e24dcca9e'];
-let _bt={dev:null,chars:[]};
+let _bt={devs:[]};/* v132-p：多设备并联——原先只有一个槽位（{dev,chars}），再连一台就把前一台顶掉；现改为列表，每台 {id,name,addr,chars,native,dev}，Web Bluetooth 与壳内 BLE 同构，bt_* 三个工具名不变、新增可选参数 dev（设备名 / 序号 / 地址） */
 function _btShort(u){u=String(u);return u.length>8?u.slice(4,8):u}
+function _btList(){if(!_bt||typeof _bt!=='object')_bt={devs:[]};if(!Array.isArray(_bt.devs))_bt.devs=[];return _bt.devs}
+function _btDevRowHtml(d,i){
+  return '<div class="bt-dev" style="margin-top:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--glass-line);background:var(--soft)">'
+    +'<div style="display:flex;align-items:center;gap:8px"><b style="flex:1;min-width:0;font-size:0.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">#'+(i+1)+' '+esc(d.name||'未命名设备')+'</b><span class="hint" style="margin:0;white-space:nowrap">'+(d.chars||[]).length+' 个特征值</span><button type="button" class="btn" style="padding:4px 10px;font-size:0.74rem" data-btman="'+esc(d.id)+'">'+(_btmFind(d.name,d.addr)?'说明书 ✓':'说明书')+'</button><button type="button" class="btn" style="padding:4px 10px;font-size:0.74rem" data-btoff="'+esc(d.id)+'">断开</button></div>'
+    +(d.addr?'<p class="hint" style="margin:2px 0 0">'+esc(d.addr)+'</p>':'')
+    +(d.chars||[]).map(c=>'<p class="hint" style="margin:4px 0 0">'+esc(_btShort(c.uuid))+' · '+esc(c.props)+'</p>').join('')
+    +'</div>';
+}
+function _btDrawList(st,box,ds){
+  st.textContent='已连接 '+ds.length+' 台设备（可继续点「连接设备」追加）';
+  if(!box)return;
+  box.innerHTML=ds.map((d,i)=>_btDevRowHtml(d,i)).join('');
+  box.querySelectorAll('[data-btoff]').forEach(b=>b.addEventListener('click',function(){_btDropDev(b.getAttribute('data-btoff'),true)}));
+  box.querySelectorAll('[data-btman]').forEach(b=>b.addEventListener('click',function(){
+    const d=_btList().find(x=>x.id===b.getAttribute('data-btman'));if(!d)return;
+    loadMP().then(function(){btmOpen(d,_btmFind(d.name,d.addr))});
+  }));/* v139-a·v137-p 任务2 */
+}
 function _btDraw(){
   const st=$('bt-state'),box=$('bt-chars');if(!st)return;
   if(!navigator.bluetooth){st.textContent='当前浏览器不支持 Web Bluetooth（需安卓 Chrome / Edge）。';return}
-  if(!_bt.dev){st.textContent='未连接。';if(box)box.innerHTML='';return}
-  st.textContent='已连接：'+(_bt.dev.name||'未命名设备')+' · '+_bt.chars.length+' 个特征值';
-  if(box)box.innerHTML=_bt.chars.map(c=>'<p class="hint" style="margin:4px 0 0">'+esc(_btShort(c.uuid))+' · '+esc(c.props)+'</p>').join('');
+  const ds=_btList();
+  if(!ds.length){st.textContent='未连接。可依次连接多台设备。';if(box)box.innerHTML='';return}
+  _btDrawList(st,box,ds);
 }
+/* 从列表摘掉一台：manual＝用户点的断开（主动下发断链）；否则是设备那头断的，只同步界面 */
+function _btDropDev(id,manual){
+  const ds=_btList();const k=ds.findIndex(d=>d.id===id);if(k===-1)return null;
+  const d=ds[k];ds.splice(k,1);
+  if(manual){
+    try{if(d.native&&window.IBNative&&IBNative.ble&&IBNative.ble.disconnect)IBNative.ble.disconnect({address:d.addr})}catch(e){}
+    try{if(d.dev&&d.dev.gatt&&d.dev.gatt.connected)d.dev.gatt.disconnect()}catch(e){}
+  }
+  try{_btDraw()}catch(e){}
+  return d;
+}
+function _btTimeout(p,ms,what){let tm=null;try{p.catch(()=>{})}catch(e){}return Promise.race([p,new Promise((_,rej)=>{tm=setTimeout(()=>rej(new Error(what+'超时（'+Math.round(ms/1000)+' 秒，设备未响应）')),ms)})]).finally(()=>{if(tm)clearTimeout(tm)})}/* v132-p：连接 / 读 / 写加超时——设备不回包时工具调用不再无限期挂起（此前会把整条会话锁在「发送中」直到刷新） */
 async function _btConnect(){
   if(!navigator.bluetooth){toast('此浏览器不支持蓝牙（需安卓 Chrome）');return}
   try{
     const extra=String(($('bt-svc')||{}).value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
     const dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:BT_STD.concat(extra)});
-    const gatt=await dev.gatt.connect();
-    _bt={dev:dev,chars:[]};
-    dev.addEventListener('gattserverdisconnected',()=>{_bt={dev:null,chars:[]};_btDraw();toast('蓝牙设备已断开')});
+    if(_btList().some(d=>d.dev===dev||(dev.id&&d.id===dev.id))){toast('这台设备已经连接');return}
+    const gatt=await _btTimeout(dev.gatt.connect(),20000,'连接');
+    const rec={id:dev.id||('web_'+Date.now()),name:dev.name||'',addr:'',chars:[],native:false,dev:dev};
+    dev.addEventListener('gattserverdisconnected',()=>{if(_btList().some(d=>d.id===rec.id)){_btDropDev(rec.id,false);toast('蓝牙设备已断开：'+(rec.name||'未命名设备'))}});
     let svcs=[];try{svcs=await gatt.getPrimaryServices()}catch(e){}
     for(const sv of svcs){
       let cs=[];try{cs=await sv.getCharacteristics()}catch(e){continue}
       for(const ch of cs){
         const p=ch.properties,props=[p.read?'read':'',(p.write||p.writeWithoutResponse)?'write':'',p.notify?'notify':''].filter(Boolean).join('/')||'-';
-        _bt.chars.push({uuid:ch.uuid,svc:sv.uuid,props:props,ch:ch});
+        rec.chars.push({uuid:ch.uuid,svc:sv.uuid,props:props,ch:ch});
       }
     }
-    _btDraw();toast('已连接 '+(dev.name||'设备')+'，发现 '+_bt.chars.length+' 个特征值');
+    _btList().push(rec);
+    _btDraw();toast('已连接 '+(dev.name||'设备')+'，发现 '+rec.chars.length+' 个特征值'+(_btList().length>1?'（共 '+_btList().length+' 台）':''));
   }catch(e){if(String(e&&e.name)!=='NotFoundError')toast('连接失败：'+String(e&&e.message||e).slice(0,80))}
 }
-function _btFind(u){u=String(u||'').toLowerCase();return _bt.chars.find(c=>c.uuid===u||_btShort(c.uuid)===u||c.uuid.indexOf(u)!==-1)}
+function _btFindIn(d,u){u=String(u||'').toLowerCase();if(!u||!d)return null;return (d.chars||[]).find(c=>c.uuid===u||_btShort(c.uuid)===u||c.uuid.indexOf(u)!==-1)||null}
+function _btFind(u){const ds=_btList();for(let i=0;i<ds.length;i++){const c=_btFindIn(ds[i],u);if(c)return c}return null}
+/* 选设备：dev 参数＝序号 / 名称 / 地址；没填时只连一台直接用，多台时按 uuid 唯一命中，否则要求指定 */
+function _btPick(args,uuid){
+  const ds=_btList();if(!ds.length)return{err:'尚未连接蓝牙设备'};
+  const q=String((args&&(args.dev||args.device||args.name||args.address))||'').trim().toLowerCase();
+  if(q){
+    if(/^#?\d+$/.test(q)){const n=parseInt(q.replace('#',''),10);if(n>=1&&n<=ds.length)return{d:ds[n-1]}}
+    const exact=ds.filter(d=>String(d.name||'').toLowerCase()===q||String(d.addr||'').toLowerCase()===q||String(d.id||'').toLowerCase()===q);
+    if(exact.length)return{d:exact[0]};
+    const part=ds.filter(d=>String(d.name||'').toLowerCase().indexOf(q)!==-1);
+    if(part.length)return{d:part[0]};
+    return{err:'没有名为「'+q.slice(0,24)+'」的已连接设备，请先用 bt_status 查看设备列表'};
+  }
+  if(ds.length===1)return{d:ds[0]};
+  if(uuid){const m=ds.filter(d=>!!_btFindIn(d,uuid));if(m.length===1)return{d:m[0]};if(!m.length)return{err:'找不到该特征值，请先用 bt_status 查看可用列表'}}
+  return{err:'已连接 '+ds.length+' 台设备，请用 dev 参数指定设备名或序号（见 bt_status）'};
+}
+function _btStatusText(){
+  const ds=_btList();
+  return '已连接 '+ds.length+' 台\n'+ds.map((d,i)=>'设备 #'+(i+1)+'：'+(d.name||'未命名')+(d.addr?'（'+d.addr+'）':'')+(_btmFind(d.name,d.addr)?'（已配说明书）':'')+'\n特征值：\n'+((d.chars||[]).length?(d.chars||[]).map(c=>'  '+_btShort(c.uuid)+'（'+c.props+'）').join('\n'):'  （无）')).join('\n\n')+(ds.length>1?'\n\n（多台时 bt_read / bt_write 加 dev 参数＝设备名或序号）':'');
+}
+/* ═══ v139-a·v137-p 任务2：蓝牙设备说明书（用户自配）═══
+   存 _mp.bt.manuals（[{n:设备名,addr:地址,t:正文,up:时间}]，随 mobilePrefs 备份互通）。
+   匹配：地址精确 → 设备名不分大小写；连接同名设备后由 _btManualBlock 注入 system——
+   与「随开关整块注入」同一口径：连 / 断一台配了说明书的设备重建一次提示缓存，之后稳定命中；
+   不走 Tail 是因为说明书每轮全价重发比一次缓存重建贵得多。 */
+function _btmList(){if(!_mp)return[];_mp.bt=_mp.bt||{};if(!Array.isArray(_mp.bt.manuals))_mp.bt.manuals=[];return _mp.bt.manuals}
+function _btmKey(s){return String(s||'').trim().toLowerCase()}
+function _btmFind(name,addr){
+  const L=_btmList(),a=_btmKey(addr),n=_btmKey(name);
+  return (a&&L.find(x=>x.addr&&_btmKey(x.addr)===a))||(n&&L.find(x=>_btmKey(x.n)===n))||null;
+}
+function _btManualBlock(){
+  try{
+    if(!(_mp&&_mp.bt&&_mp.bt.aiTools))return'';
+    const arr=[];_btList().forEach(function(d){const r=_btmFind(d.name,d.addr);if(r&&String(r.t||'').trim())arr.push({n:String(d.name||r.n||'设备'),t:String(r.t).trim()})});
+    if(!arr.length)return'';
+    arr.sort(function(a,b){return a.n<b.n?-1:a.n>b.n?1:0});/* 稳定排序：同一组设备产出同一段文本，缓存可命中 */
+    let bud=12000;const seg=[];
+    for(const x of arr){let t=x.t;if(t.length>bud)t=t.slice(0,Math.max(0,bud))+'\n[说明书过长已截断]';bud-=t.length;seg.push('■ '+x.n+'\n'+t);if(bud<=0)break}
+    return '\n\n【蓝牙设备说明书】用户为以下已连接设备写了说明书，bt_read / bt_write 前请以此为准：\n'+seg.join('\n\n');
+  }catch(e){return''}
+}
+var _btmEdit=null;/* {origKey:'', addr:''} */
+function btmOpen(dev,rec){
+  _btmEdit={origKey:rec?_btmKey(rec.n):'',addr:(rec&&rec.addr)||(dev&&dev.addr)||''};
+  $('btm-name').value=(rec&&rec.n)||(dev&&dev.name)||'';
+  $('btm-text').value=(rec&&rec.t)||'';
+  $('btm-del').style.display=rec?'':'none';
+  _btmCount();
+  openSheet('sheet-btman');
+}
+function _btmCount(){const t=$('btm-text').value||'';const c=$('btm-cnt');if(c){c.textContent=t.length+' / 8000 字';c.style.color=t.length>8000?'#c96a5a':''}}
+async function btmSave(){
+  const n=$('btm-name').value.trim(),t=$('btm-text').value||'';
+  if(!n){toast('请填写设备名（与蓝牙设备名一致才能自动匹配）');return}
+  if(!t.trim()){toast('说明书内容为空');return}
+  if(t.length>8000){toast('超过 8000 字——说明书每次连接都会发给 AI，太长既贵又稀释重点，请精简');return}
+  await loadMP();const L=_btmList();
+  const rec=_btmEdit&&_btmEdit.origKey?L.find(x=>_btmKey(x.n)===_btmEdit.origKey):null;
+  if(L.some(x=>x!==rec&&_btmKey(x.n)===_btmKey(n))){toast('已有同名设备的说明书，请直接编辑那一份');return}
+  if(rec){rec.n=n;rec.t=t;rec.up=Date.now();if(_btmEdit.addr)rec.addr=_btmEdit.addr}
+  else L.push({n:n,addr:(_btmEdit&&_btmEdit.addr)||'',t:t,up:Date.now()});
+  await saveMP();closeSheets();try{_btDraw()}catch(e){}toast('说明书已保存');
+}
+async function btmDel(){
+  if(!(_btmEdit&&_btmEdit.origKey)){closeSheets();return}
+  await loadMP();const L=_btmList(),k=L.findIndex(x=>_btmKey(x.n)===_btmEdit.origKey);
+  if(k>-1)L.splice(k,1);
+  await saveMP();closeSheets();try{_btDraw()}catch(e){}toast('已删除');
+}
+async function btmLib(){
+  await loadMP();const L=_btmList().slice().sort((a,b)=>_btmKey(a.n)<_btmKey(b.n)?-1:1);
+  const box=$('btlib-list');box.innerHTML='';
+  if(!L.length)box.innerHTML='<div class="empty" style="padding:14px">还没有说明书。可在上方设备行进入，或点「＋ 新增」为未连接的设备预先建一份。</div>';
+  L.forEach(r=>{
+    const row=document.createElement('div');row.className='btlib-row';
+    row.innerHTML='<div class="btlib-m"><b>'+esc(r.n)+'</b><small>'+(r.t||'').length+' 字'+(r.addr?' · '+esc(r.addr):'')+'</small></div><span class="hint" style="margin:0">编辑 ›</span>';
+    row.addEventListener('click',()=>{closeSheets();setTimeout(()=>btmOpen(null,r),90)});
+    box.appendChild(row);
+  });
+  openSheet('sheet-btlib');
+}
+var _bticProj=null;
+async function bticOpen(){_bticProj=null;await bticDraw();openSheet('sheet-btic')}
+function bticClose(){const s=$('sheet-btic');if(s)s.classList.remove('open')}/* 只收起取文层，编辑层与遮罩保持 */
+async function bticDraw(){
+  const box=$('btic-list');if(!box)return;box.innerHTML='';
+  $('btic-back').style.display=_bticProj?'':'none';
+  $('btic-title').textContent=_bticProj?(_bticProj.name||'项目'):'从 ICode 选择文本文件';
+  if(!_bticProj){
+    await icEnsureFixed();let projs=[];try{projs=await dbGetAll('projects')}catch(e){}
+    projs.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'zh-CN'));
+    if(!projs.length){box.innerHTML='<div class="empty" style="padding:14px">工作区还没有项目</div>';return}
+    projs.forEach(pj=>{
+      const d=document.createElement('div');d.className='btlib-row';
+      d.innerHTML='<div class="btlib-m"><b>'+esc(pj.name||'项目')+'</b></div><span class="hint" style="margin:0">›</span>';
+      d.addEventListener('click',async()=>{_bticProj=pj;await bticDraw()});box.appendChild(d);
+    });
+    return;
+  }
+  const files=(await icMetaOf(_bticProj.id)).sort((a,b)=>(b.lastModified||0)-(a.lastModified||0));
+  if(!files.length){box.innerHTML='<div class="empty" style="padding:14px">这个项目还没有文件</div>';return}
+  files.forEach(f=>{
+    const nm=f.path||f.name||'未命名';
+    const d=document.createElement('div');d.className='btlib-row';
+    d.innerHTML='<div class="btlib-m"><b>'+esc(nm)+'</b><small>'+icFmtSize(f.size||0)+'</small></div>';
+    d.addEventListener('click',async()=>{
+      let full=null;try{full=await dbGet('projectFiles',f.id)}catch(e){}
+      const c=full&&typeof full.content==='string'?full.content:'';
+      if(!c){toast('文件为空或读取失败');return}
+      if(/^data:/.test(c)){toast('这是二进制文件（图片等），说明书只能用文本');return}
+      const cur=$('btm-text').value||'';
+      if(cur.trim()&&!await confirmDlg('导入将替换当前编辑框内容，继续？','替换'))return;
+      if(!$('btm-name').value.trim())$('btm-name').value=String(nm).replace(/\.[a-z0-9]{1,8}$/i,'').slice(0,48);
+      $('btm-text').value=c.slice(0,10000);_btmCount();
+      if(c.length>8000)toast('内容超过 8000 字，保存前请精简');
+      bticClose();
+    });
+    box.appendChild(d);
+  });
+}
 function _btHex(dv){let h='';for(let i=0;i<dv.byteLength;i++)h+=dv.getUint8(i).toString(16).padStart(2,'0');return h}
 async function btToolExec(name,args){
   await loadMP();
   if(!(_mp.bt&&_mp.bt.aiTools))return{ok:false,detail:'蓝牙工具未开启（设置页 → 蓝牙设备）'};
-  if(!_bt.dev)return{ok:false,detail:'尚未连接蓝牙设备。请让用户在设置页手动点「连接设备」（浏览器要求连接必须由用户发起）。'};
+  if(!_btList().length)return{ok:false,detail:'尚未连接蓝牙设备。请让用户在设置页手动点「连接设备」（浏览器要求连接必须由用户发起）。'};
   try{
-    if(name==='bt_status')return{ok:true,label:'蓝牙状态',detail:'设备：'+(_bt.dev.name||'未命名')+'\n特征值：\n'+_bt.chars.map(c=>_btShort(c.uuid)+'（'+c.props+'）').join('\n')};
-    const c=_btFind(args&&(args.uuid||args.char));
-    if(!c)return{ok:false,detail:'找不到该特征值，请先用 bt_status 查看可用列表'};
+    if(name==='bt_status')return{ok:true,label:'蓝牙状态',detail:_btStatusText()};
+    const uu=args&&(args.uuid||args.char);
+    const pk=_btPick(args,uu);if(pk.err)return{ok:false,detail:pk.err};
+    const d=pk.d,c=_btFindIn(d,uu);
+    if(!c)return{ok:false,detail:'设备「'+(d.name||'未命名')+'」上找不到该特征值，请先用 bt_status 查看可用列表'};
+    const tag=(_btList().length>1?(d.name||'设备')+' · ':'')+_btShort(c.uuid);
     if(name==='bt_read'){
-      const v=await c.ch.readValue();let txt='';try{txt=new TextDecoder().decode(v)}catch(e){}
-      return{ok:true,label:'蓝牙读取 · '+_btShort(c.uuid),detail:'hex: '+_btHex(v)+(/[\x20-\x7e\u4e00-\u9fff]{2,}/.test(txt)?'\ntext: '+txt:'')};
+      const v=await _btTimeout(c.ch.readValue(),12000,'读取');let txt='';try{txt=new TextDecoder().decode(v)}catch(e){}
+      return{ok:true,label:'蓝牙读取 · '+tag,detail:'hex: '+_btHex(v)+(/[\x20-\x7e\u4e00-\u9fff]{2,}/.test(txt)?'\ntext: '+txt:'')};
     }
     if(name==='bt_write'){
       let bytes;
       if(args&&args.hex){const h=String(args.hex).replace(/[^0-9a-f]/gi,'');bytes=new Uint8Array((h.match(/../g)||[]).map(x=>parseInt(x,16)))}
       else bytes=new TextEncoder().encode(String((args&&args.text)||''));
-      if(c.ch.properties.write)await c.ch.writeValue(bytes);else await c.ch.writeValueWithoutResponse(bytes);
-      return{ok:true,label:'蓝牙写入 · '+_btShort(c.uuid),detail:bytes.byteLength+' 字节已发送'};
+      await _btTimeout(c.ch.properties.write?c.ch.writeValue(bytes):c.ch.writeValueWithoutResponse(bytes),12000,'写入');
+      return{ok:true,label:'蓝牙写入 · '+tag,detail:bytes.byteLength+' 字节已发送'};
     }
     return{ok:false,detail:'未知蓝牙操作'};
   }catch(e){return{ok:false,detail:'蓝牙操作失败：'+String(e&&e.message||e).slice(0,120)}}
 }
 if($('bt-conn')){
-  $('bt-conn').addEventListener('click',_btConnect);
-  $('bt-off').addEventListener('click',()=>{try{_bt.dev&&_bt.dev.gatt&&_bt.dev.gatt.disconnect()}catch(e){}_bt={dev:null,chars:[]};_btDraw()});
+  $('bt-conn').addEventListener('click',function(){_btConnect()});/* v132-p：晚绑定（与 APK 线同构，便于两线 diff） */
+  $('bt-off').addEventListener('click',()=>{_btList().slice().forEach(d=>_btDropDev(d.id,true));_btDraw()});/* v132-p：全部断开；单台断开在各自行内 */
   $('bt-ai').addEventListener('click',async()=>{await loadMP();_mp.bt=_mp.bt||{};_mp.bt.aiTools=!_mp.bt.aiTools;sw2($('bt-ai'),_mp.bt.aiTools);await saveMP()});
+  $('bt-manlib').addEventListener('click',function(){btmLib()});/* v139-a·v137-p 任务2 */
+}
+if($('btm-save')){/* v139-a·v137-p 任务2：说明书编辑 / 库 / 导入 */
+  $('btm-save').addEventListener('click',btmSave);
+  $('btm-del').addEventListener('click',btmDel);
+  $('btm-text').addEventListener('input',_btmCount);
+  $('btm-file-btn').addEventListener('click',()=>$('btm-file').click());
+  $('btm-file').addEventListener('change',async e=>{
+    const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
+    if(f.size>300*1024){toast('文件超过 300 KB——说明书应是给 AI 的精炼文本');return}
+    let t='';try{t=await f.text()}catch(err){toast('读取失败');return}
+    if(/^data:|\u0000/.test(t.slice(0,50))){toast('这不是文本文件');return}
+    const cur=$('btm-text').value||'';
+    if(cur.trim()&&!await confirmDlg('导入将替换当前编辑框内容，继续？','替换'))return;
+    if(!$('btm-name').value.trim())$('btm-name').value=f.name.replace(/\.[a-z0-9]{1,8}$/i,'').slice(0,48);
+    $('btm-text').value=String(t).slice(0,10000);_btmCount();
+    if(t.length>8000)toast('内容超过 8000 字，保存前请精简');
+  });
+  $('btm-ic-btn').addEventListener('click',bticOpen);
+  $('btic-x').addEventListener('click',bticClose);
+  $('btic-back').addEventListener('click',async()=>{_bticProj=null;await bticDraw()});
+  $('btlib-add').addEventListener('click',()=>{closeSheets();setTimeout(()=>btmOpen(null,null),90)});
 }
 async function buildToolsBlock(){
   await loadIBT();await loadMP();
@@ -8626,13 +8954,13 @@ async function buildToolsBlock(){
     });
   }
   if(navigator.bluetooth&&_mp.bt&&_mp.bt.aiTools){
-    list.push('- bt_status：查看已连接蓝牙设备与全部特征值');
-    list.push('- bt_read：读取一个特征值的当前值（参数：uuid*）');
-    list.push('- bt_write：向一个特征值写入（参数：uuid*，hex 或 text 二选一）');
+    list.push('- bt_status：查看已连接的全部蓝牙设备（可多台）及各自的特征值');
+    list.push('- bt_read：读取一个特征值的当前值（参数：uuid*；连了多台时加 dev＝设备名或序号）');
+    list.push('- bt_write：向一个特征值写入（参数：uuid*，hex 或 text 二选一；连了多台时加 dev＝设备名或序号）');/* v132-p：多设备 */
   }
   if(!list.length)return'';
   const confirmNote=(_ibt.confirm!==false||_mp.mcp.confirm!==false)?'（用户开启了调用确认，发起后需等用户点执行）':'';
-  return '【外部工具】需要实时数据或触发外部动作时，输出：<ws_tool name="工具名" args=\'{"参数":"值"}\'/>（mcp. 开头的是 MCP 服务器工具；只能调用列表内工具；同一条回复里可以连续输出多个 <ws_tool>，也可与查定位、读日历、检索记忆等其它标签混用——系统会按输出顺序逐个执行并各回一张操作卡，需要同时做几件事时请一次写全，不必分成多轮；结果会在之后的消息注入给你'+confirmNote+'）。可用工具：\n'+list.join('\n');
+  return '【外部工具】需要实时数据或触发外部动作时，输出：<ws_tool name="工具名" args=\'{"参数":"值"}\'/>（mcp. 开头的是 MCP 服务器工具；只能调用列表内工具；同一条回复里可以连续输出多个 <ws_tool>，也可与查定位、读日历、检索记忆等其它标签混用——系统会按输出顺序逐个执行并各回一张操作卡，需要同时做几件事时请一次写全，不必分成多轮；结果会在之后的消息注入给你'+confirmNote+'）。可用工具：\n'+list.join('\n')+_btManualBlock();/* v139-a·v137-p 任务2：已连接设备的说明书随连接状态整块注入（连/断一次重建一次缓存，之后稳定命中） */
 }
 /* 公开日志注入（AI 读取范围·每 AI 独立；锁定日记绝不注入）*/
 async function buildPostsBlock(limit){
@@ -9284,6 +9612,39 @@ $('sum-now').addEventListener('click',async()=>{
   if(rec){$('sum-body').textContent=rec.summary;$('sum-meta').textContent='覆盖至 '+new Date(rec.coveredUpTo||0).toLocaleString('zh-CN');toast('摘要已更新')}
   else toast('未生成：消息不足或 API 不可用');
 });
+/* v136-a·v134-p：#2 记忆生成统一管线——Chat 已验证的 JSON 生成/解析/落库抽为共用核心（解析逻辑与原 saveMemoryFrom 逐字同源），Letters 接入、Blog 补上入口，字段口径对齐电脑端 _generateMemoryCore（title/oneLine/content/domain 四分类/tags/importance/valence/arousal） */
+async function _ibGenMemCore(cfg,userText,sysTail,meta){
+  meta=meta||{};
+  const sys='仅输出一个 JSON 对象，无任何其他文字或代码块围栏。字段：title（≤20字）、oneLine（≤40字）、content（≤300字）、domain（情感/日常/创作/思考 之一）、importance（1-10 整数）、valence（0-1 小数）、arousal（0-1 小数）、tags（≤4 个字符串的数组）。'+String(sysTail||'');
+  const test=Object.assign({},cfg,{streaming:false,thinkingEnabled:false,promptCache:false});
+  const r=await callAI(test,[{role:'user',content:userText}],sys,()=>{},null,{maxTokens:700});
+  let raw=String((r&&typeof r==='object')?(r.t||''):(r||''));
+  if(!raw.trim()&&r&&r.k)raw=String(r.k);/* 个别中转把正文塞进 reasoning_content（k）：正文为空时回捞思考段 */
+  raw=raw.replace(/```[a-zA-Z]*[ \t]*/g,'').trim();
+  const st=raw.indexOf('{'),en=raw.lastIndexOf('}');
+  if(st===-1||en<=st)throw new Error(raw?('返回内容不是 JSON：'+raw.slice(0,40)):('返回为空'+((r&&r.fin)?('（finish='+r.fin+'）'):'')));
+  const j=JSON.parse(raw.slice(st,en+1));
+  if(!j.title)throw new Error('缺少 title');
+  const mem={
+    id:'mem_'+Date.now()+'_'+Math.floor(Math.random()*10000),
+    title:String(j.title).slice(0,40),
+    oneLine:String(j.oneLine||'').slice(0,80),
+    summary:String(j.oneLine||'').slice(0,80),
+    content:String(j.content||'').slice(0,600),
+    domain:['情感','日常','创作','思考'].indexOf(j.domain)!==-1?j.domain:(meta.domainFallback||'日常'),
+    tags:Array.isArray(j.tags)?j.tags.slice(0,4).map(t=>String(t).slice(0,12)):[],
+    importance:Math.max(1,Math.min(10,parseInt(j.importance)||5)),
+    valence:Math.max(0,Math.min(1,parseFloat(j.valence)||0.5)),
+    arousal:Math.max(0,Math.min(1,parseFloat(j.arousal)||0.3)),
+    pinned:false,resolved:false,visibility:'all',visibleTo:[],excludeFrom:[],
+    rawSource:meta.rawSource||'chat',sourceId:meta.sourceId||'',activationCount:0,
+    created:Date.now(),lastActivated:Date.now(),
+    createdBy:'ai',createdByName:cfgName(cfg),editedByUser:false
+  };
+  await dbPut('memories',mem);
+  try{if(document.querySelector('#page-memory.active'))renderMemLib()}catch(e){}
+  return mem;
+}
 async function saveMemoryFrom(list){
   let cfg=_activeCfg;if(!cfg)return;
   if(cfg._group){
@@ -9301,34 +9662,8 @@ async function saveMemoryFrom(list){
   const me=(_about&&_about.name)||'用户';
   const lines=src.map(m=>((m.role==='user'?me:(m.senderName||cfgName(cfg)))+'：'+String(m.content||'').slice(0,400))).join('\n');
   toast('正在生成记忆…');
-  const sys='仅输出一个 JSON 对象，无任何其他文字或代码块围栏。字段：title（≤20字）、oneLine（≤40字）、content（≤300字）、domain（情感/日常/创作/思考 之一）、importance（1-10 整数）、valence（0-1 小数）、arousal（0-1 小数）、tags（≤4 个字符串的数组）。基于对话片段，从'+me+'的视角提炼一条值得长期保存的记忆。';
   try{
-    const test=Object.assign({},cfg,{streaming:false,thinkingEnabled:false,promptCache:false});
-    const r=await callAI(test,[{role:'user',content:lines}],sys,()=>{},null,{maxTokens:700});
-    let raw=String((r&&typeof r==='object')?(r.t||''):(r||''));/* v127-p 任务6：修「生成记忆」必失败——callAI 自 v59-m t13 起返回 {t,k,u,fin} 对象，全文件 15 个调用点唯独这里还按旧签名把返回值当字符串：String(对象)＝"[object Object]"，方括号里连 { 都没有，st 永远 -1，百分之百抛「返回内容不是 JSON」。改为取 .t 正文 */
-    if(!raw.trim()&&r&&r.k)raw=String(r.k);/* 个别中转把正文整个塞进 reasoning_content（k）：正文为空时回捞思考段，里面若有 JSON 一样能救回来 */
-    raw=raw.replace(/```[a-zA-Z]*[ \t]*/g,'').trim();/* 围栏剥离顺手加固：```JSON、```js 等带语言标注/大小写变体一并剥掉（旧写法只认小写 ```json） */
-    const st=raw.indexOf('{'),en=raw.lastIndexOf('}');
-    if(st===-1||en<=st)throw new Error(raw?('返回内容不是 JSON：'+raw.slice(0,40)):('返回为空'+((r&&r.fin)?('（finish='+r.fin+'）'):'')));/* 报错带回样本前 40 字/截断原因，下次再出问题一眼可辨 */
-    const j=JSON.parse(raw.slice(st,en+1));
-    if(!j.title)throw new Error('缺少 title');
-    const mem={
-      id:'mem_'+Date.now()+'_'+Math.floor(Math.random()*10000),
-      title:String(j.title).slice(0,40),
-      oneLine:String(j.oneLine||'').slice(0,80),
-      summary:String(j.oneLine||'').slice(0,80),
-      content:String(j.content||'').slice(0,600),
-      domain:['情感','日常','创作','思考'].indexOf(j.domain)!==-1?j.domain:'日常',
-      tags:Array.isArray(j.tags)?j.tags.slice(0,4).map(t=>String(t).slice(0,12)):[],
-      importance:Math.max(1,Math.min(10,parseInt(j.importance)||5)),
-      valence:Math.max(0,Math.min(1,parseFloat(j.valence)||0.5)),
-      arousal:Math.max(0,Math.min(1,parseFloat(j.arousal)||0.3)),
-      pinned:false,resolved:false,visibility:'all',visibleTo:[],excludeFrom:[],
-      rawSource:'chat',sourceId:cfg.id,activationCount:0,
-      created:Date.now(),lastActivated:Date.now(),
-      createdBy:'ai',createdByName:cfgName(cfg),editedByUser:false
-    };
-    await dbPut('memories',mem);
+    const mem=await _ibGenMemCore(cfg,lines,'基于对话片段，从'+me+'的视角提炼一条值得长期保存的记忆。',{rawSource:'chat',sourceId:cfg.id});/* v136-a·v134-p：#2 改走共用管线，行为与原版一致 */
     toast('已生成记忆：'+mem.title);
   }catch(e){toast('生成失败：'+String((e&&e.message)||e).slice(0,60))}
 }
@@ -9763,7 +10098,7 @@ async function renderApiGlobal(){
   /* fix-r4：pres-on / pres-ai / pres-gap 回填随「离开回来」径退役（任务 3） */
   $('out-cont').value=['0','1','2','3','5','8'].indexOf(String(_out.maxContinues))!==-1?String(_out.maxContinues):'3';
   try{var _omt=$('out-maxtok');if(_omt){var _mv=String(parseInt(_out.maxTokens)||0);_omt.value=_mv;if(_omt.value!==_mv)_omt.value='0'}}catch(e){}/* v130-p：单次输出上限回填（库值不在选项集时显示自动） */
-  try{var _ot9=$('out-tools');if(_ot9){_ot9.value=String(_out.toolRounds!=null?_out.toolRounds:2);if(_ot9.value==='')_ot9.value='2'}}catch(e){}try{var _iw9=$('ic-ai-rounds');if(_iw9){_iw9.value=String(_out.wsRounds!=null?_out.wsRounds:3);if(_iw9.value==='')_iw9.value='3'}}catch(e){}/* fix-r5：随设置页渲染按库内真值重刷（原先只靠顶层抢跑回填一次，DB 就绪后不再更新显示）；库值不在选项集时按控件默认显示，与 out-cont 白名单回退同款 */
+  try{var _ot9=$('out-tools');if(_ot9){_ot9.value=String(_out.toolRounds!=null?_out.toolRounds:2);if(_ot9.value==='')_ot9.value='2'}}catch(e){}try{if(typeof _outTrigPaint==='function')_outTrigPaint()}catch(e){}/* v133-p：触发范围随设置页渲染回填 */try{var _iw9=$('ic-ai-rounds');if(_iw9){_iw9.value=String(_out.wsRounds!=null?_out.wsRounds:3);if(_iw9.value==='')_iw9.value='3'}}catch(e){}/* fix-r5：随设置页渲染按库内真值重刷（原先只靠顶层抢跑回填一次，DB 就绪后不再更新显示）；库值不在选项集时按控件默认显示，与 out-cont 白名单回退同款 */
   /* v66-m t8：记忆系统改电脑端同款「预设 + 自定义」，钳位 100–99999 / 50–9999 */
   const _msApplyUI=(selId,val,def)=>{const sel=$(selId),inp=$(selId+'-custom');if(!sel)return;
     const has=[...sel.options].some(o=>o.value===String(val));
@@ -9849,7 +10184,11 @@ $('out-cont').addEventListener('change',async()=>{
 });
 try{var _omt2=$('out-maxtok');if(_omt2){_omt2.addEventListener('change',async function(){await loadOUT();_out.maxTokens=Math.max(0,parseInt(_omt2.value)||0);try{await dbPut('apiSettings',_out);toast(_out.maxTokens?('单次输出上限已设为 '+_out.maxTokens):'单次输出上限：自动（按服务商顶格）')}catch(e){toast('保存失败')}})}}catch(e){}/* v130-p：单次输出上限 */
 /* v14 修复：out-tools / ic-ai-rounds / PWA 预留三段绑定原被误嵌进上面 out-cont 的 change 处理器花括号里——不先动一次「最大自动续写」这些控件既不回填也不挂监听，动了还会重复挂载。现移出为顶层一次性绑定，回填统一走 loadOUT / loadMP。 */
+/* v133-p：续答触发范围 chips——点亮/熄灭即存 outputSettings.toolTrig（合并写同一条记录） */
+function _outTrigPaint(){try{var box=$('out-trig');if(!box)return;var t=(_out&&_out.toolTrig)||{};box.querySelectorAll('.btn[data-k]').forEach(function(b){b.classList.toggle('on',t[b.getAttribute('data-k')]!==false)})}catch(e){}}
+try{var _otg=$('out-trig');if(_otg){loadOUT().then(_outTrigPaint);_otg.addEventListener('click',async function(ev){var b=ev.target.closest('.btn[data-k]');if(!b)return;await loadOUT();var k=b.getAttribute('data-k');var t=Object.assign({},_out.toolTrig||{});t[k]=(t[k]===false);_out.toolTrig=t;_outTrigPaint();try{await dbPut('apiSettings',_out)}catch(err){console.warn('[IB] outputSettings 保存失败：',err)}toast(t[k]===false?'已关闭该类的续答：结果随下一条消息回传':'已恢复该类的续答')})}}catch(e){}
 try{var _ot=$('out-tools');if(_ot){loadOUT().then(function(){_ot.value=String(_out.toolRounds!=null?_out.toolRounds:2)});_ot.addEventListener('change',async e=>{await loadOUT();_out.toolRounds=Math.max(0,Math.min(5,parseInt(e.target.value)||0));try{await dbPut('apiSettings',_out)}catch(err){console.warn('[IB] outputSettings 保存失败：',err)}/* v104-m：修错库 settings→apiSettings（库内无 settings store，原空 catch 吞错致改值不持久化），并补失败日志 */})}}catch(e){}/* v84-m r1：工具连续调用轮数（任务 1） */
+try{var _obc=$('out-btcap');if(_obc){loadOUT().then(function(){_obc.value=String(_out.btCap!=null?_out.btCap:4)});_obc.addEventListener('change',async e=>{await loadOUT();_out.btCap=Math.max(0,Math.min(10,parseInt(e.target.value)||0));try{await dbPut('apiSettings',_out)}catch(err){console.warn('[IB] outputSettings 保存失败：',err)}})}}catch(e){}/* v137-a·v135-p：#5 蓝牙每回复上限 */
 try{var _iwr=$('ic-ai-rounds');if(_iwr){loadOUT().then(function(){_iwr.value=String(_out.wsRounds!=null?_out.wsRounds:3)});_iwr.addEventListener('change',async function(){await loadOUT();_out.wsRounds=Math.max(0,Math.min(6,parseInt(_iwr.value)||0));try{await dbPut('apiSettings',_out);toast('ICode 连续操作已设为 '+_out.wsRounds+' 次')}catch(e){toast('保存失败')}})}}catch(e){}/* ICode Skill：工作区独立连续轮数，HELP 不计 */
 (async function(){try{await loadMP();var _pw=_mp.pwa||{};
   [['pwa-name','name'],['pwa-short','short']].forEach(function(pp){var el=$(pp[0]);if(el){el.value=_pw[pp[1]]||'';el.addEventListener('change',async()=>{await loadMP();_mp.pwa=_mp.pwa||{};_mp.pwa[pp[1]]=el.value.trim().slice(0,24);await saveMP();_pwaApply()})}});
@@ -10519,7 +10858,7 @@ $('import-file').addEventListener('change',async function(ev){
   var e=_mioEl();
   if(e.ov.hidden)await _mioOpen('import');
   var data;
-  try{data=JSON.parse(await f.text())}catch(err){e.bd.innerHTML='<div class="mio-note" style="color:#c96a6a">文件格式错误：不是有效的 JSON 备份。</div>';return}
+  try{data=JSON.parse(String(await f.text()).replace(/^\ufeff/,''))}catch(err){e.bd.innerHTML='<div class="mio-note" style="color:#c96a6a">文件格式错误：不是有效的 JSON 备份。</div>';return}/* v139-p：#③ 导入剥 BOM——对齐电脑端同款守卫，带 BOM 的备份不再误报格式错误 */
   _mioData=data;
   _mioFound=SYNC_STORES.filter(function(s){return Array.isArray(data[s])&&data[s].length});
   _mioSkipped=Object.keys(data).filter(function(k){return Array.isArray(data[k])&&data[k].length&&SYNC_STORES.indexOf(k)===-1});/* 不互通的数据跳过，记入层内与导入日志 */
@@ -10568,23 +10907,29 @@ async function _mioRunExport(){
   if(_mioBusy)return;
   _mioBusy=true;var e=_mioEl();e.ft.innerHTML='<button class="btn" disabled>导出中…</button>';
   try{
-    var parts=['{'];/* v116-p：iOS 稳定性——逐 store 分片序列化直接进 Blob，不再同时持有「整棵对象树 + 整串 JSON + Blob」三份拷贝（修导出内存峰值）；产物 JSON 结构与旧版逐字段等价，两端导入不受影响 */
+    var chunks=[],parts=['{'],psz=1;/* v138-p·v140-a #①（v116-p 升级）：游标逐条＋分块 Blob——v116 虽已逐条序列化，整份 JSON 的全部字符串块仍同时驻留 parts；现攒约 2MB 即落成子 Blob（WebKit 可离堆存放），字符串峰值从「整份 JSON」降为「一小块」，对象峰值从「最大仓整棵树」降为「单条记录」；产物 JSON 与旧版逐字节等价 */
+    var _mioFl=function(){if(parts.length){chunks.push(new Blob(parts));parts=[];psz=0}};
     for(var i=0;i<SYNC_STORES.length;i++){
       var s=SYNC_STORES[i],row=e.bd.querySelector('.mio-row[data-s="'+s+'"]'),st=row&&row.querySelector('.st');
       if(_mioSel[s]===false){parts.push(JSON.stringify(s)+':[],');if(st)st.textContent='—';continue}/* v120-p：#3 未勾选写空数组——两端导入按「有内容才并入」处理，空数组不会动到对端数据 */
+      parts.push(JSON.stringify(s)+':[');
+      var n1=0;
       try{
-        var arr=await dbGetAll(s);
-        if(s==='chatMessages')arr=arr.map(function(m){var c=Object.assign({},m);delete c.upstreamRaw;delete c.thinkingSources;return c});
-        if(s==='apiSettings')arr=arr.filter(function(r){return r&&r.id!=='ib_fsSyncDir'});/* 同电脑版：目录句柄不进备份 */
-        if(_mioNoKey&&(s==='apiConfigs'||s==='apiSettings'))arr=arr.map(function(r){var c=Object.assign({},r);['apiKey','key','imageGenKey','sttKey','igKey'].forEach(function(k){if(c[k])c[k]=''});return c});/* v86-m r3：不含密钥档——逐条置空密钥字段（任务 5 待办项） */
-        parts.push(JSON.stringify(s)+':[');
-        for(var j=0;j<arr.length;j++){parts.push((j?',':'')+JSON.stringify(arr[j]));arr[j]=null}
-        parts.push('],');arr=null;
+        await dbEach(s,function(v){
+          if(!v)return;
+          if(s==='apiSettings'&&v.id==='ib_fsSyncDir')return;/* 同电脑版：目录句柄不进备份 */
+          if(s==='chatMessages'){v=Object.assign({},v);delete v.upstreamRaw;delete v.thinkingSources}
+          if(_mioNoKey&&(s==='apiConfigs'||s==='apiSettings')){v=Object.assign({},v);['apiKey','key','imageGenKey','sttKey','igKey'].forEach(function(k){if(v[k])v[k]=''})}/* v86-m r3：不含密钥档——逐条置空密钥字段 */
+          var j1=JSON.stringify(v);parts.push((n1?',':'')+j1);n1++;psz+=j1.length;
+          if(psz>2097152)_mioFl();
+        });
+        parts.push('],');
         if(st)st.textContent='✓';
-      }catch(err){parts.push(JSON.stringify(s)+':[],');if(row)row.classList.add('fail');if(st)st.textContent='✕'}
+      }catch(err){parts.push('],');if(row)row.classList.add('fail');if(st)st.textContent='✕'}/* 中途失败保留已写出的部分（旧版整仓置空）——JSON 仍合法，行标 ✕ */
     }
     parts.push('"exportDate":'+JSON.stringify(new Date().toISOString())+',"version":4,"appVersion":'+JSON.stringify(IB_VER)+',"noKey":'+(!!_mioNoKey)+'}');/* v86-m r3：版本号占位＋密钥档标记 */
-    var blob=new Blob(parts,{type:'application/json'});parts=null;
+    _mioFl();
+    var blob=new Blob(chunks,{type:'application/json'});chunks=null;
     downloadBlob(blob,'InternalBeyond_backup_'+new Date().toISOString().slice(0,10)+'_mobile'+(_mioNoKey?'_nokey':'')+'.json');
     var _unsx=SYNC_STORES.filter(function(s){return _mioSel[s]===false});
     e.bd.insertAdjacentHTML('beforeend','<div class="mio-done">导出完成：备份文件已生成（'+(blob.size/1024/1024).toFixed(2)+' MB），请在浏览器下载中查看。'+(_unsx.length?('未勾选跳过：'+_unsx.map(function(s){return STORE_CN[s]}).join('、')+'。'):'')+'</div>');
@@ -10878,7 +11223,7 @@ function _orientApply(){try{
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')});
   setTimeout(function(){try{if(window.IBNative&&window.IBNative.available){var _bg=$('pres-bg');var _row=_bg&&_bg.closest('.tog');if(_row)_row.style.display=''}}catch(e){}},1200);/* v116-p：壳内显露「后台 Presence（App）」开关（桥在文末激活，故延时探测；浏览器 / PWA 保持隐藏） */
 })();
-var IB_VER='v131-p',IB_VER_DATE='2026-08-20';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
+var IB_VER='v139-p',IB_VER_DATE='2026-08-22';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest（本轮任务 5 待办项） */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
@@ -11203,16 +11548,27 @@ async function genMemoryFromLetterM(id){
   if(!await confirmDlg('调用 '+cfgName(cfg)+' 把这封信整理为一条记忆？','生成'))return;
   try{
     toast('生成中…');
-    await loadMP();var pa=mpAi(cfg);
-    var prompt='以下是你之前写给用户的一封信：\n\n'+String(l.content||'').slice(0,3000)
-      +'\n\n【请求】\n请把这封信中值得长期记住的要点，浓缩为一条 50 字以内的记忆（第三人称、客观陈述）。直接输出记忆内容，不要任何前后缀。';
-    var ac=new AbortController();
-    var r=await callAI(cfg,[{role:'user',content:prompt}],(cfg.systemPrompt||'').trim(),function(){},ac.signal,pa);
-    var t=((r&&r.t)||'').trim();
-    if(!t){toast('AI 返回为空');return}
-    await dbPut('memories',{id:'mem_'+Date.now(),content:t.slice(0,200),source:'letter',aiName:cfgName(cfg),visibility:'all',created:Date.now()});
-    toast('已写入记忆库');
-  }catch(e){toast('生成失败：'+((e&&e.message)||''))}
+    var me9=((typeof _about!=='undefined'&&_about&&_about.name)||'用户');
+    var body9='【信件来源】'+cfgName(cfg)+'\n【信件内容】\n'+String(l.content||'').slice(0,4000);
+    var mem9=await _ibGenMemCore(cfg,body9,'这封信是'+cfgName(cfg)+'写给'+me9+'的。以'+cfgName(cfg)+'的视角提炼信中值得长期记住的内容；用「'+cfgName(cfg)+'」「'+me9+'」称呼双方，不要用"我""你"等代词。',{rawSource:'letter',sourceId:l.id,domainFallback:'情感'});/* v136-a·v134-p：#2 修 Letters 裸记录（原先只落 content，无标题无归类，记忆卡与检索不可用）——接入共用管线 */
+    toast('已生成记忆：'+mem9.title);
+  }catch(e){toast('生成失败：'+String((e&&e.message)||e).slice(0,60))}
+}
+async function genMemoryFromPostM(id){/* v136-a·v134-p：#2 Blog 生成记忆入口——GUIDE 与电脑端早有，手机端一直缺失 */
+  var p=await dbGet('posts',id).catch(function(){return null});
+  if(!p){toast('日志不存在');return}
+  var sel9=$('m-cm-ai');var aid9=sel9?sel9.value:'';
+  var cfg=_cfgs.find(function(a){return a.id===aid9});
+  if(!cfg){toast('请先在下方留言区选择一位 AI');return}
+  if(!cfg.apiKey){toast('该 API 未配置 Key');return}
+  if(!await confirmDlg('调用 '+cfgName(cfg)+' 把这篇日志整理为一条记忆？','生成'))return;
+  try{
+    toast('生成中…');
+    var me9=((typeof _about!=='undefined'&&_about&&_about.name)||'用户');
+    var body9='【日志标题】'+(p.title||'无标题')+'\n【日志内容】\n'+String(p.content||'').slice(0,4000);
+    var mem9=await _ibGenMemCore(cfg,body9,'这篇日志出自'+me9+'之手。以'+cfgName(cfg)+'的视角提炼其中值得长期记住的内容；用「'+cfgName(cfg)+'」「'+me9+'」称呼双方，不要用"我""你"等代词。',{rawSource:'blog',sourceId:p.id,domainFallback:'日常'});
+    toast('已生成记忆：'+mem9.title);
+  }catch(e){toast('生成失败：'+String((e&&e.message)||e).slice(0,60))}
 }
 SEC_RENDER['letters:box']=async function(){await loadCfgs().catch(function(){});await loadMP();await initDemoLetterM();loadLettersM();populateLetterAiSelectM();
   var ec=$('m-egg-ck');
@@ -11364,6 +11720,7 @@ async function viewPostM(id){
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">'
       +'<select class="msel" id="m-cm-ai" style="flex:1;min-width:0"></select>'
       +'<button class="btn primary" id="m-cm-req">请TA留言</button>'
+      +'<button class="btn" id="m-pv-mem">生成记忆</button>'
     +'</div><div id="m-comments"></div>';
   host.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',()=>viewPostM(el.dataset.nav)));
   const eb=$('m-pv-edit');if(eb)eb.addEventListener('click',()=>blogOpenEditor(pp.id));
@@ -11378,6 +11735,7 @@ async function viewPostM(id){
   const sel=$('m-cm-ai');sel.innerHTML='';
   _cfgs.forEach(a=>{const o=document.createElement('option');o.value=a.id;o.textContent=cfgName(a);sel.appendChild(o)});
   $('m-cm-req').addEventListener('click',()=>requestBlogCommentM(pp.id));
+  var _pvm9=$('m-pv-mem');if(_pvm9)_pvm9.addEventListener('click',()=>genMemoryFromPostM(pp.id));/* v136-a·v134-p：#2 Blog 生成记忆入口 */
   loadBlogCommentsM(pp.id);_annoRenderM(pp.id);
   const _bsr=$('m-brv-search');if(_bsr){_bsr.classList.remove('open');$('m-brv-q').value='';$('m-brv-cnt').textContent='0/0'}_brvHits=[];_brvAt=-1;
   window.addEventListener('scroll',_bScrollProg,{passive:true});
@@ -11872,7 +12230,7 @@ function tpRender(){
   box.innerHTML='';
   const _grp=_activeCfg&&_activeCfg._group;
   $('tp-new').style.display=_grp?'none':'';
-  searchChatM(mq);
+  _schSched(mq);/* v138-p·v140-a #②：220ms 防抖——敲一串字不再每键全库游标扫一遍 */
   if(_grp)return;
   const mk=(label,on,memOn,fn,lp)=>{
     const it=document.createElement('div');it.className='tp-item'+(on?' on':'');
@@ -11917,23 +12275,133 @@ function tpClose(){
 $('cv-ham').addEventListener('click',tpOpen);
 document.querySelector('#tp-wrap .tp-mask').addEventListener('click',tpClose);
 $('tp-new').addEventListener('click',()=>{tpClose();openThreadEdit(null)});
+$('tp-cal').addEventListener('click',()=>{tpClose();cvcalOpen()});/* v139-a·v137-p 任务1 */
 $('tp-search').addEventListener('input',tpRender);
 const _tpth=$('tp-th-search');if(_tpth)_tpth.addEventListener('input',tpRender);
 /* v52-m 搜索当前对话（照电脑端 searchChat：范围=当前频道/主线，结果直接渲染在消息区）*/
 let _chatQ='';
+var _schT=null;function _schSched(q){clearTimeout(_schT);_schT=setTimeout(function(){searchChatM(q)},220)}/* v138-p·v140-a #②：搜索防抖 */
 async function searchChatM(q){
   q=(q||'').trim();
   if(q===_chatQ)return;
   _chatQ=q;
   const host=convEl('cv-msgs');if(!host||!_activeCfg)return;
   if(!q){openConv(_activeCfg,_activeThread);return}
-  let msgs=[];try{msgs=await dbGetByIndex('chatMessages','byFriend',_activeCfg.id)}catch(e){}
-  const scoped=_activeThread?msgs.filter(x=>x.threadId===_activeThread.id):msgs.filter(x=>!x.threadId);
-  const hits=scoped.filter(x=>x.content&&String(x.content).toLowerCase().includes(q.toLowerCase()))
-    .sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+  const tid1=_activeThread?_activeThread.id:null,lq1=q.toLowerCase();/* v138-p·v140-a #②：游标逐条筛选——不再把该好友全部消息（含图片 dataURL）一次拉进堆 */
+  let hits=[];
+  try{await _dbEachByFriend(_activeCfg.id,function(x){
+    if(!x||!(tid1?x.threadId===tid1:!x.threadId))return;
+    if(!(x.content&&String(x.content).toLowerCase().includes(lq1)))return;
+    hits.push(x);
+  })}catch(e){}
+  hits.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+  try{_ibBfReset()}catch(e){}/* v139-a·v137-p 任务3 */
   host.innerHTML='';
   if(!hits.length){host.innerHTML='<div class="empty" style="padding:40px 20px">没有找到匹配的消息</div>';return}
   hits.slice(-80).forEach(x=>host.appendChild(buildMsgEl(x,null)));
+}
+
+/* ═══ v139-a·v137-p 任务1：按日期查看聊天记录 ═══
+   抽屉搜索框旁的日历按钮进入：月历上按日聚合当前范围（主线 / 当前频道）的消息数，
+   有记录的日子带圆点；点日期把当天全部消息渲染进消息区（与搜索同一条通路），
+   天视图顶部工具条可前后翻天、「返回当前」回到正常会话。点年月标题可速跳有记录的月份。 */
+var _cvcalMap=null,_cvcalTotal=0,_cvcalY=0,_cvcalM=0;
+async function _cvcalBuild(){
+  const fid=_activeCfg&&_activeCfg.id,tid=_activeThread?_activeThread.id:null;
+  const map=new Map();let n=0;
+  if(fid){try{
+    await new Promise(function(res,rej){
+      var tx=db.transaction('chatMessages','readonly'),st=tx.objectStore('chatMessages');
+      var src=null;try{src=st.index('byFriend')}catch(e){}
+      var req=src?src.openCursor(IDBKeyRange.only(fid)):st.openCursor();
+      req.onsuccess=function(ev){var c=ev.target.result;if(!c){res();return}
+        var v=c.value||{};
+        if((src?true:v.friendId===fid)&&(tid?v.threadId===tid:!v.threadId)&&v.timestamp){
+          var k=ymd(new Date(v.timestamp));map.set(k,(map.get(k)||0)+1);n++;
+        }
+        c.continue()};
+      req.onerror=function(){rej(req.error)};
+    });
+  }catch(e){}}
+  _cvcalMap=map;_cvcalTotal=n;
+}
+async function cvcalOpen(){
+  if(!_activeCfg)return;
+  const w=$('cvcal');if(!w)return;
+  const scope=_activeThread?('# '+_activeThread.name):cfgName(_activeCfg);
+  $('cvcal-sub').textContent=scope+' · 统计中…';
+  w.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>w.classList.add('open')));
+  await _cvcalBuild();
+  const n=new Date();_cvcalY=n.getFullYear();_cvcalM=n.getMonth();
+  $('cvcal-sub').textContent=scope+' · 共 '+_cvcalTotal+' 条消息';
+  cvcalDraw();
+}
+function cvcalClose(){const w=$('cvcal');if(!w||w.hidden)return;w.classList.remove('open');setTimeout(()=>{w.hidden=true},280)}
+function cvcalDraw(){
+  const g=$('cvcal-grid');if(!g)return;
+  $('cvcal-ym').textContent=_cvcalY+' 年 '+(_cvcalM+1)+' 月 ▾';
+  g.innerHTML='';
+  const lead=new Date(_cvcalY,_cvcalM,1).getDay(),days=new Date(_cvcalY,_cvcalM+1,0).getDate();
+  const tk=ymd(new Date());let mSum=0;
+  for(let i=0;i<lead;i++){const e=document.createElement('div');e.className='ca-cell out';g.appendChild(e)}
+  for(let d=1;d<=days;d++){
+    const k=_cvcalY+'-'+pad2(_cvcalM+1)+'-'+pad2(d);
+    const c=_cvcalMap?(_cvcalMap.get(k)||0):0;mSum+=c;
+    const cell=document.createElement('div');cell.className='ca-cell '+(c?'has':'no')+(k===tk?' today':'');
+    cell.innerHTML='<b>'+d+'</b><span class="ca-dots">'+(c?'<i></i>':'')+'</span>';
+    if(c)cell.addEventListener('click',()=>{cvcalClose();cvcalShowDay(k)});
+    g.appendChild(cell);
+  }
+  $('cvcal-stat').textContent=mSum?('本月 '+mSum+' 条消息 · 点带圆点的日期查看当天记录'):'本月没有聊天记录';
+}
+function _cvcalNav(dy,dm){_cvcalM+=dm;_cvcalY+=dy;if(_cvcalM<0){_cvcalM=11;_cvcalY--}if(_cvcalM>11){_cvcalM=0;_cvcalY++}cvcalDraw()}
+function cvcalMonths(){/* 点年月标题：速跳到任一有记录的月份（近 24 个月一屏） */
+  if(!_cvcalMap||!_cvcalMap.size){toast('这里还没有聊天记录');return}
+  const agg=new Map();
+  _cvcalMap.forEach((n,k)=>{const mk=k.slice(0,7);agg.set(mk,(agg.get(mk)||0)+n)});
+  const keys=Array.from(agg.keys()).sort().reverse().slice(0,24);
+  actionSheet(keys.map(mk=>({label:mk.slice(0,4)+' 年 '+parseInt(mk.slice(5,7),10)+' 月 · '+agg.get(mk)+' 条',fn:()=>{_cvcalY=parseInt(mk.slice(0,4),10);_cvcalM=parseInt(mk.slice(5,7),10)-1;cvcalDraw()}})));
+}
+async function cvcalShowDay(k){
+  const host=convEl('cv-msgs');if(!host||!_activeCfg)return;
+  const q=$('tp-search');if(q)q.value='';try{clearTimeout(_schT)}catch(e){}/* v138-p·v140-a #②：进天视图掐掉在途的搜索防抖 */
+  try{_ibBfReset()}catch(e){}
+  host.innerHTML='<div class="empty">载入中…</div>';
+  const tid=_activeThread?_activeThread.id:null;/* v138-p·v140-a #②：游标逐条——堆里只留当天条目 */
+  let day=[];
+  try{await _dbEachByFriend(_activeCfg.id,function(m){
+    if(m&&(tid?m.threadId===tid:!m.threadId)&&m.timestamp&&ymd(new Date(m.timestamp))===k)day.push(m);
+  })}catch(e){}
+  day.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+  host.innerHTML='';
+  const bar=document.createElement('div');bar.className='cvcal-bar';
+  const wd=['日','一','二','三','四','五','六'][new Date(_cvcalDT(k)).getDay()];
+  bar.innerHTML='<button type="button" class="cvb-nav" data-cvb="-1" title="前一天">‹</button>'
+    +'<span class="cvb-t">'+k+' 周'+wd+' · '+day.length+' 条</span>'
+    +'<button type="button" class="cvb-nav" data-cvb="1" title="后一天">›</button>'
+    +'<button type="button" class="cvb-x">返回当前</button>';
+  host.appendChild(bar);
+  if(!day.length){const e=document.createElement('div');e.className='empty';e.style.padding='40px 20px';e.textContent='这一天没有聊天记录';host.appendChild(e)}
+  else{
+    const CAP=400,show=day.slice(0,CAP);/* 单日超 400 条截断：日视图是查阅入口，不做无限装载 */
+    show.forEach((m,i)=>host.appendChild(buildMsgEl(m,i>0?show[i-1]:null)));
+    if(day.length>CAP){const e=document.createElement('div');e.className='hint';e.style.cssText='text-align:center;margin:10px 0';e.textContent='当天共 '+day.length+' 条，已显示前 '+CAP+' 条';host.appendChild(e)}
+  }
+  host.scrollTop=0;
+  bar.querySelectorAll('[data-cvb]').forEach(b=>b.addEventListener('click',()=>{
+    const d=new Date(_cvcalDT(k));d.setDate(d.getDate()+parseInt(b.getAttribute('data-cvb'),10));cvcalShowDay(ymd(d));
+  }));
+  bar.querySelector('.cvb-x').addEventListener('click',()=>{_chatQ='';openConv(_activeCfg,_activeThread)});
+}
+function _cvcalDT(k){const p=String(k).split('-');return new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10))}
+if($('cvcal')){
+  $('cvcal-back').addEventListener('click',cvcalClose);
+  $('cvcal-today').addEventListener('click',()=>{const n=new Date();_cvcalY=n.getFullYear();_cvcalM=n.getMonth();cvcalDraw()});
+  $('cvcal-pm').addEventListener('click',()=>_cvcalNav(0,-1));
+  $('cvcal-nm').addEventListener('click',()=>_cvcalNav(0,1));
+  $('cvcal-py').addEventListener('click',()=>_cvcalNav(-1,0));
+  $('cvcal-ny').addEventListener('click',()=>_cvcalNav(1,0));
+  $('cvcal-ym').addEventListener('click',cvcalMonths);
 }
 
 
@@ -12266,6 +12734,7 @@ async function _askPick(m,text){
   function _payMP(){if(!_mp.pay)_mp.pay={on:false,cap:200,payees:[]};if(!Array.isArray(_mp.pay.payees))_mp.pay.payees=[];return _mp.pay}
   window._payRefresh=function(){try{var p=(_mp&&_mp.pay)||{on:false,cap:200,payees:[]};
     var c=$('pay-cap');if(c&&document.activeElement!==c)c.value=(+p.cap>0?+p.cap:200);
+    var pp=$('pay-percap');if(pp)pp.value=String(Math.max(1,Math.min(9,parseInt(p.percap)||2)));/* v136-p：②每回复上限回显 */
     var h=$('pay-list');if(!h)return;h.innerHTML='';
     (p.payees||[]).forEach(function(pe,i){var row=document.createElement('div');row.className='pay-row';
       row.innerHTML='<b>'+esc(pe.name||'')+'</b><span>'+esc(pe.link||'')+'</span>';
@@ -12276,6 +12745,7 @@ async function _askPick(m,text){
   }catch(e){}};
   var t=$('pay-on');if(t)t.addEventListener('click',async function(){await loadMP();var p=_payMP();p.on=!p.on;await saveMP();sw2(t,p.on);toast(p.on?'AI付已开启':'AI付已关闭')});
   var c=$('pay-cap');if(c)c.addEventListener('change',async function(){var v=Math.max(1,Math.min(99999,parseFloat(c.value)||200));await loadMP();_payMP().cap=v;await saveMP();c.value=v;toast('单笔上限已设为 '+v+' 元')});
+  var pc9=$('pay-percap');if(pc9)pc9.addEventListener('change',async function(){var v=Math.max(1,Math.min(9,parseInt(pc9.value)||2));await loadMP();_payMP().percap=v;await saveMP();pc9.value=String(v);toast('AI付 每回复上限已设为 '+v+' 笔')});/* v136-p：②每回复调用上限（存 pay.percap） */
   var a=$('pay-add');if(a)a.addEventListener('click',async function(){
     var nm=String(($('pay-nm')||{}).value||'').trim().slice(0,12);
     var lk=String(($('pay-lk')||{}).value||'').trim();
@@ -12382,7 +12852,7 @@ function _vmToggle(el,v){
 /* ── ICode 工作区执行（手机端真实读写，与电脑端同一 IndexedDB 数据） ── */
 /* ═══ 进阶指令（记忆库检索 / 日历写入）：与电脑端共用 apiSettings/advInstr 一条记录 ═══ */
 const _MEMSEARCH_INSTR_BLOCK='\n\n【记忆库检索】你可以检索记忆库来核实过往信息。\n用法：<ws_mem_search q="关键词" />\n说明：\n- q 填 1–4 个关键词（空格分隔），系统在对你可见的记忆条目与你的记忆档案中匹配，命中内容在下一条消息回传给你。\n- 仅在对话涉及过往的人、事件或约定，或感到好奇时调用检索。\n- 不要编造检索结果——等系统回传。';
-const _MEMWRITE_INSTR_BLOCK='\n\n【记忆库写入】把值得记住的事写进记忆库：\n<ws_mem_write>记忆内容</ws_mem_write>\n- 写我们之间发生的事——经历、对话里的时刻、共同的记忆，用你自己的第一人称口吻写；不是对我的分析或画像，长期背景、偏好与指令属于记忆档案，不写在这里。\n- 每条不超过 600 字（超出会被截断）；每条回复最多写 3 次。\n- 写下的条目只有你自己能看到；我可以在 Memory 页查看、编辑或删除。\n- 可在标签上附参数（拿不准就省略）：<ws_mem_write importance="1-10" valence="0-1" arousal="0-1" tags="标签1,标签2">…</ws_mem_write>——importance 重要程度（默认 5）、valence 情绪效价（0 负面～1 正面）、arousal 情绪强度（0 平静～1 强烈）、tags 至多 5 枚。\n- 只记真正值得回忆的事，多数对话无需写入。';/* v124-p：#3 精细化改写（用户拍板四点：口吻统一、600 字/条、3 次/回复、仅写入者自己可见）；执行器口径不变，随 cfg.memWrite（每 AI）整块注入 */
+const _MEMWRITE_INSTR_BLOCK='\n\n【记忆库写入】把值得记住的事写进记忆库：\n<ws_mem_write>记忆内容</ws_mem_write>\n- 写我们之间发生的事——经历、对话里的时刻、共同的记忆，用你自己的第一人称口吻写；不是对我的分析或画像，长期背景、偏好与指令属于记忆档案，不写在这里。\n- 每条不超过 600 字（超出会被截断）；每条回复最多写 3 次。\n- 写下的条目只有你自己能看到；我可以在 Memory 页查看、编辑或删除。\n- 尽量在标签上附 title 与 domain；其余参数拿不准就省略：<ws_mem_write title="标题" domain="领域" importance="1-10" valence="0-1" arousal="0-1" tags="标签1,标签2">…</ws_mem_write>——title 这条记忆的名字（20 字内，像日记标题；省略则截取正文开头凑数）、domain 归类，从 情感/日常/创作/思考 中四选一（省略按 日常）、importance 重要程度（默认 5）、valence 情绪效价（0 负面～1 正面）、arousal 情绪强度（0 平静～1 强烈）、tags 至多 5 枚。\n- 只记真正值得回忆的事，多数对话无需写入。';/* v124-p：#3 精细化改写（用户拍板四点：口吻统一、600 字/条、3 次/回复、仅写入者自己可见）；执行器口径不变，随 cfg.memWrite（每 AI）整块注入 */
 const _MUSIC_INSTR_BLOCK_M='【播放器】当前对话需要放歌、换歌或暂停时，可用：\n<ws_music op="play" q="歌名"/> 播放（q 省略则继续播放，提供时模糊匹配歌单）\n<ws_music op="pause"/> 暂停　<ws_music op="next"/> 下一首　<ws_music op="prev"/> 上一首\n每条回复最多 1 个播放器指令；正在播放的曲目与歌单会在需要时作为参考资料提供。不要为了展示能力主动切歌。';/* v88-m 第二刀①：控制协议从音乐 Tail 上移 System（原随 12 首歌名每轮重复注入）——开关切换后重建一次缓存即恢复命中 */
 /* v89-m：_WEBSEARCH_NOTE_M 已按用户决定删除（联网搜索不再附带使用边界说明） */
 const _CALWRITE_INSTR_BLOCK='\n\n【日历写入】你可以替对方管理日历事项，每条回复最多 2 次。\n标签：\n<ws_cal_list/>\n<ws_cal_add kind="类型" date="YYYY-MM-DD" title="标题" end="YYYY-MM-DD" note="备注" />\n<ws_cal_edit id="事项id" date="新日期" title="新标题" note="新备注" />\n<ws_cal_del id="事项id" />\n<ws_cal_meet date="YYYY-MM-DD" />\n字段说明：\n- ws_cal_list 查询你有权限看到的全部日程，第一条为与对方的相遇纪念日，逐条附 id，结果在下一条消息回传。\n- kind：anniv（纪念日）、birthday（生日）、plan（计划）、memo（记录）。纪念日与生日按年重复，计划与记录为单次。\n- date：必填，YYYY-MM-DD 格式。\n- title：必填，事项标题（40字内）。\n- end：选填，仅 plan / memo 有效，标记结束日期。\n- note：选填，备注（120字内），会随事项一并提供给有权限的 AI。\n- id：编辑或删除时必填，先用 <ws_cal_list/> 查询获取（或取自上一轮回传），不要臆造。\n- ws_cal_meet 用于更正你与对方的相遇纪念日，仅在对方明确告知日期时使用。\n执行结果在下一条消息回传给你。';
@@ -12464,12 +12934,12 @@ async function _ibMemWriteExecM(cfg,op){
   const t=String((op&&op.body)||'').trim();
   if(!t)return{ok:false,reason:'记忆内容为空'};
   const txt=t.slice(0,600),flat=txt.replace(/\s+/g,' ');
-  const title=flat.slice(0,18)+(flat.length>18?'…':'');
+  const _tA9=String(wsAttr(op.attrs,'title')||'').replace(/\s+/g,' ').trim().slice(0,40);const title=_tA9||(flat.slice(0,18)+(flat.length>18?'…':''));/* v136-a·v134-p：#2 标题参数——AI 给则用，缺省沿用截取旧口径（老输出零影响） */
   let imp9=parseInt(wsAttr(op.attrs,'importance'));if(!isFinite(imp9))imp9=5;imp9=Math.max(1,Math.min(10,imp9));/* v125-p：#2 可选参数——越界钳制，缺省沿用旧默认，老输出零影响 */
   let val9=parseFloat(wsAttr(op.attrs,'valence'));if(!isFinite(val9))val9=0.5;val9=Math.max(0,Math.min(1,val9));
   let aro9=parseFloat(wsAttr(op.attrs,'arousal'));if(!isFinite(aro9))aro9=0.3;aro9=Math.max(0,Math.min(1,aro9));
   const tg9=String(wsAttr(op.attrs,'tags')||'').split(/[,，、]+/).map(s=>s.trim()).filter(Boolean).slice(0,5).map(s=>s.slice(0,12));
-  const dom9=String(wsAttr(op.attrs,'domain')||'').trim().slice(0,8)||'日常';
+  const _dm9=String(wsAttr(op.attrs,'domain')||'').trim();const dom9=['情感','日常','创作','思考'].indexOf(_dm9)!==-1?_dm9:'日常';/* v136-a·v134-p：#2 归类对齐电脑端四分类，非法值落「日常」 */
   const mem={id:'mem_'+Date.now()+'_'+Math.floor(Math.random()*10000),
     title:title,content:txt,summary:'',oneLine:'',domain:dom9,tags:tg9,
     importance:imp9,valence:val9,arousal:aro9,pinned:false,resolved:false,
@@ -13781,7 +14251,7 @@ async function _bxVisSheet(mode,curList,cb){
 }
 (function(){var ok=$('bxvis-ok');if(ok)ok.addEventListener('click',function(){var f=_bxVisCb;_bxVisCb=null;closeSheets();if(f)f()})})();
 /* ═══ v77-m r7→v79-m r5：Desk 编辑——长按拖移排序；显示与隐藏统一在设置 → Desk（拖到底部移除退役） ═══ */
-var DK_NAMES={hero:'时钟英雄区','app:chat':'对话','app:letters':'信箱','app:memory':'记忆库','app:blog':'日志','app:icode':'工作区','app:data':'数据','app:visual':'视觉','app:guide':'指南','app:beyond':'Circle',cal:'月历',notes:'便笺',sched:'日程',music:'音乐挂件',clock:'时钟','app:player':'音乐','app:calendar':'日历','app:set':'设置'};/* v127-p：+第 12 枚「设置」图标 *//* v91-m：音乐挂件与音乐 App 图标区分命名 *//* v78-m r3：health 项随挂件退役 *//* v90-m：+时钟挂件 */
+var DK_NAMES={hero:'时钟英雄区','app:chat':'对话','app:letters':'信箱','app:memory':'记忆库','app:blog':'日志','app:icode':'工作区','app:data':'数据','app:visual':'视觉','app:guide':'指南','app:beyond':'Circle',cal:'月历',notes:'便笺',sched:'日程',music:'音乐挂件',clock:'时钟','app:player':'音乐','app:calendar':'日历','app:set':'设置','app:diy':'创意工坊','app:friends':'好友','app:space':'名片'};/* v136-p：③三枚新图标 *//* v127-p：+第 12 枚「设置」图标 *//* v91-m：音乐挂件与音乐 App 图标区分命名 *//* v78-m r3：health 项随挂件退役 *//* v90-m：+时钟挂件 */
 function _dkEls(){return Array.prototype.slice.call(document.querySelectorAll('#sec-profile-cal .sb-desk>[data-dk]'))}/* v127-p：分页桌面下条目散在多张 .sb-desk 网格里，按分区圈选 */
 async function deskApplyLayout(){
   await loadMP();var d=_mp.desk||{};
@@ -14167,10 +14637,10 @@ async function procIbOps(cfg,m){
       }
     }
     if(wantPays.length){/* v97-m 任务7：支付请求（B 档）——AI 发起，卡片落聊天，用户亲手支付并回传结果 */
-      var _pc=(_mp&&_mp.pay)||{};var _pl=Array.isArray(_pc.payees)?_pc.payees:[];var _pn=0;
+      var _pc=(_mp&&_mp.pay)||{};var _pl=Array.isArray(_pc.payees)?_pc.payees:[];var _pn=0;var _pcap9=Math.max(1,Math.min(9,parseInt(_pc.percap)||2));/* v136-p：②每回复上限随设置（原写死 2） */
       wantPays.forEach(function(wp){
         if(!_pc.on){results.push({ok:false,label:'AI付',reason:'用户未开启 AI付 功能，请不要再输出该标签'});return}
-        if(_pn>=2){results.push({ok:false,label:'AI付',reason:'每条回复最多 2 笔 AI付 请求，多余的未执行'});return}
+        if(_pn>=_pcap9){results.push({ok:false,label:'AI付',reason:'每条回复最多 '+_pcap9+' 笔 AI付 请求，多余的未执行'});return}
         var amt=parseFloat(wp.amount);var cap=(+_pc.cap>0?+_pc.cap:200);
         var pe=null;for(var i=0;i<_pl.length;i++){if(String(_pl[i].name||'').trim()===String(wp.to||'').trim()){pe=_pl[i];break}}
         if(!pe){results.push({ok:false,label:'AI付',reason:'收款方「'+String(wp.to||'').slice(0,16)+'」不在用户名单内。可用收款方：'+(_pl.map(function(p){return p.name}).join(' / ')||'（暂无）')});return}
@@ -14182,7 +14652,7 @@ async function procIbOps(cfg,m){
     }
     if(!results.length&&!_cnDang)return;/* v120-p：#2 打捞剪除后即使零结果也要把清洗文本写回 */
     m.content=c.replace(/\n{3,}/g,'\n\n').trim();
-    try{results.forEach(function(_r){_gwFeedQ.push({fid:cfg.id,text:'['+(_r.ok?'成功':'失败')+'] '+(_r.label||'')+(_r.detail?('：'+String(_r.detail).replace(/\s+/g,' ').slice(0,140)):'')})})}catch(e){}/* v84-m r2：发布/评论/转发/签名/播放/定位/天气——所有动作成败随下一条消息（或连续调用轮）回传，AI 不再对结果失明（审查 P0-2） */
+    try{results.forEach(function(_r){var _retr=/^(当前天气|天气|当前定位|定位|手机状态)$/.test(String(_r.label||''));_gwFeedQ.push({fid:cfg.id,act:!_retr,text:'['+(_r.ok?'成功':'失败')+'] '+(_r.label||'')+(_r.detail?('：'+String(_r.detail).replace(/\s+/g,' ').slice(0,140)):'')})})}catch(e){}/* v132-p：act 标＝动作类（发动态 / 评论 / 转发 / 签名 / 便笺 / 播放器 / AI付），不触发续答轮，只随下一条消息回传 *//* v84-m r2：发布/评论/转发/签名/播放/定位/天气——所有动作成败随下一条消息（或连续调用轮）回传，AI 不再对结果失明（审查 P0-2） */
     m.ibOps=(m.ibOps||[]).concat(results);
     try{await dbPut('chatMessages',m)}catch(e){}
     redrawMsg(m);
@@ -15151,8 +15621,6 @@ body:not(.theme-infernal) .cs-item .cs-cn{color:#16233c;font-weight:500}/* v69-m
 .tp-who-m{min-width:0;flex:1}
 #tp-name{font-family:var(--serif);font-weight:600;font-size:1.08rem;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tp-sub{font-family:var(--disp);font-weight:300;font-size:0.56rem;letter-spacing:0.18em;color:var(--tx3);margin-top:3px;text-transform:uppercase}
-.tp-new{display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(150deg,rgba(114,168,216,0.22),rgba(114,168,216,0.08));border:1px solid rgba(150,185,230,0.35);border-radius:14px;padding:11px 14px;font-size:0.85rem;font-weight:600;letter-spacing:0.04em;color:var(--acc);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22)}
-.tp-new:active{transform:scale(0.985)}
 #tp-list .tp-item{display:flex;align-items:center;gap:9px;padding:12px 13px;border-radius:13px;background:var(--soft);border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,0.16);margin-bottom:9px}/* v62-m t4：选中态同款包裹铺给每个频道窗，彼此分隔 */
 #tp-list .tp-item::before{content:'#';font-family:var(--disp);font-weight:300;font-size:0.82rem;color:var(--tx3);width:12px;text-align:center;flex:none}
 #tp-list .tp-item.on{color:var(--acc);font-weight:600}/* v62-m t4：点选仅文本变化 */
@@ -16281,6 +16749,60 @@ body.theme-infernal .ma-btn svg{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.16
 .ca-du{flex:none;font-size:0.58rem;color:var(--tx3);padding:2.5px 7px;border-radius:99px;background:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap}
 .ca-du.now{color:var(--acc);font-weight:600}
 .ca-ev.past{opacity:0.55}
+/* ═══ v139-p 任务①②：日程页重设计——分组卡片列表＋日期叶＋相遇纪念卡精修（全部 #cal-app 局部；.ca-ev 基础款原样保留，仅以 #ca-list 前缀覆盖，其他视图零牵连） ═══ */
+#ca-list{border-radius:0;background:none;border:none;padding:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+#ca-lab{display:flex;align-items:baseline;margin:16px 6px 8px;letter-spacing:0.16em}
+#ca-lab b{margin-left:auto;font-weight:500;font-size:0.58rem;letter-spacing:0.08em;color:var(--tx3);font-variant-numeric:tabular-nums}
+.ca-glab{display:flex;align-items:baseline;gap:7px;margin:14px 6px 7px;user-select:none}
+.ca-glab:first-child{margin-top:2px}
+.ca-glab .en{font-size:0.55rem;letter-spacing:0.17em;color:var(--acc);font-weight:600}
+.ca-glab.g-past .en{color:var(--tx3)}
+.ca-glab .cn{font-size:0.66rem;color:var(--tx2);letter-spacing:0.05em}
+.ca-glab b{margin-left:auto;font-size:0.56rem;font-weight:500;color:var(--tx3);font-variant-numeric:tabular-nums}
+.ca-grp{border-radius:22px;background:var(--panel);border:1px solid var(--glass-line);padding:5px 7px;backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35);box-shadow:0 6px 20px rgba(42,72,112,.04),inset 0 1px 0 rgba(255,255,255,.28)}
+#ca-list .ca-ev{position:relative;align-items:stretch;gap:11px;padding:10px 8px;border-radius:16px}
+#ca-list .ca-ev+.ca-ev:before{content:"";position:absolute;left:63px;right:10px;top:0;height:1px;background:var(--glass-line);opacity:.55;pointer-events:none}
+.ca-leaf{flex:none;align-self:center;width:44px;min-height:46px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb,var(--acc) 11%,transparent);border:1px solid color-mix(in srgb,var(--acc) 22%,transparent);color:var(--acc)}
+.ca-leaf span{font-size:0.5rem;letter-spacing:0.05em;line-height:1;opacity:.92}
+.ca-leaf b{font-family:var(--disp);font-weight:400;font-size:1.18rem;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:inherit}
+#ca-list .ca-ev.k-anni .ca-leaf{background:rgba(217,138,149,.13);border-color:rgba(217,138,149,.3);color:#c96a78}
+#ca-list .ca-ev.k-memo .ca-leaf{background:rgba(154,164,182,.14);border-color:rgba(154,164,182,.32);color:#7d8798}
+#ca-list .ca-ev.k-meet .ca-leaf{background:rgba(212,162,78,.13);border-color:rgba(212,162,78,.32);color:#b8893c}
+body.theme-infernal .ca-leaf{background:color-mix(in srgb,var(--acc) 17%,transparent)}
+body.theme-infernal #ca-list .ca-ev.k-anni .ca-leaf{color:#e4a3ad}
+body.theme-infernal #ca-list .ca-ev.k-memo .ca-leaf{color:#aab3c4}
+body.theme-infernal #ca-list .ca-ev.k-meet .ca-leaf{color:#dcb066}
+#ca-list .ca-ev .tt{display:flex;flex-direction:column;justify-content:center;gap:4.5px}
+#ca-list .ca-ev .t1{display:flex;align-items:center;min-width:0}
+#ca-list .ca-ev .t1 b{flex:1;min-width:0;font-size:0.85rem;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.004em}
+#ca-list .ca-ev .t2{display:flex;flex-wrap:wrap;gap:4px;min-width:0}
+#ca-list .ca-ev .t2 i{font-style:normal;font-size:0.54rem;line-height:1;padding:3.5px 7px;border-radius:99px;background:var(--soft);color:var(--tx2);border:1px solid var(--glass-line);white-space:nowrap}
+#ca-list .ca-ev .t2 i.ck{color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,transparent)}
+#ca-list .ca-ev.k-anni .t2 i.ck{color:#c96a78;background:rgba(217,138,149,.1)}
+#ca-list .ca-ev.k-memo .t2 i.ck{color:#7d8798;background:rgba(154,164,182,.12)}
+#ca-list .ca-ev.k-meet .t2 i.ck{color:#b8893c;background:rgba(212,162,78,.1)}
+body.theme-infernal #ca-list .ca-ev.k-anni .t2 i.ck{color:#e4a3ad}
+body.theme-infernal #ca-list .ca-ev.k-memo .t2 i.ck{color:#aab3c4}
+body.theme-infernal #ca-list .ca-ev.k-meet .t2 i.ck{color:#dcb066}
+#ca-list .ca-ev .t3{font-size:0.6rem;color:var(--tx3);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ca-list .ca-ev .rt{flex:none;align-self:stretch;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:5px;padding:1px 0}
+#ca-list .ca-ev .rt .ca-du.now{background:color-mix(in srgb,var(--acc) 14%,transparent);border:1px solid color-mix(in srgb,var(--acc) 30%,transparent)}
+#ca-list .ca-ev .cx{width:24px;height:24px;margin-right:-3px;opacity:.75}
+#ca-list .ca-ev.past .ca-leaf{filter:saturate(.4);opacity:.8}
+#ca-list .ca-empty{padding:28px 10px 26px;display:flex;flex-direction:column;align-items:center;gap:10px}
+#ca-list .ca-empty svg{width:34px;height:34px;fill:none;stroke:var(--tx3);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+#ca-list .ca-empty span{text-align:center;line-height:1.7}
+/* 相遇纪念卡精修：留白与字号微调、进度条加粗、倒计时数字辉光底；DOM 结构与 ‹ › 事件零改动 */
+.ca-hero{padding:12px 4px 11px}
+.ca-hm .nm{font-size:0.92rem;letter-spacing:0.004em}
+.ca-meta{margin-top:6.5px}
+.ca-hbar{height:4px;margin-top:9px}
+.ca-hbar:after{width:6px;height:6px}
+.ca-hr{min-width:72px}
+.ca-hr:before{margin-bottom:6px}
+.ca-hr b{font-size:1.9rem;text-shadow:0 0 18px color-mix(in srgb,var(--acc) 30%,transparent)}
+.ca-hr:after{content:"";position:absolute;right:-6px;top:50%;width:74px;height:74px;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--acc) 12%,transparent),transparent 68%);pointer-events:none;z-index:-1}
+@media (max-width:380px){#ca-list .ca-ev{gap:9px;padding:9px 7px}#ca-list .ca-ev+.ca-ev:before{left:56px}.ca-leaf{width:40px;min-height:42px}.ca-leaf b{font-size:1.06rem}#ca-list .ca-ev .t1 b{font-size:0.8rem}.ca-hr b{font-size:1.66rem}}
 
 /* ═══ v92-m 一起听界面重做（网易云式）＋ 评论 ⋮ 统一 ═══ */
 /* 配对区：撤玻璃胶囊——头像对直接落在背景上，下挂时长文案 */
@@ -17026,31 +17548,52 @@ var _oldProcIbOpsM=procIbOps;procIbOps=async function(cfg,m){var raw=String(m&&m
       if(pv)pv.addEventListener('click',function(){_caHeroIdx--;caRender()});
       if(nx2)nx2.addEventListener('click',function(){_caHeroIdx++;caRender()});
     }
-    /* 全部日程（按下一次发生升序；单次已过期的排最后并标灰） */
+    /* 全部日程（v139-p 任务①：时间分组卡片列表——今天 / 7 天内 / 之后 / 已过去；组内仍按下一次发生升序，单次已过垫底标灰的旧口径不变；点行编辑、✕ 删除原样） */
     var evs=(typeof _calEvents!=='undefined'&&_calEvents)||[];
     var rows=evs.map(function(ev){return{ev:ev,du:_caDu(ev)}});
     rows.sort(function(a,b){return a.du-b.du||String(a.ev.date||'').localeCompare(String(b.ev.date||''))});
-    var lab=$i('ca-lab');if(lab)lab.textContent='ALL — 全部日程 · '+evs.length+' 项';
+    var lab=$i('ca-lab');if(lab)lab.innerHTML='<span>ALL · 全部日程</span><b>'+evs.length+' 项</b>';
     var box=$i('ca-list');if(!box)return;box.innerHTML='';
-    if(!rows.length){box.innerHTML='<div class="ca-empty">还没有任何日程。点右上「＋」记下第一条。</div>';return}
+    if(!rows.length){box.innerHTML='<div class="ca-grp"><div class="ca-empty"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8.5 14h3M8.5 17h7"/></svg><span>还没有任何日程<br>点右上「＋」记下第一条</span></div></div>';return}
     var KN={plan:'计划',anni:'纪念日',anniv:'纪念日',birthday:'生日',memo:'备忘',meet:'相遇纪念'};
     var RN={once:'单次',none:'单次',daily:'每天',weekly:'每周',monthly:'每月',yearly:'每年'};
-    rows.forEach(function(r){
-      var ev=r.ev,du=r.du;
-      var row=document.createElement('div');row.className='ca-ev '+_caKindCls(ev.kind)+(du>=9999?' past':'');
-      var info=(KN[ev.kind]||'事项')+' · '+String(ev.date||'')+(ev.endDate?'—'+ev.endDate:'')+' · '+(RN[ev.repeat||'once']||'单次')+(ev.remind?(' · 提前'+((ev.lead!=null?ev.lead:7))+'天提醒'):' · 不提醒')+(ev.note?(' · '+ev.note):'');
-      row.innerHTML='<i class="dot"></i><div class="tt"><b>'+esc(ev.title||'')+'</b><small>'+esc(info)+'</small></div>'
-        +'<span class="ca-du'+(du===0?' now':'')+'">'+(du>=9999?'已过去':(du===0?'今天':du+' 天后'))+'</span>'
-        +(ev.time?'<span class="tm">'+esc(ev.time)+'</span>':'')
-        +'<button class="cx" title="删除"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>';
-      row.addEventListener('click',function(){_caOpenSheet(ev.id,ev.date,ev)});
-      row.querySelector('.cx').addEventListener('click',async function(e){
-        e.stopPropagation();
-        if(!await confirmDlg('删除「'+(ev.title||'')+'」？','删除'))return;
-        try{await dbDelete('calEvents',ev.id)}catch(err){toast('删除失败');return}
-        await loadCal();caRender();try{drawCal()}catch(e2){}toast('已删除');
+    var MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    function _leaf(ev,du){/* 日期叶：下一次发生的月/日；单次已过显原日期 */
+      var d=null;
+      if(du<9999){d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+du)}
+      else{var p=String(ev.date||'').split('-');if(p.length===3)d=new Date(+p[0],+p[1]-1,+p[2])}
+      if(!d||isNaN(d.getTime()))return'<div class="ca-leaf"><span>—</span><b>·</b></div>';
+      return'<div class="ca-leaf"><span>'+MN[d.getMonth()]+'</span><b>'+d.getDate()+'</b></div>';
+    }
+    var GB=[{k:'today',en:'TODAY',cn:'今天',t:function(du){return du===0}},
+      {k:'week',en:'WITHIN 7 DAYS',cn:'7 天内',t:function(du){return du>=1&&du<=7}},
+      {k:'later',en:'UPCOMING',cn:'之后',t:function(du){return du>7&&du<9999}},
+      {k:'past',en:'PAST',cn:'已过去',t:function(du){return du>=9999}}];
+    GB.forEach(function(g){
+      var part=rows.filter(function(r){return g.t(r.du)});
+      if(!part.length)return;
+      var gl=document.createElement('div');gl.className='ca-glab'+(g.k==='past'?' g-past':'');
+      gl.innerHTML='<span class="en">'+g.en+'</span><span class="cn">'+g.cn+'</span><b>'+part.length+'</b>';
+      box.appendChild(gl);
+      var grp=document.createElement('div');grp.className='ca-grp';
+      part.forEach(function(r){
+        var ev=r.ev,du=r.du;
+        var row=document.createElement('div');row.className='ca-ev '+_caKindCls(ev.kind)+(du>=9999?' past':'');
+        var chips='<i class="ck">'+(KN[ev.kind]||'事项')+'</i><i>'+esc(String(ev.date||''))+(ev.endDate?'—'+esc(ev.endDate):'')+'</i><i>'+(RN[ev.repeat||'once']||'单次')+'</i><i>'+(ev.remind?('提前'+((ev.lead!=null?ev.lead:7))+'天提醒'):'不提醒')+'</i>'+(ev.time?'<i>'+esc(ev.time)+'</i>':'');
+        row.innerHTML=_leaf(ev,du)
+          +'<div class="tt"><div class="t1"><b>'+esc(ev.title||'')+'</b></div><div class="t2">'+chips+'</div>'+(ev.note?'<div class="t3">'+esc(ev.note)+'</div>':'')+'</div>'
+          +'<div class="rt"><span class="ca-du'+(du===0?' now':'')+'">'+(du>=9999?'已过去':(du===0?'今天':du+' 天后'))+'</span>'
+          +'<button class="cx" title="删除"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></div>';
+        row.addEventListener('click',function(){_caOpenSheet(ev.id,ev.date,ev)});
+        row.querySelector('.cx').addEventListener('click',async function(e){
+          e.stopPropagation();
+          if(!await confirmDlg('删除「'+(ev.title||'')+'」？','删除'))return;
+          try{await dbDelete('calEvents',ev.id)}catch(err){toast('删除失败');return}
+          await loadCal();caRender();try{drawCal()}catch(e2){}toast('已删除');
+        });
+        grp.appendChild(row);
       });
-      box.appendChild(row);
+      box.appendChild(grp);
     });
   }
   window._caAppRefresh=async function(){/* 保存/AI 写日历后热刷新（参数兼容旧调用，忽略） */
