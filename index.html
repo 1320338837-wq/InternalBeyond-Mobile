@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- InternalBeyond Mobile v146-p · 晨雾蓝与日历重叠修缮轮（相遇卡明亮态回暖 / 按日期日历浮球重叠根修） -->
+<!-- v147-p 修订单（MCP 下单链专修；本轮其余条目属另一端专属模块，-p 线无涉）：①工具 schema 完整回传——buildToolsBlock 原先只给 AI 看 120 字描述＋裸参数名，类型/枚举/嵌套/字段说明全丢，麦当劳/瑞幸这类多步下单流程只能靠参数名瞎猜；现描述放宽至 2000 字并附完整 inputSchema JSON（单工具 3000 字安全截断兜底），connect 落库 description 上限 600→6000（已连服务器需在 MCP 卡重连一次刷新）。②截断链整治——工具结果 runToolAt 1200 / 回传 700 两刀退役，统一 12000 并改 _ibCut 安全截断（不从 emoji 等代理对中间切开产生乱码、截断必明示）：createOrder 的支付链接/orderDetail 常在千字之后，此前一刀下去支付信息全军覆没——「订单号出来了就是找不到订单没法付款」的直接根子；菜单看不全同根同修。③_extract 补读 structuredContent（MCP 2025-06-18 CallToolResult 标准字段）——原实现只读 content、结构化结果整个扔掉。④品牌卡解析重写——_mcpBrandParse 支持 {success,code,data:{…}} 信封逐层下钻（≤4 层）＋全树有界深搜，新认 payH5Url/payOrderUrl/payOrderQrCodeUrl 等支付字段，卡面新增「去支付/支付二维码」按钮（点按不触发展开），说明文档混排围栏 JSON 也能捞；解析不动但文本含支付链接时同样给按钮。⑤关键结果备忘——含订单/支付字段的 MCP 结果此前 fed=true 一轮即失忆，现窗口期内把最近 2 条这类原文以备忘持续注入（fed 记账不动）。⑥AI付 复核：不走 MCP、不经截断链、_gwFeedQ 通道无 fed 失忆——无同类问题，零改动。⑦版本联动 v147-p。 -->
 <!-- v146-p 修订单：①相遇纪念卡明亮态回暖「晨雾蓝」——上一版「月光水银」的石墨蓝灰在白卡上偏暗、观感发怪（用户截图对照旧版浅蓝款）：明亮态改回界面同族浅蓝——主线/外晕 #95a1b0→#a9bcd6、液体 #5d6b7d→#7f99ba（饱和 ~29%、明度 ~61%，不艳也不沉），主线不透明度 .72→.85 恢复旧版那样清晰的一笔；头像玻璃带与进度条液柱同族换浅蓝（rgba(150,172,204,·) / #c8d5e6→#8ba3c2 渐变）。暗色态用户已认可，一字节不动。②「按日期查看」日历右上角按钮重叠根修——主题浮球 .theme-drop 与会话双滑杆钮 #chat-side-btn 是 body 级 fixed(z38)，而 #cvcal(z45) 关在 #conv(z35) 的堆叠上下文里被封顶，两枚浮球必然盖到日历头部「今天」一带；现打开日历给 body 挂 cvcal-open、按 on-sub 同款把两钮 display:none，cvcalClose 先摘类再判空、任何关闭路径不残留。③版本联动 v146-p。本轮其余条目属另一端专属模块，-p 线无涉。 -->
 <!-- InternalBeyond Mobile v145-p · 双层根修与低饱和重制轮（英雄区方框投影双层分离根修 / 相遇纪念卡低饱和「月光水银」重制 / MCP 浏览器版独立与边界整治） -->
 <!-- v145-p 修订单：①英雄区方形投影终修——v146 字效（渐变玻璃字面＋三层贴形投影）观感原样保留，实现改「双层分离」：字面渐变从 .tp-time 整体裁切下放到 >span/>i 子元素逐字符裁切（180deg 纯纵向渐变，两种裁法逐像素等价），三层投影从 filter:drop-shadow 移入新增影层 .tp-sh（与本体同构的隐形副本，text-shadow 承载、z-index:-1 垫在 .tp-time 自有堆叠上下文最底、tickClock 同步 tp-hh2/tp-mm2）。至此渐变裁切元素不再挂任何 filter/text-shadow：filter×background-clip:text 在移动端 Chromium/WebView 渲成整块矩形（v143-p 的判断，方框真凶）与 text-shadow 盖住渐变字面发黑（v144-p 的判断）本是「面与影同挂一个元素」这同一处结构的两个症状——拆开后同时消失；桌面浏览器两种写法都渲染正常，故上一轮的无头核对看不出方框。暗色实字分支随结构补写子元素实色 fill、影层隐藏，v143-p 收紧的暗色贴形投影原样；冒号 <i> 自带背景后，v99-m 记录的「透明字身＋无背景＋opacity 分组被画空」三条件不再凑齐。②相遇纪念卡低饱和重制（用户定向：不要高饱和，设计自定）——「月光水银」方案：明亮态主线/外晕 #6f92c6→#95a1b0（雾岩灰蓝，HSL 饱和 ~10%）、液体 #4a86d4→#5d6b7d（石墨蓝灰 ~15%）；暗色态 #8db0d8/#eef5ff→#aab5c2/#e9eef4（银灰月光）；各层不透明度与发光晕整体收敛，白色高光短段 l-glint 提为主角——层次改由明度差与玻璃高光撑起，不靠色彩浓度。头像玻璃带撤 var(--acc) 着色改中性磨砂灰（明暗两套），进度条液柱撤强调色渐变与外发光、改石墨灰蓝渐变＋暗色银灰款——卡内大面积图形全族去饱和，仅保留「&」与倒计时数字等文字小点缀的强调色。轨道几何、爱心路径、8.4s 流速、reduced-motion 口径零改动。③MCP 边界整治（浏览器版独立）——本文件为公开部署版、只面向浏览器环境：_post 传输层移出另一端专属分支、退为「fetch → 跨域中转」双级（行为对浏览器用户逐字节等价）；「跨域中转」栏 hint、列表 hint、两张预设卡描述、失败提示与 GUIDE → DIY 的 MCP 段落全部改为纯浏览器口径；历史修订单（v143-p / v144-p 头注）中涉及另一端实现细节的句段同轮改写。两端 MCP 文案自此分开维护。④配套升级版中转 cors-relay-worker-v2.js（独立文件，部署到 Cloudflare Worker，不放进本仓库——GitHub Pages 是静态托管、不会执行它）：目标主机白名单＋可选口令 ?k=（填栏写成 https://xxx.workers.dev/?k=口令&u=，现有拼接逻辑直接支持）；预检回显 Access-Control-Request-Headers 并显式列出 authorization——Fetch 规范下 Allow-Headers:* 不覆盖 Authorization 头，旧版 worker 对带令牌请求预检必败（实用性 BUG）；转发响应剥 content-encoding / content-length。⑤GUIDE 按用户要求本轮除 ③ 的 MCP 段落边界改写外未动（内嵌教程仍为旧版 worker 代码，待解禁后同步）。⑥版本联动 v145-p。 -->
@@ -707,6 +708,14 @@ body:not(.theme-infernal) .mcpb-row .mp{color:#132a52}
 .mcpb-pk{font-size:0.7rem;color:var(--tx2);border:1px solid var(--line);border-radius:8px;padding:3px 9px;background:rgba(127,150,200,0.08)}
 .mcpb-pk b{font-size:0.86rem;letter-spacing:0.12em;color:var(--light)}
 body:not(.theme-infernal) .mcpb-pk b{color:#132a52}
+.mcpb-payrow{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}
+.mcpb-pay{display:inline-flex;align-items:center;justify-content:center;padding:6px 16px;border-radius:10px;font-size:0.78rem;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(135deg,#1677ff,#0958d9);box-shadow:0 2px 8px rgba(22,119,255,0.35)}
+.mcpb-pay:active{transform:scale(0.97)}
+.mcpb-pay.alt{background:rgba(127,150,200,0.14);color:var(--light);box-shadow:none;border:1px solid var(--glass-line)}
+body:not(.theme-infernal) .mcpb-pay.alt{color:#132a52}
+.mcpb-mcd .mcpb-pay:not(.alt){background:linear-gradient(135deg,#DB0007,#a50006);box-shadow:0 2px 8px rgba(219,0,7,0.3)}
+.mcpb-lk .mcpb-pay:not(.alt){background:linear-gradient(135deg,#2A5CAA,#1b3f7a);box-shadow:0 2px 8px rgba(42,92,170,0.3)}
+.mcpb-payhint{font-size:0.64rem;color:var(--tx2);opacity:0.8}
 .mcpb-sum{flex:1;min-width:0;text-align:right;font-size:0.68rem;color:var(--tx3)}
 .mcpb-logo.mini{width:18px;height:18px;border-radius:6px;display:inline-flex;vertical-align:-4px;margin-right:6px;box-shadow:none}
 .mcpb-logo.mini svg{width:12px;height:12px}
@@ -6713,6 +6722,7 @@ WS_ICON.payreq='<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="
 /* ═══ v130 需求①：麦当劳 / 瑞幸咖啡 MCP 品牌识别与专属渲染卡 ═══
    识别按别名（mcp.<别名>.<工具> 的第二段）：mcdonalds/mcd 系 → 麦当劳；luckin/ruixing 系 → 瑞幸。
    品牌卡保留 .ws-op-card 与 .pending/.warn 类——attachConfirmBtns 的按序对位与确认按钮注入原样生效。 */
+function _ibCut(s,n){s=String(s==null?'':s);if(!(n>0)||s.length<=n)return s;var c=s.slice(0,n),cc=c.charCodeAt(c.length-1);if(cc>=0xD800&&cc<=0xDBFF)c=c.slice(0,-1);return c+'\n…[已截断：原文 '+s.length+' 字符]'}/* v147-p：#2 安全截断——不再从代理对（emoji 等）中间切开产生乱码 �，且截断必明示、不再无声吞尾 */
 function _mcpBrandOfAlias(a){a=String(a||'').toLowerCase();
   if(/^(mcdonalds?|mcd|mdl|maidanglao)$/.test(a))return 'mcd';
   if(/^(luckin(coffee)?|ruixing|lk|lkcoffee)$/.test(a))return 'lk';
@@ -6737,11 +6747,34 @@ function _mcpToolLabel(name){/* 工具名 → 动作友好名（识别常见英�
   for(var i=0;i<M.length;i++){if(M[i][0].test(l))return M[i][1]+' · '+t}
   return t}
 function _mcpPriceFmt(v){var t=String(v).trim();return /^-?\d+(\.\d+)?$/.test(t)?('¥'+t):t}
-function _mcpBrandParse(txt){/* 尽力而为的结构化解析：JSON → 菜单行/订单/取餐码/优惠券/门店/键值对；解析不动返回 null 走通用文本 */
+function _mcpBrandParse(txt){/* 尽力而为的结构化解析：JSON → 菜单行/订单/取餐码/优惠券/门店/键值对/支付链接；解析不动返回 null 走通用文本 *//* v147-p：#4 重写——原版只在 JSON 顶层找字段、data 不是数组就不下钻，{success,code,data:{orderId,payH5Url,…}} 这类标准信封全数漏解，也不认识任何支付字段：服务器把 payH5Url 老老实实给了、卡上就是不出「去支付」 */
   var t=String(txt||'').trim();if(!t)return null;
   t=t.replace(/^```[a-zA-Z]*\s*/,'').replace(/```\s*$/,'').trim();
-  var j=null;try{j=JSON.parse(t)}catch(e){return null}
-  function pick(o,keys){if(!o)return undefined;for(var i=0;i<keys.length;i++){var v=o[keys[i]];if(v!==undefined&&v!==null&&v!=='')return v}return undefined}
+  var j=null;try{j=JSON.parse(t)}catch(e){
+    var fb=t.match(/```(?:json)?\s*([\s\S]*?)```/i);if(fb){try{j=JSON.parse(fb[1].trim())}catch(eF){}}
+    if(j==null){var mJ=t.match(/\{[\s\S]*\}|\[[\s\S]*\]/);if(mJ){try{j=JSON.parse(mJ[0])}catch(e2){}}}
+  }/* v147-p：#4 文本混排 JSON（说明文档＋围栏 JSON）也捞一把；纯文本仍回退通用展示 */
+  if(j==null||typeof j!=='object')return null;
+  function pick(o,keys){if(!o||typeof o!=='object')return undefined;for(var i=0;i<keys.length;i++){var v=o[keys[i]];if(v!==undefined&&v!==null&&v!=='')return v}return undefined}
+  var lvls=[],cur=j;
+  for(var dp=0;dp<4;dp++){/* v147-p：#4 信封逐层下钻：{success,code,data:{…}}/{result:{…}} 最多剥 4 层，字段检索深层优先 */
+    if(!cur||typeof cur!=='object'||Array.isArray(cur))break;
+    lvls.push(cur);
+    var nx=(cur.data!==undefined&&cur.data!==null)?cur.data:((cur.result!==undefined&&cur.result!==null)?cur.result:undefined);
+    if(!nx||typeof nx!=='object')break;
+    cur=nx;
+  }
+  function pickL(keys){for(var i=lvls.length-1;i>=0;i--){var v=pick(lvls[i],keys);if(v!==undefined)return v}return undefined}
+  function deepFind(root,keyRe,valTest){/* v147-p：#4 有界深搜：整棵结果树按键名捞关键字段（≤6 层、≤600 节点），orderDetail/payInfo 里埋的也能捞出 */
+    var hit,seen=0;
+    (function walk(o,d){
+      if(hit!==undefined||!o||typeof o!=='object'||d>6||++seen>600)return;
+      if(Array.isArray(o)){for(var i=0;i<o.length&&hit===undefined;i++)walk(o[i],d+1);return}
+      for(var k in o){if(hit!==undefined)break;var v=o[k];
+        if(keyRe.test(k)&&v!=null&&typeof v!=='object'){if(!valTest||valTest(String(v),k))hit=String(v)}
+        else if(v&&typeof v==='object')walk(v,d+1)}
+    })(root,0);
+    return hit}
   function itemRow(it){
     if(typeof it==='string')return {n:it,p:'',q:'',s:''};
     if(!it||typeof it!=='object')return null;
@@ -6752,30 +6785,35 @@ function _mcpBrandParse(txt){/* 尽力而为的结构化解析：JSON → 菜单
     if(n===undefined&&pz===undefined)return null;
     return {n:n!==undefined?String(n):'',p:pz!==undefined?String(pz):'',q:qty!==undefined?String(qty):'',s:sp!==undefined?String(sp).slice(0,42):''};
   }
-  var out={rows:[],kv:[],coupons:[],total:'',orderNo:'',pickup:'',status:'',note:'',more:0};
+  var out={rows:[],kv:[],coupons:[],total:'',orderNo:'',pickup:'',status:'',note:'',more:0,payUrl:'',qrUrl:''};
   var arr=Array.isArray(j)?j:null;
-  if(!arr&&j&&typeof j==='object'){
-    var cand=pick(j,['items','list','menu','menus','products','goods','drinks','orders','stores','shops','data','result','results','列表','结果']);
-    if(Array.isArray(cand))arr=cand;
-    var cs=pick(j,['coupons','coupon','vouchers','优惠券']);
-    if(cs!==undefined){if(!Array.isArray(cs))cs=[cs];cs.slice(0,4).forEach(function(c){
-      if(typeof c==='string'){out.coupons.push({n:c,v:'',e:''});return}
-      if(c&&typeof c==='object'){var cn=pick(c,['name','title','couponName','名称'])||'优惠券';var cv=pick(c,['discount','amount','value','off','面额','折扣']);var ce=pick(c,['expire','expireAt','validTo','deadline','有效期']);
-        out.coupons.push({n:String(cn),v:cv!==undefined?String(cv):'',e:ce!==undefined?String(ce).slice(0,20):''})}})}
-    var tt=pick(j,['total','totalPrice','totalAmount','payAmount','realPay','合计','总价','应付']);if(tt!==undefined)out.total=String(tt);
-    var on=pick(j,['orderNo','orderId','order_id','orderNum','单号','订单号']);if(on!==undefined)out.orderNo=String(on);
-    var pc=pick(j,['pickupCode','pickup_code','takeCode','takeNo','mealCode','取餐码','取单号']);if(pc!==undefined)out.pickup=String(pc);
-    var stx=pick(j,['status','state','orderStatus','状态']);if(stx!==undefined)out.status=String(stx);
-    var msg=pick(j,['message','msg','tip','note','说明','提示']);if(typeof msg==='string')out.note=msg.slice(0,80);
-  }
+  if(!arr){for(var li=lvls.length-1;li>=0&&!arr;li--){var cand=pick(lvls[li],['items','list','menu','menus','products','goods','drinks','orders','stores','shops','orderProductList','productList','列表','结果']);if(Array.isArray(cand))arr=cand}}
+  var host=lvls.length?lvls[lvls.length-1]:null;
+  var cs=pickL(['coupons','coupon','vouchers','couponList','优惠券']);
+  if(cs!==undefined){if(!Array.isArray(cs))cs=[cs];cs.slice(0,4).forEach(function(c){
+    if(typeof c==='string'){out.coupons.push({n:c,v:'',e:''});return}
+    if(c&&typeof c==='object'){var cn=pick(c,['name','title','couponName','名称'])||'优惠券';var cv=pick(c,['discount','amount','value','off','面额','折扣']);var ce=pick(c,['expire','expireAt','validTo','deadline','有效期']);
+      out.coupons.push({n:String(cn),v:cv!==undefined?String(cv):'',e:ce!==undefined?String(ce).slice(0,20):''})}})}
+  var tt=pickL(['total','totalPrice','totalAmount','payAmount','realPay','realTotalAmount','realPayAmount','合计','总价','应付']);if(tt===undefined)tt=deepFind(j,/^(totalAmount|realTotalAmount|realPayAmount|payAmount|totalPrice)$/i);if(tt!=null)out.total=String(tt);
+  var on=pickL(['orderNo','orderId','order_id','orderNum','单号','订单号']);if(on===undefined)on=deepFind(j,/^(orderId|orderNo|orderNum|order_id)$/i);if(on!=null)out.orderNo=String(on);
+  var pc=pickL(['pickupCode','pickup_code','takeCode','takeNo','mealCode','pickUpCode','取餐码','取单号']);if(pc===undefined)pc=deepFind(j,/^(pickupCode|pickUpCode|takeCode|mealCode|takeNo)$/i);if(pc!=null)out.pickup=String(pc);
+  var stx=pickL(['status','state','orderStatus','orderStatusName','状态']);if(stx===undefined)stx=deepFind(j,/^(orderStatusName|orderStatus|statusName|orderState)$/i);if(stx!=null)out.status=String(stx);/* v147-p：#4 状态/合计埋在 orderDetail 等更深层时深搜兜底 */
+  var msg=pickL(['message','msg','tip','note','说明','提示']);if(typeof msg==='string')out.note=msg.slice(0,80);
+  var pu=pickL(['payH5Url','payUrl','payLink','payOrderUrl','h5PayUrl','payPageUrl','paymentUrl','cashierUrl','payMiniUrl','支付链接']);/* v147-p：#4 支付字段——链接与二维码分开认 */
+  if(pu===undefined)pu=deepFind(j,/pay.*(url|link)|cashier.*url/i,function(v,k){return /^https?:\/\//i.test(v)&&!/qr/i.test(k)});
+  if(typeof pu==='string'&&/^https?:\/\//i.test(pu))out.payUrl=pu;
+  var qu=pickL(['payOrderQrCodeUrl','payQrCodeUrl','qrCodeUrl','qrcodeUrl','payQrCode','qrCode','二维码']);
+  if(qu===undefined)qu=deepFind(j,/qr.?code/i,function(v){return /^https?:\/\//i.test(v)});
+  if(typeof qu==='string'&&/^https?:\/\//i.test(qu))out.qrUrl=qu;
   if(arr){arr.slice(0,6).forEach(function(it){var r=itemRow(it);if(r)out.rows.push(r)});if(arr.length>6)out.more=arr.length-6}
-  if(!out.rows.length&&j&&typeof j==='object'&&!Array.isArray(j)){
-    var ks=Object.keys(j);
-    for(var i2=0;i2<ks.length&&out.kv.length<6;i2++){var v2=j[ks[i2]];
-      if(v2===null||typeof v2==='object')continue;
+  if(!out.rows.length&&host){
+    var _skip9={data:1,result:1,results:1,success:1,code:1,message:1,msg:1,traceId:1,requestId:1};
+    var ks=Object.keys(host);
+    for(var i2=0;i2<ks.length&&out.kv.length<6;i2++){var v2=host[ks[i2]];
+      if(_skip9[ks[i2]]||v2===null||typeof v2==='object')continue;
       out.kv.push({k:ks[i2],v:String(v2).slice(0,48)})}
   }
-  if(!out.rows.length&&!out.kv.length&&!out.coupons.length&&!out.total&&!out.orderNo&&!out.pickup&&!out.status)return null;
+  if(!out.rows.length&&!out.kv.length&&!out.coupons.length&&!out.total&&!out.orderNo&&!out.pickup&&!out.status&&!out.payUrl&&!out.qrUrl)return null;
   return out}
 function _mcpBrandCard(b,op,res){/* 品牌主题卡全套：待确认 / 执行中 / 成功（结构化）/ 失败；点卡展开原始回传与参数 */
   var B=MCP_BRANDS[b];
@@ -6804,7 +6842,7 @@ function _mcpBrandCard(b,op,res){/* 品牌主题卡全套：待确认 / 执行�
   }catch(e){argsTxt=esc(String(op.args||'').slice(0,64))}
   if(pending){h+='<div class="mcpb-note">AI 想调用「'+esc(B.name)+'」的这项服务，点「允许执行」才会真正发出。</div>';if(argsTxt)h+='<div class="mcpb-args">'+argsTxt+'</div>'}
   else if(running){h+='<div class="mcpb-note">正在与 '+esc(B.name)+' 服务通话…</div>'}
-  else if(fail){h+='<div class="mcpb-note bad">'+esc((raw||'调用失败').slice(0,140))+'</div>'}
+  else if(fail){h+='<div class="mcpb-note bad">'+esc(_ibCut(raw||'调用失败',200))+'</div>'}
   else if(ok){
     if(parsed){
       if(parsed.rows.length){h+='<div class="mcpb-list">';
@@ -6820,11 +6858,20 @@ function _mcpBrandCard(b,op,res){/* 品牌主题卡全套：待确认 / 执行�
         parsed.kv.forEach(function(p2){h+='<div class="mcpb-row"><span class="mn">'+esc(p2.k)+'</span><span class="mp t">'+esc(p2.v)+'</span></div>'});
         h+='</div>'}
       if(parsed.note)h+='<div class="mcpb-note">'+esc(parsed.note)+'</div>';
+      if(parsed.payUrl||parsed.qrUrl){/* v147-p：#4 支付动作行——回传里带支付链接/二维码就直接给按钮，不再让用户去官方 App 里大海捞针 */
+        h+='<div class="mcpb-payrow">'
+          +(parsed.payUrl?'<a class="mcpb-pay" href="'+esc(parsed.payUrl)+'" target="_blank" rel="noopener">去支付</a>':'')
+          +(parsed.qrUrl?'<a class="mcpb-pay alt" href="'+esc(parsed.qrUrl)+'" target="_blank" rel="noopener">支付二维码</a>':'')
+          +'<span class="mcpb-payhint">支付页由品牌方提供，请在打开的页面完成付款</span></div>';
+      }
     }else{
-      h+='<div class="mcpb-note">'+esc((raw||'已完成').slice(0,140))+'</div>';
+      h+='<div class="mcpb-note">'+esc(_ibCut(raw||'已完成',200))+'</div>';
+      var _pu9=(raw.match(/https?:\/\/[^\s"'<>）)]+/g)||[]).filter(function(u){return /pay|cashier/i.test(u)})[0]||'';
+      if(_pu9)h+='<div class="mcpb-payrow"><a class="mcpb-pay" href="'+esc(_pu9)+'" target="_blank" rel="noopener">去支付</a><span class="mcpb-payhint">从回传文本中识别到的支付链接</span></div>';/* v147-p：#4 结构化解析不动、但文本里有支付链接时也给按钮 */
     }
   }else{h+='<div class="mcpb-note">已发起（结果未回传）</div>'}
   d.innerHTML=h+(detail?'<div class="ws-op-detail">'+esc(detail)+'</div>':'');
+  try{Array.prototype.forEach.call(d.querySelectorAll('.mcpb-pay'),function(aEl){aEl.addEventListener('click',function(ev){ev.stopPropagation()})})}catch(e){}/* v147-p：#4 点支付按钮不触发卡片展开 */
   if(detail)d.addEventListener('click',function(e){e.stopPropagation();d.classList.toggle('expanded')});
   return d}
 function wsOpCard(op,res){
@@ -8627,7 +8674,7 @@ async function runToolAt(m,i,op){
   redrawMsg(m);
   let r;
   try{r=await execToolOp(op)}catch(err){r={ok:false,detail:String((err&&err.message)||err).slice(0,300)}}
-  m.wsResults[i]={type:'tool',name:op.name,args:op.args,ok:!!r.ok,response:String(r.detail||r.response||'').slice(0,1200),fed:false};
+  m.wsResults[i]={type:'tool',name:op.name,args:op.args,ok:!!r.ok,response:_ibCut(String(r.detail||r.response||''),12000),fed:false};/* v147-p：#2 1200 暴力截断退役——createOrder 的支付链接/orderDetail 常在千字之后，一刀下去支付信息全军覆没 */
   try{await dbPut('chatMessages',m)}catch(e){}
   redrawMsg(m);
   try{const _st1=_wsLoopStateM.get(m.id);
@@ -8738,11 +8785,25 @@ async function feedToolResults(hist,cfg,extra){
       if(r&&EXEC_WS[r.type]&&typeof r.ok==='boolean'&&!r.fed&&!r.pendingConfirm){
         if(r.type==='help'&&r.ok)pend.push(_wsHelpInternalM());
         else if(r.type==='read'||r.type==='search'||r.type==='ctx'||r.type==='cal_list')pend.push('- 工作区·'+((WS_META[r.type]&&WS_META[r.type][1])||r.type)+(r.path?'「'+r.path+'」':'')+'：'+(r.ok?'成功':'失败')+((r.response||r.detail||r.reason)?' · '+String(r.response||r.detail||r.reason).slice(0,1600):''));/* v88-m 任务④：检索/上下文按读取口径回传（1600）→ v90-m 拍板②：读文件同并入 1600 专道 */
-        else pend.push('- '+(r.type==='tool'?('工具「'+(r.name||'')+'」'):('工作区·'+((WS_META[r.type]&&WS_META[r.type][1])||r.type)+(r.path?'「'+r.path+'」':'')))+'：'+(r.ok?'成功':'失败')+((r.response||r.detail||r.reason)?' · '+String(r.response||r.detail||r.reason).slice(0,700):''));
+        else pend.push('- '+(r.type==='tool'?('工具「'+(r.name||'')+'」'):('工作区·'+((WS_META[r.type]&&WS_META[r.type][1])||r.type)+(r.path?'「'+r.path+'」':'')))+'：'+(r.ok?'成功':'失败')+((r.response||r.detail||r.reason)?' · '+_ibCut(String(r.response||r.detail||r.reason),12000):''));
         pendR.push(r);dirty.push(m);/* fix-m①：不再发前标 fed，送达后由 commit 统一落标 */
       }
     });
   });
+  try{/* v147-p：#5 关键结果备忘——含订单/支付字段的 MCP 结果此前 fed=true 一轮即失忆：AI 第一轮没复述支付链接、下一轮 query-order 又不带链接，就只能说「链接不在我手里」。现窗口期内把最近 2 条这类原文以备忘持续注入（fed 记账与 commit 逻辑不动） */
+    const memo9=[];
+    seenM9.forEach(mm9=>{
+      if(!mm9||mm9.role==='user'||!Array.isArray(mm9.wsResults))return;
+      if(cfg&&mm9.friendId!==cfg.id)return;
+      mm9.wsResults.forEach(r9=>{
+        if(!(r9&&r9.type==='tool'&&r9.fed&&r9.ok===true&&/^mcp\./i.test(String(r9.name||''))))return;
+        if(pendR.indexOf(r9)!==-1)return;
+        const rp9=String(r9.response||'');
+        if(/(payH5Url|payOrderUrl|payOrderQrCodeUrl|payUrl|payLink|qrCodeUrl|cashierUrl)/i.test(rp9)||(/create|submit|place|pay/i.test(String(r9.name||''))&&/(orderId|orderNo|订单号|payId)/i.test(rp9)))memo9.push('- [此前已回传的关键结果备忘·勿因此重复调用] 工具「'+(r9.name||'')+'」：'+_ibCut(rp9,4000));
+      });
+    });
+    memo9.slice(-2).forEach(x9=>pend.push(x9));
+  }catch(e){}
   try{/* v77-m：查看动态附图回注——有视觉能力的 AI 下一条消息真实收到用户配图；无视觉只见文本，不报错 */
     if(cfg&&_bxViewImgs.length){
       const mine=_bxViewImgs.filter(x=>x.fid===cfg.id);
@@ -9023,10 +9084,11 @@ async function buildToolsBlock(){
       if(sv.enabled===false)return;
       (sv.tools||[]).forEach(t=>{
         if(t.enabled===false)return;
-        const ps=t.inputSchema&&t.inputSchema.properties?Object.keys(t.inputSchema.properties).map(k=>{
-          const req=(t.inputSchema.required||[]).indexOf(k)!==-1;return k+(req?'*':'');
-        }).join(','):'';
-        list.push('- mcp.'+sv.alias+'.'+t.name+'：'+String(t.description||'').slice(0,120)+(ps?'（参数：'+ps+'）':''));
+        /* v147-p：#1 完整回传工具 schema——原先只给 AI 看 120 字描述＋裸参数名清单，类型/枚举/嵌套结构/字段说明全丢，
+           麦当劳/瑞幸这类多步下单流程（items 结构、preview→create 字段沿用）只能靠参数名瞎猜；
+           现描述放宽到 2000 字并附完整 inputSchema JSON（单工具 3000 字安全截断兜底，防个别服务器超长 schema 撑爆提示词） */
+        let sc='';try{if(t.inputSchema)sc=JSON.stringify(t.inputSchema)}catch(e){}
+        list.push('- mcp.'+sv.alias+'.'+t.name+'：'+_ibCut(String(t.description||'').replace(/\s+/g,' '),2000)+(sc?'\n  参数 schema：'+_ibCut(sc,3000):''));
       });
     });
   }
@@ -9254,7 +9316,7 @@ const IBMCP={
       const r=await this._rpc(sv,'tools/list',cursor?{cursor:cursor}:{});
       ((r&&r.tools)||[]).forEach(t=>{
         const old=(sv.tools||[]).find(x=>x.name===t.name);
-        tools.push({name:t.name,description:String(t.description||'').slice(0,600),inputSchema:t.inputSchema||null,enabled:old?old.enabled!==false:true});
+        tools.push({name:t.name,description:String(t.description||'').slice(0,6000)/* v147-p：#1 已连服务器需重连一次刷新落库描述 */,inputSchema:t.inputSchema||null,enabled:old?old.enabled!==false:true});
       });
       cursor=(r&&r.nextCursor)||null;page++;
     }while(cursor&&page<20&&tools.length<200);
@@ -9269,7 +9331,11 @@ const IBMCP={
       else if(b.type==='resource'&&b.resource&&b.resource.text)text+=(text?'\n':'')+b.resource.text;
       else if(b.type==='image')text+=(text?'\n':'')+'[图片返回]';
     });
-    return text.slice(0,12000);
+    try{if(result&&result.structuredContent!==undefined&&result.structuredContent!==null){/* v147-p：#3 MCP 2025-06-18 起 CallToolResult 支持 structuredContent（机器可读结构化结果）——原实现只读 content，这里的字段整个被扔掉 */
+      var sc9=typeof result.structuredContent==='string'?result.structuredContent:JSON.stringify(result.structuredContent);
+      if(sc9&&sc9!=='null'&&sc9!=='{}'&&text.indexOf(sc9)===-1)text=(text?text+'\n':'')+sc9;
+    }}catch(e){}
+    return _ibCut(text,20000);
   },
   async call(fullName,args){
     const mm=String(fullName||'').match(/^mcp\.([\w-]+)\.(.+)$/i);
@@ -11473,7 +11539,7 @@ function _orientApply(){try{
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){var el9=this;try{await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;sw2(el9,!!_mp.ui.bigTouch);await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')}catch(e){toast('设置保存失败，请重试');try{await loadMP();sw2(el9,!!(_mp.ui&&_mp.ui.bigTouch))}catch(e2){}}});
   setTimeout(function(){try{if(window.IBNative&&window.IBNative.available){var _bg=$('pres-bg');var _row=_bg&&_bg.closest('.tog');if(_row)_row.style.display=''}}catch(e){}},1200);/* v116-p：壳内显露「后台 Presence（App）」开关（桥在文末激活，故延时探测；浏览器 / PWA 保持隐藏） */
 })();
-var IB_VER='v146-p',IB_VER_DATE='2026-08-23';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest */
+var IB_VER='v147-p',IB_VER_DATE='2026-08-23';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
