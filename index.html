@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- InternalBeyond Mobile v150-p · 手感与兜底修缮轮（生成记忆上限交还顶格通道 / API 卡拖拽手感重做 / 导航 API 图标查重换款） -->
+<!-- InternalBeyond Mobile v151-p · 思考链双轨轮（Anthropic 思考链：开=电脑端思路笔记原文 / 关=官方原生思考摘要；联网搜索下标签截流整串化） -->
+<!-- v151-p 修订单：①思考链双轨制（Anthropic）——「启用思考链」开＝电脑端同源 <thinking> 标签方案：思路笔记原文完整可见、可在里面布置演算、只按普通输出计一次费、不再下发 thinking 形参；关＝官方原生思考：形参照旧按代次选 adaptive/enabled，界面按官方设计仅显示另一模型生成的思考摘要、思考按实际发生 token 计费——此前「开着却看得少、扣得多」的根子即官方摘要机制、非解析丢失，本轮起想看原文勾开关即可。两轨由勾选二选一、绝不叠发不叠费；标签方案对 Anthropic 只前置 system 格式段、不加末条逐轮提醒（末条消息保持原文，消息级缓存不被搅动，也不与续写轮「不要输出 <thinking>」打架）；授权原生思考的 _anthNative 标只在聊天主链（sendMsg / 群聊 genReply / 手动续写药丸）由 callAIC 下发——摘要/记忆/标题/连通测试等后台任务直调 callAI 无此标，照旧零思考零新增开销；随轮移植电脑端 _makeAnthropicWebThinkMux 的整串对位 _splitThinkAnyLive/_parseThinkAny（仅 Anthropic＋联网搜索启用）：开搜时模型先吐搜索文本再写 <thinking>，只认开头的旧截流会把标签整段漏进正文——电脑端修过的坑本端补齐；手动续写药丸对 Anthropic 保持思考形态与主轮一致（形参启停会使消息级缓存整段失效，与自动续写轮 fix-m② 同款豁免）；「启用思考链」设置说明同步改写。②社交圈审查修一：定时推送「发动态」死门槛拆除——该径的发动态资格此前还要求进阶指令区 adv.beyond 为真，但该开关手机端自 v83-m r6 起绑定已退役、无处可开（仅电脑端备份可能带入旧真值），纯手机用户/新装机上恒 false：Presence 开着「发动态」也永远不够格、只能落到留笺/普通开口，等于这条路静默失效；现门槛对齐 ibAutoTick 径（全局「启用社交圈」＋自动发布＋该 AI beyond.on＋发帖权限）。③社交圈审查修二：自动评论撞上单帖 20 条上限时 ibfInsertComment 返回 'cap'（真值字符串）被当成功——弹「评论了一条动态」、误记 ibf_last_ 白白吃掉本轮发布窗口；现按失败处理。本轮社交圈全量通读其余管线（发布/评论/转发/可见范围/收件箱/查看确认/自动发布轮转/群聊注入与回传）未见同级缺陷。 -->
 <!-- v150-p 修订单（三项）：①生成记忆输出上限兜底——撤掉单独的小上限（前版 1024），交还 callAI 的「服务商顶格＋超限自动降档」通道，与聊天正文同一套兜底（DeepSeek/Gemini 65536、Anthropic 64000、OpenAI 系 32768…，服务端嫌大自动取建议值或减半重试）；思考型模型的隐藏思考与正文共用这份预算，小上限被思考吃光就会空返回/截断——历史上「返回内容不是 JSON」的帮凶之一，桌面端稳是因为它一直走顶格通道，现在同一口径。②API 卡拖拽排序手感重做——旧版病根：长按计时期内任何一像素位移都取消计时，手指按下天然微颤、十次九次点不着；拖起后页面滚动照跑、卡片纹丝不动只有指示线。现按下给 10px 容差（超过才视为滚动意图放行）、拖起瞬间冻结页面滚动（松手即撤）、卡片跟手抬起（位移＋轻放大投影，落点仍按目标卡上下沿指示线）、指尖近屏幕上下边缘自动滚屏（长列表一次拖到底）；落位、入库、提示与旧版一致，长按时长 280→260ms。③导航区 API 图标查重换款——原图标与 Circle 社交圈为完全同款双人剪影（撞图标实锤），换为插头款；随手查重：Desk 桌面图标内部无重样，抽屉 Guide 与桌面「日志」共用一款书本图标（本轮未动）。④版本联动 v150-p。本轮其余条目属另一端专属模块，-p 线无涉。 -->
 <!-- v149-p 修订单（两项）：①语音消息声学语气分析（向电脑端对齐并升级）——移植电脑端 _vmToneAnalyze / _vmDecode：按住语音条说完、转写之后，浏览器本地对这段录音做确定性声学分析（零联网）——情绪倾向（声学×文字两路融合）、声线/变化（轻柔有力·尾音起伏·渐强渐弱·颤动）、语速（字/秒）、音量、停顿、基频 Hz、语调起伏，产出一句短描述定格存 voice.tone；发给 API 的等效文本升格为「[语音消息 N秒｜声学语气参考: …] 文字稿」（与电脑端 _voiceApiLine 同格式；聊天模型收不到原声，语气段恒附），界面不显示、不改旧消息文本、升级零缓存重建，解码或分析失败静默跳过照常发送。在电脑端分析器之上追加三项升级：音色明暗（一阶差分能量比≈谱倾斜，仅明显偏亮/偏沉时报）、发声清晰度（基频可判帧占比——清晰 vs 带气声含混）、音区偏低/偏高标注（与「基频约xxHz」并列，便于模型直读）。②生成记忆双根修（Chat / Letters / Blog 共用核心 _ibGenMemCore，参考电脑端 _generateMemoryCore / parseMemoryFields 移植）——旧 JSON 协议两处硬伤（用户截图实锤）：(a)弱模型复述指令或围栏包裹 →「返回内容不是 JSON」直接失败、记忆写不进库；(b)Chat 路的视角提示写成「从{用户名}的视角」，生成物以用户第一人称落在 AI 名下——User 与 char 混淆的直接根子。现协议改电脑端同款「字段：值」文本＋按标签位置切分（跨行字段完整捕获），解析不齐时宽容降级（标题回落、内容回落原文前 300 字），只有空返回才报错；任务提示与电脑端逐字同源——以 AI 视角写、「用名字称呼双方，不要用代词」，并随行注入人设背景与关系设定；补齐「是否已解决 / 可见性」两字段（「私密」→ visibility:private）；maxTokens 700→1024；成败文案对齐电脑端。配套范围兜底：Save Memory 默认路取「该 AI 上下文条数」与 50 的较小者（上下文设 10 就只取 10；群聊按 grpLimit），封档线之前的消息一律不参与；选择模式同受封档约束（选中含封档前消息即阻止并提示，与电脑端同界；频道无封档概念不受限）；转写稿顶上语音消息的空 content（原式恒为空行，旧逻辑 BUG）；超 4000 字预算丢最旧保最近。③版本联动 v149-p。本轮其余条目属另一端专属模块，-p 线无涉。 -->
 <!-- v148-p 修订单（两项）：①话题频道串窗根修——loadEarlier 往上翻调 dbPageByFriend 漏传 threadId 第四参，频道里翻页拉回来的全是主线消息（「聊久了显示不全＋往上翻看到主线」的直接根子）；且翻页在途无窗口守卫，切窗瞬间旧请求把上一窗的 50 条灌进新窗（「一开频道就看到主线消息」的通路）：现补传 threadId、捕获 _convSeq 在途作废、加防重入。②麦当劳品牌卡「去支付」文字改浅黄 #FFE7A8（用户定色）。③版本联动 v148-p。 -->
@@ -3510,7 +3511,7 @@ self.addEventListener(&#x27;fetch&#x27;,function(e){
       <div class="f-group"><label>档案字数上限 <span class="lb-note">字</span></label><input id="aset-am-budget" inputmode="numeric" placeholder="1200"></div>
       <div class="tog"><div class="tog-m"><div class="tog-t">静默 (Mute)</div><div class="tog-s">开启后：对话中不注入档案内容，仅当你明确要求记住某事时写入新条目。</div></div><div class="sw2" id="aset-am-mute"></div></div>
       <div class="tog"><div class="tog-m"><div class="tog-t">流式传输（打字机效果）</div><div class="tog-s">逐字显示回复并可中途停止生成。关闭则等完整回复后一次性显示。</div></div><div class="sw2" id="aset-stream"></div></div>
-      <div class="tog"><div class="tog-m"><div class="tog-t">启用思考链</div><div class="tog-s">AI 回复前展示可折叠的思路笔记。可随时开关；切换后下一条消息会重建一次提示缓存，之后恢复稳定命中。</div></div><div class="sw2" id="aset-think"></div></div>
+      <div class="tog"><div class="tog-m"><div class="tog-t">启用思考链</div><div class="tog-s">开＝AI 回复前展示可折叠的思路笔记（与电脑端同款：原文完整、只按普通输出计一次费）。Anthropic 系关闭本开关＝改走官方原生思考：界面按官方设计仅显示思考摘要，思考按实际发生的 token 计费；其他服务商关闭即不带思考。可随时开关；切换后下一条消息会重建一次提示缓存，之后恢复稳定命中。</div></div><div class="sw2" id="aset-think"></div></div>
       <div class="tog"><div class="tog-m"><div class="tog-t">支持图片识别（视觉能力）</div><div class="tog-s">开启后图片会编码发送给 API，关闭则仅发文字。默认值按服务商自动设定。</div></div><div class="sw2" id="aset-vision"></div></div>
       <div class="tog"><div class="tog-m"><div class="tog-t">启用联网搜索</div><div class="tog-s">AI 可在对话中检索实时网页信息。不支持的模型会自动跳过。</div></div><div class="sw2" id="aset-web"></div></div>
       <div class="tog"><div class="tog-m"><div class="tog-t">提示缓存（Prompt Caching）</div><div class="tog-s">自动优化缓存命中率以降低输入费用。中转站报 400 错误时可关闭。</div></div><div class="sw2" id="aset-cache"></div></div>
@@ -7794,6 +7795,37 @@ function _splitThinkLive(raw){
   if(c)return{thinking:rest.slice(0,c.index).trim(),reply:rest.slice(c.index+c[0].length).replace(/^\s+/,'')};
   return{thinking:rest,reply:''};
 }
+/* v151-p #1：电脑端 _makeAnthropicWebThinkMux 的整串对应物（仅 Anthropic＋联网搜索时启用，调用点见 callAI 内 _tkAny）——
+   在任意位置截取 <thinking>…</thinking>（可多块）：思路进折叠区，标签前后的正文按原序拼回；
+   尾部悬着的半截标签（流式恰好切在标签中间）先扣住不上屏，避免闪现后跳变；
+   未闭合（仍在流式书写或中途中止）时，已开标签之后的内容全部按思路显示——与 _splitThinkLive 同一取舍，不吞正文（标签前正文完整保留）。 */
+function _splitThinkAnyLive(raw){
+  raw=raw||'';
+  var OPEN=/<think(?:ing)?\b[^>]*>/i,CLOSE=/<\/think(?:ing)?\s*>/i;
+  var reply='',thinking='',buf=raw;
+  for(;;){
+    var op=buf.match(OPEN);
+    if(!op){
+      var half=buf.match(/<\/?(?:t(?:h(?:i(?:n(?:k(?:i(?:n(?:g)?)?)?)?)?)?)?)?$/);
+      if(half&&half[0])buf=buf.slice(0,half.index);
+      reply+=buf;break;
+    }
+    reply+=buf.slice(0,op.index);
+    var rest=buf.slice(op.index+op[0].length);
+    var cl=rest.match(CLOSE);
+    if(!cl){thinking+=(thinking?'\n':'')+rest.replace(/^\s+/,'');buf='';break}
+    thinking+=(thinking?'\n':'')+rest.slice(0,cl.index).trim();
+    buf=rest.slice(cl.index+cl[0].length);
+    var jt=(reply.match(/\s+$/)||[''])[0],jl=(buf.match(/^\s+/)||[''])[0];/* 缝合处：块两侧原有换行→并成一个空行；纯行内出现→原样拼回，不添不减 */
+    if(reply.trim()&&/\n/.test(jt+jl)){reply=reply.slice(0,reply.length-jt.length)+'\n\n';buf=buf.slice(jl.length)}
+    else if(!reply.trim()){reply='';buf=buf.replace(/^\s+/,'')}
+  }
+  return{thinking:thinking,reply:reply.replace(/^\s+/,'')};
+}
+function _parseThinkAny(raw){
+  var p=_splitThinkAnyLive(String(raw||''));
+  return{thinking:(p.thinking||'').trim(),reply:(p.reply||'').trim()};
+}
 /* v59-m t26：流式期间标签不再裸奔——完整标签块折成完成小卡，未闭合尾部折成施工中小卡（纯视觉层，落库与收尾渲染不变） */
 const _ST_TAGS='ws_help|ws_create|ws_edit|ws_read|ws_project|ws_run|ws_tool|ws_gen_image|ws_make_docx|ws_make_pdf|ws_make_xlsx|ws_ask|ws_post|ws_comment|ws_music|ws_weather|ws_sig|ws_mem_write|ws_mem_search|ws_cal_add|ws_cal_edit|ws_cal_del|ws_cal_meet|ws_cal_list|ws_beyond_view|ws_repost|ws_loc|ws_phone|ws_payreq|ws_beyond_inbox|ws_search|ws_ctx|cal_note|mem_create|mem_update|mem_delete';/* v89-m：+ws_help（此前流式期唯一裸奔的标签） *//* v82-m r2：+run、tool、make_×4、cal_×4、beyond_view——手机端能收到的指令全部进流式卡，与电脑端对齐（此前这些标签流式期裸奔，任务 2） *//* v81-m r7：+ws_sig；v72-m：+Beyond/播放器/天气；v74-m r5：+记忆库写入/检索 */
 function _stName(attrs){const m=String(attrs||'').match(/(?:path|file|filename|name|title)="([^"]*)"/i);return m?m[1]:''}
@@ -7939,14 +7971,19 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
   const useWS=!!cfg.webSearch&&!(pa&&pa._noWS);
   const _hist0=hist,_sys0=sys;
   if(pa&&pa._noImg&&_histHasImgM(hist))hist=_stripHistImgsM(hist);/* imgfix-r1：图片降级重试轮——去图并附「图片未发送」说明 */
-  /* v59-m t21：思考链电脑端同源移植——非 Anthropic 走 <thinking> 标签方案：系统提示前置格式要求 + 末条 user 逐轮硬提醒 + 流式实时截流 + 收尾解析兜底 */
+  /* v59-m t21：思考链电脑端同源移植——<thinking> 标签方案：系统提示前置格式要求 + 末条 user 逐轮硬提醒 + 流式实时截流 + 收尾解析兜底
+     v151-p #1：Anthropic 撤销例外——勾选「启用思考链」时同走标签方案（与电脑端同源：思路笔记原文完整可见、只按普通输出计一次费、不再下发 thinking 形参）；
+     未勾选时改走官方原生思考（形参见下方 _anthNative，仅聊天主链生效）。两种方式由勾选二选一，绝不叠发、绝不计费两次。
+     Anthropic 只前置 system 格式段（电脑端同款「融入 system」），不注入末条 user 的逐轮硬提醒——末条消息保持原文，消息级缓存不因提醒逐轮失配，
+     也不与续写轮 _WS_CONT_PROMPT_M 里「不要输出 <thinking>」互相打架。 */
   let _tagThink=false;
-  if(think&&fmt!=='anthropic'){
+  if(think){
     _tagThink=true;
     const _strict=cfg.provider==='deepseek';
     sys=(_strict
       ?'【重要格式要求】你必须在每次回复时，先输出 <thinking> 标签包裹的思考过程，再输出正文回复。格式如下：\n<thinking>\n你的思考过程（对方不可见）\n</thinking>\n\n你的正式回复\n\n不可省略 <thinking> 标签，这是强制格式要求。\n\n'
       :'[回复格式] 每次回复请先输出一段 <thinking> 标签包裹的思路笔记，再输出正式回复。这段笔记是你主动书写的回复草稿（过程摘要），属于你正常输出的一部分，并非要求你披露平台内部的隐藏推理——推理型模型也请照常书写。界面会将其折叠展示，对方默认不会展开。\n<thinking>\n（写下你对这条消息的理解与回应思路。思考中自然运用记忆即可，不要逐条罗列或原文复述记忆档案。）\n</thinking>\n\n正式回复\n\n')+(sys||'');
+    if(fmt!=='anthropic'){/* v151-p #1：逐轮提醒只给非 Anthropic——Anthropic 靠 system 前缀即可稳定出笔记（Opus 跟随格式可靠），且省下末条改写对消息级缓存的搅动 */
     const _tkNote=_strict
       ?'\n\n[系统格式要求] 本次回复必须先输出 <thinking> 标签包裹的思考过程，再输出正文回复。不可省略，这是强制格式要求。'
       :'\n\n[系统格式要求] 本次回复请先输出 <thinking> 标签包裹的思路笔记（你主动书写的公开回复草稿/过程摘要，并非平台内部的隐藏推理），再输出正文。请勿省略该标签。';
@@ -7955,6 +7992,7 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
     for(let i=hist.length-1;i>=0;i--){if(hist[i].role==='user'){const c0=hist[i].content;
       if(Array.isArray(c0)){const cc=c0.map(p=>Object.assign({},p));const tp=cc.find(p=>p.type==='text');if(tp)tp.text=_npM(tp.text,_tkNote);else cc.unshift({type:'text',text:_tkNote.replace(/^\n+/,'')});hist[i]={...hist[i],content:cc}}
       else hist[i]={...hist[i],content:_npM(c0,_tkNote)};break}}
+    }
   }
   /* v59-m t13(数据)：usage 捕获——三格式统一收进 _u，随结果返回并计入 ibTokenStats */
   const _u={i:0,o:0,cr:0,cw:0,seen:false};
@@ -7974,6 +8012,7 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
     }
     if(j.usageMetadata){var _gc=j.usageMetadata.cachedContentTokenCount||0;_u.i=Math.max(0,(j.usageMetadata.promptTokenCount||0)-_gc);_u.cr=_gc;_u.o=(j.usageMetadata.candidatesTokenCount||0)+(j.usageMetadata.thoughtsTokenCount||0);_u.seen=true;try{if(cfg&&cfg.promptCache!==false)console.info('[IB手机缓存诊断] usage 原文(gemini): '+JSON.stringify(j.usageMetadata));_ibCacheHintM(cfg,j.usageMetadata.promptTokenCount||0,_gc)}catch(e3){}}
   }catch(e){}};
+  const _tkAny=_tagThink&&fmt==='anthropic'&&useWS;/* v151-p #1：电脑端 _makeAnthropicWebThinkMux 的整串对位——Anthropic 开联网搜索时，模型常先吐搜索过程文本再写 <thinking>，只认开头的 _splitThinkLive 会把整段标签漏进正文；此场景改用任意位置截流（_splitThinkAnyLive/_parseThinkAny），其余场景仍只认开头，避免正文里教学性出现的 <thinking> 字样被误吞 */
   let url,headers={'Content-Type':'application/json'},body;
 
   if(fmt==='anthropic'){
@@ -7983,13 +8022,14 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
     if(cfg.provider!=='custom'||/api\.anthropic\.com/i.test(ep))headers['anthropic-dangerous-direct-browser-access']='true';/* v141-p：#4 自定义中转不带此头——非官方域不需要，且常撞中转的 CORS 预检 */
     const _anthMsgs=_histFor('anthropic',hist);
     _injectAnthropicMsgCacheM(_anthMsgs,cfg);
-    const b={model:model,max_tokens:think?Math.max(maxT,8192):maxT,messages:_anthMsgs,stream:stream};
+    const _anthNative=!think&&!!(pa&&pa._anthNative);/* v151-p #1：未勾选思考链＝官方原生思考（界面按官方设计只显示摘要、思考按实际 token 计费）；只在聊天主链（callAIC 打标 _anthNative）生效——摘要/记忆/标题/测试等后台任务直调 callAI 无此标，照旧完全不带思考，零额外开销 */
+    const b={model:model,max_tokens:_anthNative?Math.max(maxT,8192):maxT,messages:_anthMsgs,stream:stream};
     if(sys){
       if(cfg.promptCache!==false)b.system=[{type:'text',text:sys,cache_control:_ccObjM(cfg)}];
       else b.system=sys;
     }
     _ccBetaM(headers,cfg);
-    if(think)b.thinking=_anthThinkShape(model);/* v69-m t11：按模型代次选形参——4.7+/5 系只收 adaptive（且必须 display:'summarized'，否则默认 omitted 整段思考为空），4.6 及更早走 enabled+budget；未知型号先按 enabled，400 时翻面重试（见下方） */
+    if(_anthNative)b.thinking=_anthThinkShape(model);/* v151-p #1：形参只随「未勾选」的聊天主链下发；勾选＝上方标签方案，二者互斥，绝不思考两遍 *//* v69-m t11：按模型代次选形参——4.7+/5 系只收 adaptive（且必须 display:'summarized'，否则默认 omitted 整段思考为空），4.6 及更早走 enabled+budget；未知型号先按 enabled，400 时翻面重试（见下方） */
     if(useWS)b.tools=(b.tools||[]).concat([{type:'web_search_20250305',name:'web_search',max_uses:3}]);
     body=JSON.stringify(b);
   }else if(fmt==='gemini'){
@@ -8069,10 +8109,10 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
     let at='',ak='';
     await readSSE(res,fmt,(t,k)=>{
       at+=t;ak+=k;
-      if(_tagThink){const p=_splitThinkLive(at);onDelta(p.reply,(ak&&p.thinking)?(ak+'\n'+p.thinking):(p.thinking||ak))}
+      if(_tagThink){const p=(_tkAny?_splitThinkAnyLive:_splitThinkLive)(at);onDelta(p.reply,(ak&&p.thinking)?(ak+'\n'+p.thinking):(p.thinking||ak))}
       else onDelta(at,ak.replace(/^\s+/,''));/* v69-m t11：pre-wrap 下头部空白=大段空隙，掐掉 */
     },_grabU);
-    if(_tagThink){const p=_parseThinking(at);if(p.thinking){ak=(ak?ak+'\n':'')+p.thinking;at=p.reply}}
+    if(_tagThink){const p=(_tkAny?_parseThinkAny:_parseThinking)(at);if(p.thinking){ak=(ak?ak+'\n':'')+p.thinking;at=p.reply}}
     ak=ak.replace(/^\s+/,'');/* v69-m t11 */
     if(_u.seen){try{_tkRecord(cfg,{i:_u.i,cr:_u.cr,cw:_u.cw,o:_u.o})}catch(e){}}
     return{t:at,k:ak,u:_u.seen?{i:_u.i,o:_u.o,cr:_u.cr,cw:_u.cw}:null,fin:_fin.r};
@@ -8080,7 +8120,7 @@ async function callAI(cfg,hist,sys,onDelta,signal,pa){
   const j=await res.json();
   _grabU(j);
   const full=extractFull(fmt,j);
-  if(_tagThink){const p=_parseThinking(full.t||'');if(p.thinking){full.k=(full.k?full.k+'\n':'')+p.thinking;full.t=p.reply}}
+  if(_tagThink){const p=(_tkAny?_parseThinkAny:_parseThinking)(full.t||'');if(p.thinking){full.k=(full.k?full.k+'\n':'')+p.thinking;full.t=p.reply}}
   full.k=(full.k||'').replace(/^\s+/,'');/* v69-m t11 */
   if(_u.seen){try{_tkRecord(cfg,{i:_u.i,cr:_u.cr,cw:_u.cw,o:_u.o})}catch(e){}}
   full.u=_u.seen?{i:_u.i,o:_u.o,cr:_u.cr,cw:_u.cw}:null;
@@ -8118,6 +8158,7 @@ async function callAIC(cfg,hist,sys,onDelta,signal,pa){
   await loadOUT();
   const maxRounds=Math.max(0,Math.min(10,parseInt(_out.maxContinues!=null?_out.maxContinues:3)||0));
   let full='',fullK='',u=null,fin='';
+  if(_cfgFmtM(cfg)==='anthropic')pa=Object.assign({},pa||{},{_anthNative:true});/* v151-p #1：callAIC 只被聊天主链（sendMsg / 群聊 genReply / 手动续写药丸）调用——在此打标，授权「未勾选思考链→官方原生思考」；摘要/记忆/标题/测试等后台任务直调 callAI、无此标，永不带思考 */
   for(let round=0;;round++){
     const h=round===0?hist:hist.concat([{role:'assistant',content:full},{role:'user',content:_WS_CONT_PROMPT_M}]);
     const _fmtC=_cfgFmtM(cfg);/* v141-p：#4 */
@@ -8444,7 +8485,7 @@ async function continueTruncatedMsgM(msgId,pillEl){
   let piece='',fin='';
   try{
     await loadMP();
-    const r=await callAIC(Object.assign({},cfg,{thinkingEnabled:false}),hist,sys,
+    const r=await callAIC(_cfgFmtM(cfg)==='anthropic'?cfg:Object.assign({},cfg,{thinkingEnabled:false}),hist,sys,/* v151-p #1：Anthropic 例外与自动续写轮（fix-m②）同款——思考形态保持与主轮一致（勾选=标签、未勾选=原生形参不摘），避免形参启停打掉消息级缓存；标签方案下 _WS_CONT_PROMPT_M 已明说不要输出 <thinking>，偶发输出也会被截流进折叠区不上正文 */
       t=>{if(t&&t.length>=120)live.textContent=_wsDedupSeamM(old,t)},null,mpAi(cfg));
     piece=_wsDedupSeamM(old,r.t||'');fin=r.fin||'';
   }catch(e){
@@ -11651,7 +11692,7 @@ function _orientApply(){try{
   el=$('ui-bigtouch');if(el)el.addEventListener('click',async function(){var el9=this;try{await loadMP();_mp.ui=_mp.ui||{};_mp.ui.bigTouch=!_mp.ui.bigTouch;sw2(el9,!!_mp.ui.bigTouch);await saveMP();_uiApply();toast(_mp.ui.bigTouch?'触控目标已放大':'触控目标恢复标准')}catch(e){toast('设置保存失败，请重试');try{await loadMP();sw2(el9,!!(_mp.ui&&_mp.ui.bigTouch))}catch(e2){}}});
   setTimeout(function(){try{if(window.IBNative&&window.IBNative.available){var _bg=$('pres-bg');var _row=_bg&&_bg.closest('.tog');if(_row)_row.style.display=''}}catch(e){}},1200);/* v116-p：壳内显露「后台 Presence（App）」开关（桥在文末激活，故延时探测；浏览器 / PWA 保持隐藏） */
 })();
-var IB_VER='v150-p',IB_VER_DATE='2026-08-24';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest */
+var IB_VER='v151-p',IB_VER_DATE='2026-08-24';/* v86-m r3：版本号占位——展示于 PWA 卡、写入导出档与运行时 manifest */
 (function _appVerDraw(){var e=document.getElementById('app-ver');if(e)e.textContent='InternalBeyond Mobile '+IB_VER+'（'+IB_VER_DATE+'）'})();
 function _lkVeilOff(){try{var v=document.getElementById('lk-preveil');if(v){v.classList.add('off');setTimeout(function(){try{v.remove()}catch(e){}},420)}}catch(e){}}/* fix-r4：预遮罩揭幕（任务 8） */
 async function _lkBoot(){try{await loadBgs()}catch(e){}var lk=_lkCfg();try{localStorage.setItem('ib_lockOn',lk&&lk.on?'1':'0')}catch(e){}/* v101-m：启动后把 DB 真值回写同步镜像 */if(lk&&lk.on)_lkShow();else _lkVeilOff()}
@@ -15347,7 +15388,7 @@ async function _ibfAutoOnce(cfg,ib){
   }else if(m2&&canCmt){
     var pid=wsAttr(m2[1],'id');
     var ok=await ibfInsertComment(pid,who,m2[2]);
-    if(ok){try{localStorage.setItem('ibf_last_'+cfg.id,String(Date.now()))}catch(e){}toast(cfgName(cfg)+' 评论了一条动态')}
+    if(ok&&ok!=='cap'){try{localStorage.setItem('ibf_last_'+cfg.id,String(Date.now()))}catch(e){}toast(cfgName(cfg)+' 评论了一条动态')}/* v151-p：#3 评论满 20 条时返回 'cap'（真值）——此前被当成功：弹「评论了一条动态」、误记 ibf_last_ 吃掉本轮发布窗口；现按失败处理 */
   }
 }
 function _ibGapMs(ib){var m=parseInt(ib&&ib.gapMin);if(!isFinite(m)||m<=0)m=(Math.max(1,parseInt(ib&&ib.gapH)||24))*60;return Math.max(5,Math.min(10080,m))*60000}/* v121-p：#4.1 自动发布最小间隔——新键 ib.gapMin（分钟，5–10080）；未设时回读旧 gapH（小时）换算，老备份/旧配置无感 */
@@ -15496,9 +15537,8 @@ setInterval(async function(){
     if(_md&&Math.random()*100>=Math.max(1,Math.min(100,parseInt(ps.randP)||35)))return;/* fix-r4：随机模式——到点掷骰，未命中静默等下一轮 */
     /* 到点：优先改发 Beyond 动态（需 hbPost + IB 自动发布 + 该 AI 到发布间隔），否则主动开口 */
     if(ps.hbPost){
-      var adv=null;try{adv=await _ibAdvGet()}catch(e){}
       var ib=_mp.ib||{};
-      if(adv&&adv.beyond&&ib.on&&ib.autoPost&&cfg.beyond&&cfg.beyond.on&&cfg.beyond.post!==false){
+      if(ib.on&&ib.autoPost&&cfg.beyond&&cfg.beyond.on&&cfg.beyond.post!==false){/* v151-p：#2 拆除 adv.beyond 死门槛——手机端该进阶开关自 v83-m r6 起无处可开（绑定已退役），纯手机用户/新装机上恒 false，「定时推送·发动态」永远不够格只能落到留笺/开口；门槛对齐 ibAutoTick（ib.on＋autoPost＋该 AI beyond.on＋发帖权限），电脑端备份带来的旧值不再有一票否决权 */
         var last=0;try{last=parseInt(localStorage.getItem('ibf_last_'+cfg.id))||0}catch(e){}
         if(now-last>=_ibGapMs(ib)){/* v121-p：#4.1 */
           try{localStorage.setItem('ibf_try_'+cfg.id,String(now))}catch(e){}
